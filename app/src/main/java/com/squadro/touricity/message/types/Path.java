@@ -17,7 +17,11 @@ public class Path extends Entry implements IPath {
     private String path_type;
     private List<Vertex> vertices;
 
-    public Path(String entry_id, float expense, float duration, String comment) {
+    public Path(String entry_id, float expense, float duration, String comment, String path_id,
+                String path_type, List<Vertex> vertices) {
         super(entry_id, expense, duration, comment);
+        this.path_id = path_id;
+        this.path_type = path_type;
+        this.vertices = vertices;
     }
 }
