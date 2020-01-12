@@ -1,8 +1,8 @@
 package com.squadro.touricity.message.types;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder;
 
 @Getter
 @Setter
@@ -14,4 +14,10 @@ public class Entry {
     private float duration;
     private String comment;
 
+    public Entry(String entry_id, float expense, float duration, String comment) {
+        this.entry_id = entry_id;
+        this.expense = expense;
+        this.duration = duration;
+        this.comment = comment;
+    }
 }
