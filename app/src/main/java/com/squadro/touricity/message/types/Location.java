@@ -7,11 +7,10 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class Entry {
+public class Location {
 
-    private String entry_id;
-    private float expense;
-    private float duration;
-    private String comment;
+    private String location_id;
+    private float latitude;
+    private float longitude;
 
 }
