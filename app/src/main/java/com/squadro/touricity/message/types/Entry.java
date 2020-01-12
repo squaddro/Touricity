@@ -10,8 +10,8 @@ import lombok.Builder;
 public class Entry {
 
     private String entry_id;
-    private float expense;
-    private float duration;
+    private double expense;
+    private double duration;
     private String comment;
 
 }

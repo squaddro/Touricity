@@ -10,7 +10,7 @@ import lombok.Builder;
 public class Location {
 
     private String location_id;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
 }
