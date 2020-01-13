@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class Stop extends Entry implements IStop {
+public class Stop extends AbstractEntry implements IStop {
 
     private String location_id;
     private String stop_id;

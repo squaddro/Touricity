@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class Path extends Entry implements IPath {
+public class Path extends AbstractEntry implements IPath {
 
     private String path_id;
     private String path_type;

@@ -16,7 +16,7 @@ public class Location implements ILocation {
     private double longitude;
 
     public Location(double latitude, double longitude) {
-        //TODO: uuid will be obtained.
+        location_id = null;
         this.latitude = latitude;
         this.longitude = longitude;
     }

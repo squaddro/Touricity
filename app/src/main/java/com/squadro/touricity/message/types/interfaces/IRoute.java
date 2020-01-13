@@ -1,13 +1,13 @@
 package com.squadro.touricity.message.types.interfaces;
 
-import com.squadro.touricity.message.types.Entry;
+import com.squadro.touricity.message.types.AbstractEntry;
 
 public interface IRoute {
 
-    void addEntry(Entry entry);
-    void addEntry(Entry entry, int index);
-    void deleteEntry(Entry entry);
+    void addEntry(AbstractEntry abstractEntry);
+    void addEntry(AbstractEntry abstractEntry, int index);
+    void deleteEntry(AbstractEntry abstractEntry);
     void deleteEntry(int index);
     boolean deleteEntry(String entry_id);
-    boolean changeEntryPosition(Entry entry, int newPos);
+    boolean changeEntryPosition(AbstractEntry abstractEntry, int newPos);
 }
