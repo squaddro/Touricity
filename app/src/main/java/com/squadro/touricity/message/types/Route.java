@@ -11,7 +11,6 @@ import lombok.Builder;
 
 @Getter
 @Setter
-@Builder(toBuilder = true)
 public class Route implements IRoute {
 
     private String route_id;
