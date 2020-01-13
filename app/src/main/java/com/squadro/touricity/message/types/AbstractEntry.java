@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public abstract class AbstractEntry implements IEntry {
+public class AbstractEntry implements IEntry {
 
     private String entry_id;
     private double expense;

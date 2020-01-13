@@ -15,13 +15,14 @@ public class Location implements ILocation {
     private double latitude;
     private double longitude;
 
-    public Location(double latitude, double longitude) {
-        location_id = null;
+    public Location(String location_id, double latitude, double longitude) {
+        this.location_id = null;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
     public Location() {
+        location_id = null;
         this.latitude = 0.0;
         this.longitude = 0.0;
     }
