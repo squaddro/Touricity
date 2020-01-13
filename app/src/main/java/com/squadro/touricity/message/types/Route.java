@@ -1,5 +1,7 @@
 package com.squadro.touricity.message.types;
 
+import com.squadro.touricity.message.types.interfaces.IRoute;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -10,23 +12,50 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class Route {
+public class Route implements IRoute {
 
     private String route_id;
     private ArrayList<Entry> entryList;
+
+    public Route() {
+        //TODO : uuid will be obtained
+        this.entryList = new ArrayList<>();
+    }
+
+    public Route(String route_id) {
+        this.route_id = route_id;
+        this.entryList = new ArrayList<>();
+    }
+
+    public Route(ArrayList<Entry> entryList) {
+        //TODO : uuid will be obtained
+        this.entryList = entryList;
+    }
 
     public void addEntry(Entry entry){
         this.entryList.add(entry);
     }
 
     public void addEntry(Entry entry, int index){
-        this.entryList.add(index, entry);
+        if(index<0)
+            entryList.add(0, entry);
+
+        else if(index >= entryList.size()){
+            entryList.add(entry);
+        }
+
+        else{
+            this.entryList.add(index, entry);
+        }
     }
 
     public void deleteEntry(Entry entry){
         this.entryList.remove(entry);
     }
 
+    public void deleteEntry(int index){
+        this.entryList.remove(index);
+    }
 
     /**
      * not efficient
@@ -68,7 +97,7 @@ public class Route {
                 entryList.remove(entry);
                 entryList.add(entry);
             }
-            else{ //TODO: might not work!
+            else{
                 entryList.remove(entry);
                 entryList.add(newPos, entry);
             }
