@@ -2,13 +2,11 @@ package com.squadro.touricity.message.types;
 
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder(toBuilder = true)
 public class Entry implements IEntry {
 
     private String entry_id;

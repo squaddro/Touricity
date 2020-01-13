@@ -21,7 +21,7 @@ public class RetrofitCreate {
         okHttpClient.interceptors().add(new ReceivedCookiesInterceptor());
 
         return new Retrofit.Builder()
-                .baseUrl("buraya url yazilacak") // TODO: server tarafi halledildiginde gercek url'i yaz buraya
+                .baseUrl("https://touricity.herokuapp.com/") // TODO: server tarafi halledildiginde gercek url'i yaz buraya
                 .client(okHttpClient.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
