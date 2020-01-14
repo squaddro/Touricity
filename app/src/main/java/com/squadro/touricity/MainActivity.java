@@ -3,8 +3,8 @@ package com.squadro.touricity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-//import android.support.v7.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity;
+
 import android.widget.LinearLayout;
 
 import com.squadro.touricity.cookie.CookieMethods;
