@@ -14,46 +14,41 @@ import lombok.Builder;
 public class Route implements IRoute {
 
     private String route_id;
-    private ArrayList<Entry> entryList;
+    private ArrayList<AbstractEntry> abstractEntryList;
 
     public Route() {
-        //TODO : uuid will be obtained
-        this.entryList = new ArrayList<>();
+        route_id = null;
+        this.abstractEntryList = new ArrayList<>();
     }
 
-    public Route(String route_id) {
-        this.route_id = route_id;
-        this.entryList = new ArrayList<>();
+    public Route(ArrayList<AbstractEntry> abstractEntryList) {
+        route_id = null;
+        this.abstractEntryList = abstractEntryList;
     }
 
-    public Route(ArrayList<Entry> entryList) {
-        //TODO : uuid will be obtained
-        this.entryList = entryList;
+    public void addEntry(AbstractEntry abstractEntry){
+        this.abstractEntryList.add(abstractEntry);
     }
 
-    public void addEntry(Entry entry){
-        this.entryList.add(entry);
-    }
-
-    public void addEntry(Entry entry, int index){
+    public void addEntry(AbstractEntry abstractEntry, int index){
         if(index<0)
-            entryList.add(0, entry);
+            abstractEntryList.add(0, abstractEntry);
 
-        else if(index >= entryList.size()){
-            entryList.add(entry);
+        else if(index >= abstractEntryList.size()){
+            abstractEntryList.add(abstractEntry);
         }
 
         else{
-            this.entryList.add(index, entry);
+            this.abstractEntryList.add(index, abstractEntry);
         }
     }
 
-    public void deleteEntry(Entry entry){
-        this.entryList.remove(entry);
+    public void deleteEntry(AbstractEntry abstractEntry){
+        this.abstractEntryList.remove(abstractEntry);
     }
 
     public void deleteEntry(int index){
-        this.entryList.remove(index);
+        this.abstractEntryList.remove(index);
     }
 
     /**
@@ -64,12 +59,12 @@ public class Route implements IRoute {
      */
     public boolean deleteEntry(String entry_id){
 
-        Iterator<Entry> iter = entryList.iterator();
+        Iterator<AbstractEntry> iter = abstractEntryList.iterator();
 
         while(iter.hasNext()){
-            Entry temp = iter.next();
+            AbstractEntry temp = iter.next();
             if(temp.getEntry_id().equals(entry_id)){
-                entryList.remove(temp);
+                abstractEntryList.remove(temp);
                 return true;
             }
         }
@@ -77,28 +72,28 @@ public class Route implements IRoute {
     }
 
     /**
-     * @param entry is the entry that will be replaced.
-     * @param newPos is the new position of given entry.
-     * @return true when success, false when entry is not found in list (list is unchanged)
+     * @param abstractEntry is the abstractEntry that will be replaced.
+     * @param newPos is the new position of given abstractEntry.
+     * @return true when success, false when abstractEntry is not found in list (list is unchanged)
      */
 
-    public boolean changeEntryPosition(Entry entry, int newPos){
+    public boolean changeEntryPosition(AbstractEntry abstractEntry, int newPos){
 
-        if(!entryList.contains(entry)){
+        if(!abstractEntryList.contains(abstractEntry)){
             return false;
         }
         else{
             if(newPos < 0){
-                entryList.remove(entry);
-                entryList.add(0, entry);
+                abstractEntryList.remove(abstractEntry);
+                abstractEntryList.add(0, abstractEntry);
             }
-            else if(newPos >= entryList.size()){
-                entryList.remove(entry);
-                entryList.add(entry);
+            else if(newPos >= abstractEntryList.size()){
+                abstractEntryList.remove(abstractEntry);
+                abstractEntryList.add(abstractEntry);
             }
             else{
-                entryList.remove(entry);
-                entryList.add(newPos, entry);
+                abstractEntryList.remove(abstractEntry);
+                abstractEntryList.add(newPos, abstractEntry);
             }
             return true;
         }

@@ -1,4 +1,4 @@
 package com.squadro.touricity.message.types.interfaces;
 
-public interface IStop {
+public interface IStop extends IEntry{
 }
