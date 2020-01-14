@@ -27,11 +27,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View rootView = inflater.inflate(R.layout.map_view, container, false);
         if (supportMapFragment == null) {
             supportMapFragment = SupportMapFragment.newInstance();
-            supportMapFragment.getMapAsync(googleMap -> {
-                LatLng tobb = new LatLng(39.921260, 32.798165);
-                googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
-            });
+            supportMapFragment.getMapAsync(this);
         }
         getChildFragmentManager().beginTransaction().replace(R.id.map, supportMapFragment).commit();
         return rootView;
@@ -39,6 +35,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        LatLng tobb = new LatLng(39.921260, 32.798165);
+        googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
     }
 }
