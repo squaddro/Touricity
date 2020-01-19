@@ -12,11 +12,11 @@ import lombok.Setter;
 public class Path extends AbstractEntry implements IPath {
 
     private String path_id;
-    private String path_type;
+    private int path_type;
     private List<Vertex> vertices;
 
     public Path(String entry_id, double expense, double duration, String comment, String path_id,
-                String path_type, List<Vertex> vertices) {
+                int path_type, List<Vertex> vertices) {
         super(entry_id, expense, duration, comment);
         this.path_id = path_id;
         this.path_type = path_type;
