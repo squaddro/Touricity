@@ -1,4 +1,4 @@
-package com.squadro.touricity.converter;
+package com.squadro.touricity.converter.interfaces;
 
 import com.google.gson.JsonObject;
 

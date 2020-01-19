@@ -1,6 +1,7 @@
 package com.squadro.touricity.converter;
 
 import com.google.gson.JsonObject;
+import com.squadro.touricity.converter.interfaces.IConverter;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Vertex;
 

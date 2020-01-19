@@ -7,26 +7,29 @@ import java.util.Iterator;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder;
 
 @Getter
 @Setter
 public class Route implements IRoute {
 
     private String route_id;
+    private String creator;
     private ArrayList<AbstractEntry> abstractEntryList;
 
     public Route() {
         route_id = null;
+        creator = null;
         this.abstractEntryList = new ArrayList<>();
     }
 
-    public Route(ArrayList<AbstractEntry> abstractEntryList) {
-        route_id = null;
+    public Route(String route_id, String creator, ArrayList<AbstractEntry> abstractEntryList) {
+        this.route_id = route_id;
+        this.creator = creator;
         this.abstractEntryList = abstractEntryList;
     }
 
     public void addEntry(AbstractEntry abstractEntry){
+
         this.abstractEntryList.add(abstractEntry);
     }
 
@@ -48,6 +51,7 @@ public class Route implements IRoute {
     }
 
     public void deleteEntry(int index){
+
         this.abstractEntryList.remove(index);
     }
 
@@ -98,6 +102,5 @@ public class Route implements IRoute {
             return true;
         }
     }
-
 
 }
