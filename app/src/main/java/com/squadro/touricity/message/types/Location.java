@@ -14,7 +14,7 @@ public class Location implements ILocation {
     private double longitude;
 
     public Location(String location_id, double latitude, double longitude) {
-        this.location_id = null;
+        this.location_id = location_id;
         this.latitude = latitude;
         this.longitude = longitude;
     }
