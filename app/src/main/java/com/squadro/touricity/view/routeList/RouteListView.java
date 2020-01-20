@@ -25,22 +25,12 @@ public class RouteListView extends PanelLayout {
     private void initializeRouteListView(Context context) {
         expandableListView = (ExpandableListView) findViewById(R.id.expandable_list_view);
 
-        expandableListView.setOnGroupClickListener((parent, v, groupPosition, id) -> {
-            parent.smoothScrollToPosition(groupPosition);
-            return false;
-        });
+        ExpandableListViewListeners listeners = new ExpandableListViewListeners(expandableListView);
 
-        expandableListView.setOnGroupExpandListener(groupPosition -> {
-
-        });
-
-        expandableListView.setOnGroupCollapseListener(groupPosition -> {
-
-        });
-
-        expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
-            return false;
-        });
+        expandableListView.setOnGroupClickListener(listeners.getOnGroupClickListener());
+        expandableListView.setOnGroupExpandListener(listeners.getOnGroupExpandListener());
+        expandableListView.setOnGroupCollapseListener(listeners.getOnGroupCollapseListener());
+        expandableListView.setOnChildClickListener(listeners.getOnChildClickListener());
 
         // preparing list data
         prepareListData();
@@ -73,6 +63,7 @@ public class RouteListView extends PanelLayout {
         childDataList.put(dataHeaderList.get(1), childList2);
         childDataList.put(dataHeaderList.get(2), childList3);
     }
+
     @Override
     protected int getID() {
         return R.layout.route_list;
