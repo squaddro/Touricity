@@ -25,6 +25,23 @@ public class RouteListView extends PanelLayout {
     private void initializeRouteListView(Context context) {
         expandableListView = (ExpandableListView) findViewById(R.id.expandable_list_view);
 
+        expandableListView.setOnGroupClickListener((parent, v, groupPosition, id) -> {
+            parent.smoothScrollToPosition(groupPosition);
+            return false;
+        });
+
+        expandableListView.setOnGroupExpandListener(groupPosition -> {
+
+        });
+
+        expandableListView.setOnGroupCollapseListener(groupPosition -> {
+
+        });
+
+        expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
+            return false;
+        });
+
         // preparing list data
         prepareListData();
 
