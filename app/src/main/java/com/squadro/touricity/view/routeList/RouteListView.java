@@ -25,7 +25,7 @@ public class RouteListView extends PanelLayout {
     private void initializeRouteListView(Context context) {
         expandableListView = (ExpandableListView) findViewById(R.id.expandable_list_view);
 
-        ExpandableListViewListeners listeners = new ExpandableListViewListeners(expandableListView);
+        ExpandableListViewListeners listeners = new ExpandableListViewListeners(context,expandableListView);
 
         expandableListView.setOnGroupClickListener(listeners.getOnGroupClickListener());
         expandableListView.setOnGroupExpandListener(listeners.getOnGroupExpandListener());
