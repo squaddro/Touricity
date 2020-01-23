@@ -12,11 +12,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squadro.touricity.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     SupportMapFragment supportMapFragment;
+
+    private static int mapLayoutId = 0;
+
+    private static int mapViewId = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,12 +27,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab1_map_view, container, false);
+        View rootView = inflater.inflate(mapViewId, container, false);
         if (supportMapFragment == null) {
             supportMapFragment = SupportMapFragment.newInstance();
             supportMapFragment.getMapAsync(this);
         }
-        getChildFragmentManager().beginTransaction().replace(R.id.map, supportMapFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(mapLayoutId, supportMapFragment).commit();
         return rootView;
     }
 
@@ -38,5 +41,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
+    }
+
+    public static void setIds(int mapViewId, int mapLayoutId) {
+        MapFragment.mapViewId = mapViewId;
+        MapFragment.mapLayoutId = mapLayoutId;
     }
 }
