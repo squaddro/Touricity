@@ -14,9 +14,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
 
     SupportMapFragment supportMapFragment;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,12 +25,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.map_view, container, false);
+        View rootView = inflater.inflate(R.layout.tab3_map_view, container, false);
         if (supportMapFragment == null) {
             supportMapFragment = SupportMapFragment.newInstance();
             supportMapFragment.getMapAsync(this);
         }
-        getChildFragmentManager().beginTransaction().replace(R.id.map, supportMapFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.tab3_map, supportMapFragment).commit();
+
         return rootView;
     }
 
@@ -39,4 +41,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
     }
+
 }
