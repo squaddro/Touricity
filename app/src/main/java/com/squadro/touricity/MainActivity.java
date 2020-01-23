@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.squadro.touricity.cookie.CookieMethods;
 import com.squadro.touricity.view.map.MapFragmentTab1;
@@ -37,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-
+        
         tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
         tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
-        tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab2_name));
+        tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
 
     }
 

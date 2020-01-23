@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
 
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
@@ -37,10 +40,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        addFilterSearchPanel();
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
     }
-
+    private void addFilterSearchPanel() {
+        LinearLayout linearLayout = getView().findViewById(R.id.filter_search);
+        TopSheetBehavior.from(linearLayout).setState(TopSheetBehavior.STATE_COLLAPSED);
+    }
 
 }

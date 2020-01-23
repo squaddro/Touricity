@@ -32,12 +32,13 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
         }
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
 
+
         return rootView;
-}
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng tobb = new LatLng(39.921260, 32.798165);
+        LatLng tobb = new LatLng(10, 10);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
     }
