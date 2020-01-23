@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        
+
         tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
         tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
         tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
