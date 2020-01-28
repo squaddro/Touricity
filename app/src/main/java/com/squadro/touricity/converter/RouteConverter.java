@@ -1,5 +1,6 @@
 package com.squadro.touricity.converter;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.squadro.touricity.converter.interfaces.IConverter;
@@ -7,7 +8,7 @@ import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.message.types.Vertex;
+import com.squadro.touricity.message.types.PathVertex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +32,11 @@ public class RouteConverter implements IConverter {
                 int duration = obj.get("duration").getAsInt();
                 int expense = obj.get("expense").getAsInt();
                 String comment = obj.get("comment").getAsString();
-                int path_type = obj.get("path_type").getAsInt();
-                String vertices = obj.get("vertices").getAsString();
-                List<Vertex> vertex_list = stringToVertexList(vertices);
+                String path_type = obj.get("path_type").getAsString();
+                JsonArray vertices = obj.get("vertices").getAsJsonArray();
+                List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
 
-                Path path = new Path(null, expense, duration, comment, path_id, path_type, vertex_list);
+                Path path = new Path(null, expense, duration, comment, path_id, path_type, pathVertex_list);
 
                 entries.add(path);
             }
@@ -100,16 +101,19 @@ public class RouteConverter implements IConverter {
         return json;
     }
 
-    public List<Vertex> stringToVertexList(String vertices){
+    public List<PathVertex> jsonArrayToVertexList(JsonArray vertices){
 
-        List<Vertex> vertex_list = new ArrayList<>();
+        List<PathVertex> pathVertex_list = new ArrayList<>();
 
-        //TODO: implement stringToVertexList
-
-        return vertex_list;
+        Gson gson= new Gson();
+        for(int i = 0;i<vertices.size();i++){
+            PathVertex pathVertex = gson.fromJson(vertices.get(i).toString(), PathVertex.class);
+            pathVertex_list.add(pathVertex);
+        }
+        return pathVertex_list;
     }
 
-    public String vertexListToString(List<Vertex> vertexList){
+    public String vertexListToString(List<PathVertex> pathVertexList){
 
         String vertex_str = "";
 
