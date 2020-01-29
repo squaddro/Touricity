@@ -6,8 +6,11 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 
+import lombok.Getter;
+
 public class AverageCostSeekBar {
 
+    @Getter
     private int averageCost = 0;
     private SeekBar seekBar = null;
     private TextView avgCostTextView = null;

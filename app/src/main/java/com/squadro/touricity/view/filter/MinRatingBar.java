@@ -6,8 +6,11 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 
+import lombok.Getter;
+
 public class MinRatingBar {
 
+    @Getter
     private RatingBar ratingBar = null;
     private TextView minRateTextView = null;
     private double minRate = 0.0;

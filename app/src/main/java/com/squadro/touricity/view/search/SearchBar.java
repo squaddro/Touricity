@@ -8,8 +8,11 @@ import android.widget.AutoCompleteTextView;
 
 import com.squadro.touricity.R;
 
+import lombok.Getter;
+
 public class SearchBar {
 
+    @Getter
     private String inputCity;
     private AutoCompleteTextView autoCompleteTextView = null;
     private ArrayAdapter<String> adapter = null;
