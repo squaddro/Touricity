@@ -10,6 +10,16 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="90dp"
     app:layout_behavior="com.squadro.touricity.topSheetBehavior.TopSheetBehavior">
-    
+
+    <AutoCompleteTextView
+        android:id="@+id/SearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Select a city"
+        android:completionThreshold="1"
+        android:completionHint="Select a city"
+        >
+
+    </AutoCompleteTextView>
 
 </LinearLayout>

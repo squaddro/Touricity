@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
+import com.squadro.touricity.view.filter_search.search.SearchBar;
 
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
@@ -43,6 +44,8 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
+
+        SearchBar searchBar = new SearchBar(getActivity(), getContext());
     }
 
     private void addFilterSearchPanel() {
