@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,15 +12,52 @@
     app:behavior_peekHeight="90dp"
     app:layout_behavior="com.squadro.touricity.topSheetBehavior.TopSheetBehavior">
 
-    <AutoCompleteTextView
-        android:id="@+id/SearchBar"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/minRateTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Select a city"
-        android:completionThreshold="1"
-        android:completionHint="Select a city"
-        >
+        android:layout_height="140dp">
 
-    </AutoCompleteTextView>
+        <RatingBar
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="0.1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.857"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.184"></RatingBar>
+
+        <AutoCompleteTextView
+            android:id="@+id/SearchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionHint="Select a city"
+            android:completionThreshold="1"
+            android:hint="Select a city"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.031">
+        </AutoCompleteTextView>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="105dp"
+            android:layout_height="18dp"
+            android:layout_marginBottom="16dp"
+            android:text="Minimum rate: "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.086"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.241" />
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
