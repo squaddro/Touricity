@@ -14,7 +14,7 @@
     <AutoCompleteTextView
         android:id="@+id/SearchBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:hint="Select a city"
         android:completionThreshold="1"
         android:completionHint="Select a city"
