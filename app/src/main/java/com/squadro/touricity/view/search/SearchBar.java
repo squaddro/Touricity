@@ -1,4 +1,4 @@
-package com.squadro.touricity.view.filter_search.search;
+package com.squadro.touricity.view.search;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,8 @@ import com.squadro.touricity.R;
 public class SearchBar {
 
     private String inputCity;
+    private AutoCompleteTextView autoCompleteTextView = null;
+    private ArrayAdapter<String> adapter = null;
 
     private static final String[] CITIES = {
       "Ankara", "Istanbul", "Izmir"
@@ -23,9 +25,9 @@ public class SearchBar {
 
     private void initializeAutoCompleteTextView(Activity activity, Context context) {
 
-        AutoCompleteTextView autoCompleteTextView = activity.findViewById(R.id.SearchBar);
+        autoCompleteTextView = activity.findViewById(R.id.SearchBar);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, CITIES);
+        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, CITIES);
         autoCompleteTextView.setAdapter(adapter);
         autoCompleteTextView.setOnItemClickListener(getOnItemClickListener());
     }
