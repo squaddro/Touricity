@@ -17,7 +17,7 @@ public class MinRatingBar {
 
     private void initializeRatingBar(Activity activity) {
 
-        ratingBar = activity.findViewById(R.id.minRateTextView);
+        ratingBar = activity.findViewById(R.id.minRatingBar);
         ratingBar.setOnRatingBarChangeListener(getOnRatingBarChangeListener());
     }
 

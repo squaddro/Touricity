@@ -13,11 +13,12 @@
     app:layout_behavior="com.squadro.touricity.topSheetBehavior.TopSheetBehavior">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/minRateTextView"
+        android:id="@+id/filterConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="140dp">
 
         <RatingBar
+            android:id="@+id/minRatingBar"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +30,9 @@
             app:layout_constraintHorizontal_bias="0.857"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/SearchBar"
-            app:layout_constraintVertical_bias="0.184"></RatingBar>
+            app:layout_constraintVertical_bias="0.184">
+
+        </RatingBar>
 
         <AutoCompleteTextView
             android:id="@+id/SearchBar"
@@ -47,7 +50,7 @@
         </AutoCompleteTextView>
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/minRateTextView"
             android:layout_width="105dp"
             android:layout_height="18dp"
             android:layout_marginBottom="16dp"
