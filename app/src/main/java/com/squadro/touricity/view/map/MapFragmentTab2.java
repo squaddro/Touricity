@@ -13,6 +13,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.requests.LocationRequests;
+import com.squadro.touricity.requests.StopRequests;
 
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
 
@@ -31,8 +33,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
             supportMapFragment.getMapAsync(this);
         }
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
-
-
+        new LocationRequests();
+        new StopRequests();
         return rootView;
     }
 
@@ -42,5 +44,4 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
     }
-
 }

@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class Vertex {
+public class PathVertex {
 
-    private float lat;
-    private float lon;
+    private double lat;
+    private double lon;
 }
