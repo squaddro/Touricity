@@ -145,6 +145,66 @@
             app:layout_constraintTop_toBottomOf="@+id/SearchBar"
             app:layout_constraintVertical_bias="0.44" />
 
+        <TextView
+            android:id="@+id/transportationTextView"
+            android:layout_width="104dp"
+            android:layout_height="21dp"
+            android:text="Transportation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.066"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.601" />
+
+        <CheckBox
+            android:id="@+id/walkCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="walk"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.514"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.606" />
+
+        <CheckBox
+            android:id="@+id/carCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="car"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.958"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.606" />
+
+        <CheckBox
+            android:id="@+id/busCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="bus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.514"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.735" />
+
+        <CheckBox
+            android:id="@+id/trainCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="train"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.962"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.735" />
+
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
