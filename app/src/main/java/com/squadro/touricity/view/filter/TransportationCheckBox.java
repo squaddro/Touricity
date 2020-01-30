@@ -24,18 +24,22 @@ public class TransportationCheckBox {
 
     private void initializeWalkCheckBox(Activity activity) {
         walkCheckBox = activity.findViewById(R.id.walkCheckBox);
+        walkCheckBox.setOnCheckedChangeListener(getWalkOnCheckedChangeListener());
     }
 
     private void initializeCarCheckBox(Activity activity) {
         carCheckBox = activity.findViewById(R.id.carCheckBox);
+        carCheckBox.setOnCheckedChangeListener(getCarOnCheckedChangeListener());
     }
 
     private void initializeBusCheckBox(Activity activity){
         busCheckBox = activity.findViewById(R.id.busCheckBox);
+        busCheckBox.setOnCheckedChangeListener(getBusOnCheckedChangeListener());
     }
 
     private void initializeTrainCheckBox(Activity activity){
         trainCheckBox = activity.findViewById(R.id.trainCheckBox);
+        busCheckBox.setOnCheckedChangeListener(getBusOnCheckedChangeListener());
     }
 
     private CompoundButton.OnCheckedChangeListener getWalkOnCheckedChangeListener(){
