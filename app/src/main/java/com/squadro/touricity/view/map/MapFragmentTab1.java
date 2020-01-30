@@ -15,6 +15,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
+import com.squadro.touricity.view.filter.AverageCostSeekBar;
+import com.squadro.touricity.view.filter.DurationSeekBar;
+import com.squadro.touricity.view.filter.Filter;
+import com.squadro.touricity.view.filter.MinRatingBar;
+import com.squadro.touricity.view.filter.TransportationCheckBox;
+import com.squadro.touricity.view.search.SearchBar;
 
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
@@ -43,6 +49,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
+
+        SearchBar searchBar = new SearchBar(getActivity(), getContext());
+        MinRatingBar minRatingBar = new MinRatingBar(getActivity());
+        AverageCostSeekBar averageCostSeekBar = new AverageCostSeekBar(getActivity());
+        DurationSeekBar durationSeekBar = new DurationSeekBar(getActivity());
+        TransportationCheckBox transportationCheckBox = new TransportationCheckBox(getActivity());
+        Filter filter = new Filter(getActivity(), searchBar, minRatingBar, averageCostSeekBar,
+                durationSeekBar, transportationCheckBox);
     }
 
     private void addFilterSearchPanel() {
