@@ -42,7 +42,7 @@ public class TransportationCheckBox {
 
     private void initializeTrainCheckBox(Activity activity){
         trainCheckBox = activity.findViewById(R.id.trainCheckBox);
-        busCheckBox.setOnCheckedChangeListener(getTrainOnCheckedChangeListener());
+        trainCheckBox.setOnCheckedChangeListener(getTrainOnCheckedChangeListener());
     }
 
     private CompoundButton.OnCheckedChangeListener getWalkOnCheckedChangeListener(){
