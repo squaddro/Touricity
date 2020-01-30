@@ -6,6 +6,8 @@ import android.widget.CompoundButton;
 
 import com.squadro.touricity.R;
 
+import lombok.Getter;
+
 public class TransportationCheckBox {
 
     private CheckBox walkCheckBox = null;
@@ -13,6 +15,7 @@ public class TransportationCheckBox {
     private CheckBox busCheckBox = null;
     private CheckBox trainCheckBox = null;
 
+    @Getter
     private int transportation = 0;
 
     public TransportationCheckBox(Activity activity){
@@ -39,7 +42,7 @@ public class TransportationCheckBox {
 
     private void initializeTrainCheckBox(Activity activity){
         trainCheckBox = activity.findViewById(R.id.trainCheckBox);
-        busCheckBox.setOnCheckedChangeListener(getBusOnCheckedChangeListener());
+        busCheckBox.setOnCheckedChangeListener(getTrainOnCheckedChangeListener());
     }
 
     private CompoundButton.OnCheckedChangeListener getWalkOnCheckedChangeListener(){
