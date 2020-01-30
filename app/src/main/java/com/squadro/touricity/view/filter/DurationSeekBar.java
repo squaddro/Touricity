@@ -6,28 +6,24 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 
-import lombok.Getter;
+public class DurationSeekBar {
 
-public class AverageCostSeekBar {
-
-    @Getter
-    private int averageCost = 0;
+    private int duration = 0;
     private SeekBar seekBar = null;
-    private TextView avgCostTextView = null;
+    private TextView durationTextView = null;
 
-    public AverageCostSeekBar(Activity activity){
+    public DurationSeekBar(Activity activity){
         initializeSeekBar(activity);
     }
 
     private void initializeSeekBar(Activity activity) {
-        seekBar = activity.findViewById(R.id.avgCostSeekBar);
-        avgCostTextView = activity.findViewById(R.id.avgCostValueTextView);
+        seekBar = activity.findViewById(R.id.durationSeekBar);
+        durationTextView = activity.findViewById(R.id.durationValueTextView);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                averageCost = i;
-                avgCostTextView.setText("" + averageCost);
+                duration = i;
+                durationTextView.setText("" + duration);
             }
 
             @Override

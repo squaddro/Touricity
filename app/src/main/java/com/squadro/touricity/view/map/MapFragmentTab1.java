@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
 import com.squadro.touricity.view.filter.AverageCostSeekBar;
+import com.squadro.touricity.view.filter.DurationSeekBar;
 import com.squadro.touricity.view.filter.MinRatingBar;
 import com.squadro.touricity.view.search.SearchBar;
 
@@ -50,6 +51,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         SearchBar searchBar = new SearchBar(getActivity(), getContext());
         MinRatingBar minRatingBar = new MinRatingBar(getActivity());
         AverageCostSeekBar averageCostSeekBar = new AverageCostSeekBar(getActivity());
+        DurationSeekBar durationSeekBar = new DurationSeekBar(getActivity());
     }
 
     private void addFilterSearchPanel() {
