@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,107 +12,211 @@
     app:behavior_peekHeight="90dp"
     app:layout_behavior="com.squadro.touricity.topSheetBehavior.TopSheetBehavior">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/filterConstraintLayout"
+        android:layout_width="345dp"
+        android:layout_height="311dp">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+        <RatingBar
+            android:id="@+id/minRatingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="21dp"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="0.1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.101">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        </RatingBar>
+
+        <AutoCompleteTextView
+            android:id="@+id/SearchBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:orientation="vertical">
+            android:completionHint="Select a city"
+            android:completionThreshold="1"
+            android:hint="Select a city"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.031">
+        </AutoCompleteTextView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Filter Search"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/minRateTextView"
+            android:layout_width="105dp"
+            android:layout_height="18dp"
+            android:layout_marginBottom="16dp"
+            android:text="Minimum rate: "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.074"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.108" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+        <SeekBar
+            android:id="@+id/avgCostSeekBar"
+            android:layout_width="132dp"
+            android:layout_height="27dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.577"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.282"
+            android:max="500"
+            android:progress="0"/>
 
-                <android.support.v7.widget.AppCompatRatingBar
-                    style="@style/Base.Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:rating="4" />
+        <SeekBar
+            android:id="@+id/durationSeekBar"
+            android:layout_width="132dp"
+            android:layout_height="27dp"
+            android:max="500"
+            android:progress="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.577"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.452" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4.7" />
+        <TextView
+            android:id="@+id/avgCostTextView"
+            android:layout_width="101dp"
+            android:layout_height="21dp"
+            android:text="Average cost: "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.073"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.276" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="(51)" />
+        <TextView
+            android:id="@+id/minRateValueTextView"
+            android:layout_width="63dp"
+            android:layout_height="22dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.808"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.102" />
 
-            </LinearLayout>
+        <TextView
+            android:id="@+id/avgCostValueTextView"
+            android:layout_width="66dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.942"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.278" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:background="#5d5d5d" />
+        <TextView
+            android:id="@+id/durationValueTextView"
+            android:layout_width="66dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.942"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.458" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="12 min away"
-                android:textColor="#5692F5" />
+        <TextView
+            android:id="@+id/durationTextView"
+            android:layout_width="73dp"
+            android:layout_height="21dp"
+            android:text="Duration: "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.066"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.44" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:background="#5d5d5d" />
+        <TextView
+            android:id="@+id/transportationTextView"
+            android:layout_width="104dp"
+            android:layout_height="21dp"
+            android:text="Transportation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.066"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.601" />
 
-        </LinearLayout>
+        <CheckBox
+            android:id="@+id/walkCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="walk"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.514"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.606" />
 
-    </LinearLayout>
+        <CheckBox
+            android:id="@+id/carCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="car"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.958"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.606" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:drawablePadding="16dp"
-        android:text="740 Valencia St, San Fracisco, CA" />
+        <CheckBox
+            android:id="@+id/busCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="bus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.514"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.735" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:drawablePadding="16dp"
-        android:text="(415) 349-0942" />
+        <CheckBox
+            android:id="@+id/trainCheckBox"
+            android:layout_width="106dp"
+            android:layout_height="23dp"
+            android:text="train"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.962"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.735" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:drawablePadding="16dp"
-        android:text="Wed, 10 AM - 9 PM" />
+        <Button
+            android:id="@+id/filterButton"
+            android:layout_width="204dp"
+            android:layout_height="41dp"
+            android:text="FILTER"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.617"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SearchBar"
+            app:layout_constraintVertical_bias="0.967" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#000"
-        android:text="PROCEED PAYMENT"
-        android:textColor="#fff" />
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
