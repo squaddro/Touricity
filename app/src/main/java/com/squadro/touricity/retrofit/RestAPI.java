@@ -13,4 +13,10 @@ public interface RestAPI {
 
     @POST("mock/path")
     Call<JsonObject> sendPathRequest(@Body JsonObject body);
+
+    @POST("mock/stop")
+    Call<JsonObject> sendStopRequest(@Body JsonObject body);
+
+    @POST("mock/location")
+    Call<JsonObject> sendlocationRequest(@Body JsonObject body);
 }
