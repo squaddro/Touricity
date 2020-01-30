@@ -54,12 +54,11 @@ public class PathConverter implements IConverter {
     }
 
     public JsonArray vertexListToJsonArray(List<PathVertex> pathVertexList) {
-
-        JsonArray vertexArr = null;
-
-        String json = new Gson().toJson(pathVertexList);
-        vertexArr.add(json);
-        return vertexArr;
+        JsonArray jsonArray = new JsonArray();
+        Gson gson = new Gson();
+        for (PathVertex pathVertex : pathVertexList) {
+            jsonArray.add(gson.toJson(pathVertex));
+        }
+        return jsonArray;
     }
-
 }

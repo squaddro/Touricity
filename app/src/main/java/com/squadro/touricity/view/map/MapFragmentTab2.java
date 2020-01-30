@@ -32,7 +32,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
         }
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
 
-
         return rootView;
     }
 
@@ -42,5 +41,4 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
     }
-
 }

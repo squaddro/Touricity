@@ -1,8 +1,8 @@
 package com.squadro.touricity.requests;
 
 import com.google.gson.JsonObject;
-import com.squadro.touricity.converter.RouteConverter;
-import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.converter.PathConverter;
+import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 
@@ -11,11 +11,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class RouteRequests {
+public class PathRequests {
 
-    public RouteRequests() {
+    public PathRequests() {
 
-        RouteConverter routeConverter = new RouteConverter();
+        PathConverter pathConverter = new PathConverter();
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
         Retrofit retrofit = retrofitCreate.createRetrofit();
@@ -23,12 +23,12 @@ public class RouteRequests {
 
         JsonObject obj = new JsonObject();
 
-        Call<JsonObject> jsonObjectCall = restAPI.sendRouteRequest(obj);
+        Call<JsonObject> jsonObjectCall = restAPI.sendPathRequest(obj);
 
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Route route = (Route) routeConverter.jsonToObject(response.body());
+                Path path = (Path) pathConverter.jsonToObject(response.body());
             }
 
             @Override

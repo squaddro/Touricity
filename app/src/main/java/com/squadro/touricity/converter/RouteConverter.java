@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import com.squadro.touricity.converter.interfaces.IConverter;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Path;
+import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.message.types.PathVertex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,11 @@ public class RouteConverter implements IConverter {
         String creator = json.get("creator").getAsString();
         JsonArray entry_list = json.get("entries").getAsJsonArray();
 
-        for(int i = 0 ; i < entry_list.size() ; i++){
+        for (int i = 0; i < entry_list.size(); i++) {
 
             JsonObject obj = entry_list.get(i).getAsJsonObject();
 
-            if(obj.has("path_id")){ //entry is a path.
+            if (obj.has("path_id")) { //entry is a path.
 
                 String path_id = obj.get("path_id").getAsString();
                 int duration = obj.get("duration").getAsInt();
@@ -39,8 +39,7 @@ public class RouteConverter implements IConverter {
                 Path path = new Path(null, expense, duration, comment, path_id, path_type, pathVertex_list);
 
                 entries.add(path);
-            }
-            else{ //entry is a stop.
+            } else { //entry is a stop.
 
                 String stop_id = obj.get("stop_id").getAsString();
                 int duration = obj.get("duration").getAsInt();
@@ -67,7 +66,7 @@ public class RouteConverter implements IConverter {
         JsonArray entry_list = new JsonArray();
         ArrayList<AbstractEntry> entries = route.getAbstractEntryList();
 
-        for(int i = 0 ; i < entries.size() ; i++){
+        for (int i = 0; i < entries.size(); i++) {
 
             AbstractEntry entry = entries.get(i);
             JsonObject obj = new JsonObject();
@@ -76,18 +75,16 @@ public class RouteConverter implements IConverter {
             obj.addProperty("expense", entry.getExpense());
             obj.addProperty("comment", entry.getComment());
 
-            if(entry instanceof Path){ //entry is a path.
+            if (entry instanceof Path) { //entry is a path.
 
                 Path path = (Path) entry;
 
-                String vertex_str = vertexListToString(path.getVertices());
+                JsonArray vertexArr = vertexListToJsonArray(path.getVertices());
 
                 obj.addProperty("path_id", path.getPath_id());
                 obj.addProperty("path_type", path.getPath_type());
-                obj.addProperty("vertices", vertex_str);
-            }
-
-            else if(entry instanceof Stop){ //entry is a stop.
+                obj.add("vertices", vertexArr);
+            } else if (entry instanceof Stop) { //entry is a stop.
 
                 Stop stop = (Stop) entry;
 
@@ -101,25 +98,24 @@ public class RouteConverter implements IConverter {
         return json;
     }
 
-    public List<PathVertex> jsonArrayToVertexList(JsonArray vertices){
+    public List<PathVertex> jsonArrayToVertexList(JsonArray vertices) {
 
         List<PathVertex> pathVertex_list = new ArrayList<>();
 
-        Gson gson= new Gson();
-        for(int i = 0;i<vertices.size();i++){
+        Gson gson = new Gson();
+        for (int i = 0; i < vertices.size(); i++) {
             PathVertex pathVertex = gson.fromJson(vertices.get(i).toString(), PathVertex.class);
             pathVertex_list.add(pathVertex);
         }
         return pathVertex_list;
     }
 
-    public String vertexListToString(List<PathVertex> pathVertexList){
-
-        String vertex_str = "";
-
-        //TODO: implement vertexListToString
-
-        return vertex_str;
+    public JsonArray vertexListToJsonArray(List<PathVertex> pathVertexList) {
+        JsonArray jsonArray = new JsonArray();
+        Gson gson = new Gson();
+        for (PathVertex pathVertex : pathVertexList) {
+            jsonArray.add(gson.toJson(pathVertex));
+        }
+        return jsonArray;
     }
-
 }
