@@ -18,6 +18,7 @@ import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
 import com.squadro.touricity.view.filter.AverageCostSeekBar;
 import com.squadro.touricity.view.filter.DurationSeekBar;
 import com.squadro.touricity.view.filter.MinRatingBar;
+import com.squadro.touricity.view.filter.TransportationCheckBox;
 import com.squadro.touricity.view.search.SearchBar;
 
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
@@ -52,6 +53,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         MinRatingBar minRatingBar = new MinRatingBar(getActivity());
         AverageCostSeekBar averageCostSeekBar = new AverageCostSeekBar(getActivity());
         DurationSeekBar durationSeekBar = new DurationSeekBar(getActivity());
+        TransportationCheckBox transportationCheckBox = new TransportationCheckBox(getActivity());
     }
 
     private void addFilterSearchPanel() {
