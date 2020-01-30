@@ -10,10 +10,11 @@ import lombok.Getter;
 
 public class AverageCostSeekBar {
 
-    @Getter
-    private int averageCost = 0;
     private SeekBar seekBar = null;
     private TextView avgCostTextView = null;
+    @Getter
+    private int averageCost = 0;
+
 
     public AverageCostSeekBar(Activity activity){
         initializeSeekBar(activity);

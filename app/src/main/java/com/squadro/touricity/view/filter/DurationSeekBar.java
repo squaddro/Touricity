@@ -6,11 +6,15 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 
+import lombok.Getter;
+
 public class DurationSeekBar {
 
-    private int duration = 0;
     private SeekBar seekBar = null;
     private TextView durationTextView = null;
+    @Getter
+    private int duration = 0;
+
 
     public DurationSeekBar(Activity activity){
         initializeSeekBar(activity);
