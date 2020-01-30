@@ -10,9 +10,9 @@ import lombok.Getter;
 
 public class MinRatingBar {
 
-    @Getter
     private RatingBar ratingBar = null;
     private TextView minRateTextView = null;
+    @Getter
     private double minRate = 0.0;
 
     public MinRatingBar(Activity activity){
