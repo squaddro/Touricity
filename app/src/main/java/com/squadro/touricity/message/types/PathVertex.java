@@ -11,4 +11,9 @@ public class PathVertex {
 
     private double lat;
     private double lon;
+
+    public PathVertex(double lat, double lon){
+        this.lat = lat;
+        this.lon = lon;
+    }
 }
