@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="#E6E6E6"
+    card_view:cardBackgroundColor="#D6D6E6"
     card_view:cardCornerRadius="20dp"
     card_view:cardElevation="8dp"
     android:layout_margin="10dp">
@@ -37,6 +37,12 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/path_view_move_up_button"
                 android:text="\u02C5" />
+            <Button
+                android:id="@+id/path_view_edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/path_view_move_down_button"
+                android:text="edit" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

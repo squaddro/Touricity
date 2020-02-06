@@ -1,7 +1,10 @@
 package com.squadro.touricity.view.map;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
@@ -20,13 +24,15 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.StopRequests;
 import com.squadro.touricity.view.routeList.RouteCreateView;
+import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
 import java.util.ArrayList;
 
-public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
+public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater {
 
     SupportMapFragment supportMapFragment;
     RouteCreateView routeCreateView;
+    GoogleMap map;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +51,18 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
         return rootView;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
         LatLng tobb = new LatLng(10, 10);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
 
         routeCreateView = getActivity().findViewById(R.id.route_create);
         routeCreateView.setRoute(initialialRoute());
+        routeCreateView.setRouteMapViewUpdater(this);
     }
 
     private Route initialialRoute(){
@@ -138,5 +148,21 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback {
         ));
 
         return route;
+    }
+
+    @Override
+    public void updateRoute(Route route) {
+        Log.d("fmap", "Update the route ");
+    }
+
+    @Override
+    public void highlight(AbstractEntry entry) {
+        Log.d("fmap", "highligt the entry " + entry.getComment());
+    }
+
+    @Override
+    public void focus(AbstractEntry entry) {
+        Log.d("fmap" ,"focus to the entry " + entry.getComment());
+
     }
 }

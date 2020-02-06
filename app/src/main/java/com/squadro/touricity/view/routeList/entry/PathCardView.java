@@ -60,6 +60,11 @@ public class PathCardView extends RouteListItem<Path> {
     }
 
     @Override
+    protected int getEditButtonId() {
+        return R.id.path_view_edit_button;
+    }
+
+    @Override
     public Path getEntry() {
         return path;
     }

@@ -56,7 +56,12 @@ public class StopCardView extends RouteListItem<Stop> {
 
     @Override
     protected int getMoveDownButtonId() {
-        return R.id.stop_view_move_up_button;
+        return R.id.stop_view_move_down_button;
+    }
+
+    @Override
+    protected int getEditButtonId() {
+        return R.id.stop_view_edit_button;
     }
 
     @Override
