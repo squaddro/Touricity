@@ -1,6 +1,7 @@
 package com.squadro.touricity.view.map;
 
 import android.graphics.Rect;
+import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -36,24 +37,33 @@ public class MapLongClickListener {
             }
 
             LinearLayout popupLayout = (LinearLayout) frameLayout.inflate(frameLayout.getContext(), R.layout.popup_window, null);
-            
+
             /*This constructor simply adds buttons to popup window. Takes, number of buttons, names of buttons as list and
             * popup window layout as a parameter.
             *  */
+
+            int numberOfButtons = 3;
             List<String> names = new ArrayList<String>();
             names.add("Button 1");
             names.add("Button 2");
             names.add("Button 3");
-
-            PopupWindowView popupWindowView = new PopupWindowView(3, names, popupLayout);
+            
+            PopupWindowView popupWindowView = new PopupWindowView(numberOfButtons, names, popupLayout);
 
             popupWindow = new PopupWindow(popupWindowView.getLinearLayout(), LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            int yPosition = (int) y - (frameLayout.getRootView().getBottom() - frameLayout.getBottom()) + popupWindowView.getHeight();
+            System.out.println((int)y);
 
-            popupWindow.showAsDropDown(frameLayout, (int) x, yPosition);
+            int xPosition = (int) x - popupWindowView.getWidth();
+            int yPosition = frameLayout.getRootView().getBottom() - ((int) y) - (int)(((double)numberOfButtons/2.0)*(popupWindowView.getHeight()));
 
+            if(yPosition  < frameLayout.getRootView().getBottom() - frameLayout.getBottom()){
+                yPosition += frameLayout.getRootView().getBottom() - frameLayout.getBottom() - yPosition ;
+            }
+            System.out.println(yPosition);
+
+            popupWindow.showAtLocation(frameLayout,Gravity.BOTTOM | Gravity.LEFT,xPosition,yPosition);
         });
     }
 
