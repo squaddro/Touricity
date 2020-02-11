@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,6 +36,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
     SupportMapFragment supportMapFragment;
     RouteExploreView routeExploreView;
+    MapLongClickListener mapLongClickListener;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,13 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 durationSeekBar, transportationCheckBox);
         routeExploreView = getActivity().findViewById(R.id.route_explore);
         routeExploreView.setRouteList(exampleRouteList());
+
+        FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab1_map);
+        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout);
+    }
+
+    public MapLongClickListener getMapLongClickListener() {
+        return mapLongClickListener;
     }
 
     private ArrayList<Route> exampleRouteList(){

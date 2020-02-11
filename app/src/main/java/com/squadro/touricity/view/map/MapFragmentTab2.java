@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater {
 
     SupportMapFragment supportMapFragment;
+    MapLongClickListener mapLongClickListener;
     RouteCreateView routeCreateView;
     GoogleMap map;
 
@@ -46,8 +48,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             supportMapFragment.getMapAsync(this);
         }
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
-        new LocationRequests();
-        new StopRequests();
         return rootView;
     }
 
@@ -63,6 +63,12 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         routeCreateView = getActivity().findViewById(R.id.route_create);
         routeCreateView.setRoute(initialialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
+        FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab2_map);
+        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout);
+    }
+
+    public MapLongClickListener getMapLongClickListener() {
+        return mapLongClickListener;
     }
 
     private Route initialialRoute(){

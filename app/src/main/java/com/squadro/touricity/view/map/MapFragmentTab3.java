@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +19,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
 
     SupportMapFragment supportMapFragment;
 
+    static MapLongClickListener mapLongClickListener;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
+        FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab3_map);
+        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout);
     }
 
+    public MapLongClickListener getMapLongClickListener() {
+        return mapLongClickListener;
+    }
 }
