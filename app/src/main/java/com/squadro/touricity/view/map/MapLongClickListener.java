@@ -1,8 +1,18 @@
 package com.squadro.touricity.view.map;
 
+import android.graphics.Rect;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.squadro.touricity.R;
+import com.squadro.touricity.view.popupWindowView.PopupWindowView;
+
+import java.util.ArrayList;
 
 public class MapLongClickListener {
 
@@ -11,7 +21,7 @@ public class MapLongClickListener {
 
     private double x;
     private double y;
-
+    PopupWindow popupWindow;
     public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout) {
         this.googleMap = googleMap;
         this.frameLayout = frameLayout;
@@ -20,9 +30,26 @@ public class MapLongClickListener {
 
     private void initializeListener() {
         googleMap.setOnMapLongClickListener(latLng -> {
-            System.out.println(frameLayout.getId());
-            System.out.println("xxxxxxxxxxxxx " + x);
-            System.out.println("xxxxxxxxxxxxx " + y);
+            Rect rect = new Rect();
+            frameLayout.getLocalVisibleRect(rect);
+
+            if(popupWindow != null){
+                popupWindow.dismiss();
+                popupWindow = null;
+            }
+            LinearLayout popupLayout = (LinearLayout)frameLayout.inflate(frameLayout.getContext(), R.layout.popup_window, null);
+
+            ArrayList<String> stringArrayList = new ArrayList<String>();
+            stringArrayList.add("Add location");
+            stringArrayList.add("Add some");
+            stringArrayList.add("Add more");
+
+            PopupWindowView popupWindowView = new PopupWindowView(3,stringArrayList,popupLayout);
+
+            popupWindow = new PopupWindow(popupWindowView.getLinearLayout(), LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            popupWindow.showAsDropDown(frameLayout,(int)x,(int)y - (frameLayout.getRootView().getBottom() - frameLayout.getBottom()));
+
         });
     }
 
@@ -32,5 +59,12 @@ public class MapLongClickListener {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public void dissmissPopUp() {
+        if(popupWindow != null){
+            popupWindow.dismiss();
+            popupWindow = null;
+        }
     }
 }

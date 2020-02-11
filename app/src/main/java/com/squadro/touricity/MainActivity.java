@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 if(mapLongClickListener != null){
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
                 }
             }
             if (fragment2 != null) {
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 if(mapLongClickListener != null){
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
                 }
             }
             if (fragment3 != null) {
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 if(mapLongClickListener != null){
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
                 }
             }
         }
