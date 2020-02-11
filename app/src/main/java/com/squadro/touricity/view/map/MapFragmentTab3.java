@@ -1,6 +1,8 @@
 package com.squadro.touricity.view.map;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,8 +44,29 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
-        FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab3_map);
-        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout,0);
+        FrameLayout frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_explore));
+
+        initBottomSheetCallback(bottomSheetBehavior);
+        mapLongClickListener = new MapLongClickListener(googleMap, frameLayout, 0, bottomSheetBehavior.getPeekHeight());
+    }
+
+    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior) {
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                if (i == 3) {
+                    mapLongClickListener.setBottomPeekHeight(view.getHeight());
+                } else if (i == 4) {
+                    mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
     }
 
     public MapLongClickListener getMapLongClickListener() {

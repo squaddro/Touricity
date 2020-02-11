@@ -17,17 +17,19 @@ public class MapLongClickListener {
 
     private final GoogleMap googleMap;
     private final FrameLayout frameLayout;
-    private int peekHeight;
+    private int topPeekHeight;
+    private int bottomPeekHeight;
 
     private double x;
     private double y;
 
     private PopupWindow popupWindow;
 
-    public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout,int peekHeight) {
+    public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout, int topPeekHeight, int bottomPeekHeight) {
         this.googleMap = googleMap;
         this.frameLayout = frameLayout;
-        this.peekHeight = peekHeight;
+        this.topPeekHeight = topPeekHeight;
+        this.bottomPeekHeight = bottomPeekHeight;
         initializeListener();
     }
 
@@ -46,7 +48,7 @@ public class MapLongClickListener {
                 return;
             }
 
-            if((int)y < rect.top + peekHeight ){
+            if ((int) y < rect.top + topPeekHeight || frameLayout.getRootView().getBottom() - ((int) y) < bottomPeekHeight) {
                 return;
             }
             LinearLayout popupLayout = (LinearLayout) frameLayout.inflate(frameLayout.getContext(), R.layout.popup_window, null);
@@ -84,9 +86,14 @@ public class MapLongClickListener {
         this.y = y;
     }
 
-    public void setPeekHeight(int peekHeight){
-        this.peekHeight = peekHeight;
+    public void setTopPeekHeight(int topPeekHeight) {
+        this.topPeekHeight = topPeekHeight;
     }
+
+    public void setBottomPeekHeight(int bottomPeekHeight) {
+        this.bottomPeekHeight = bottomPeekHeight;
+    }
+
     public void dissmissPopUp() {
         if (popupWindow != null) {
             popupWindow.dismiss();
