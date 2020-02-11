@@ -64,7 +64,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         routeCreateView.setRoute(initialialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
         FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab2_map);
-        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout);
+        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout,0);
     }
 
     public MapLongClickListener getMapLongClickListener() {

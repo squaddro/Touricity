@@ -17,14 +17,17 @@ public class MapLongClickListener {
 
     private final GoogleMap googleMap;
     private final FrameLayout frameLayout;
+    private int peekHeight;
 
     private double x;
     private double y;
-    PopupWindow popupWindow;
 
-    public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout) {
+    private PopupWindow popupWindow;
+
+    public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout,int peekHeight) {
         this.googleMap = googleMap;
         this.frameLayout = frameLayout;
+        this.peekHeight = peekHeight;
         initializeListener();
     }
 
@@ -36,34 +39,40 @@ public class MapLongClickListener {
                 popupWindow = null;
             }
 
+            Rect rect = new Rect();
+
+            frameLayout.getGlobalVisibleRect(rect);
+            if (frameLayout.getRootView().getBottom() - ((int) y) < frameLayout.getRootView().getBottom() - frameLayout.getBottom()) {
+                return;
+            }
+
+            if((int)y < rect.top + peekHeight ){
+                return;
+            }
             LinearLayout popupLayout = (LinearLayout) frameLayout.inflate(frameLayout.getContext(), R.layout.popup_window, null);
 
             /*This constructor simply adds buttons to popup window. Takes, number of buttons, names of buttons as list and
-            * popup window layout as a parameter.
-            *  */
+             * popup window layout as a parameter.
+             *  */
 
-            int numberOfButtons = 3;
+            int numberOfButtons = 2;
             List<String> names = new ArrayList<String>();
             names.add("Button 1");
             names.add("Button 2");
-            names.add("Button 3");
-            
+
             PopupWindowView popupWindowView = new PopupWindowView(numberOfButtons, names, popupLayout);
 
             popupWindow = new PopupWindow(popupWindowView.getLinearLayout(), LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            System.out.println((int)y);
-
             int xPosition = (int) x - popupWindowView.getWidth();
-            int yPosition = frameLayout.getRootView().getBottom() - ((int) y) - (int)(((double)numberOfButtons/2.0)*(popupWindowView.getHeight()));
+            int yPosition = frameLayout.getRootView().getBottom() - ((int) y) - (int) (((double) numberOfButtons / 2.0) * (popupWindowView.getHeight()));
 
-            if(yPosition  < frameLayout.getRootView().getBottom() - frameLayout.getBottom()){
-                yPosition += frameLayout.getRootView().getBottom() - frameLayout.getBottom() - yPosition ;
+            if (yPosition < frameLayout.getRootView().getBottom() - frameLayout.getBottom()) {
+                yPosition += frameLayout.getRootView().getBottom() - frameLayout.getBottom() - yPosition;
             }
-            System.out.println(yPosition);
 
-            popupWindow.showAtLocation(frameLayout,Gravity.BOTTOM | Gravity.LEFT,xPosition,yPosition);
+            popupWindow.showAtLocation(frameLayout, Gravity.BOTTOM | Gravity.LEFT, xPosition, yPosition);
         });
     }
 
@@ -75,6 +84,9 @@ public class MapLongClickListener {
         this.y = y;
     }
 
+    public void setPeekHeight(int peekHeight){
+        this.peekHeight = peekHeight;
+    }
     public void dissmissPopUp() {
         if (popupWindow != null) {
             popupWindow.dismiss();

@@ -2,7 +2,11 @@ package com.squadro.touricity.view.map;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,8 +76,28 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         routeExploreView = getActivity().findViewById(R.id.route_explore);
         routeExploreView.setRouteList(exampleRouteList());
 
+        TopSheetBehavior topSheetBehavior = TopSheetBehavior.from(getActivity().findViewById(R.id.filter_search));
+        initTopSheetCallback(topSheetBehavior);
+
         FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab1_map);
-        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout);
+        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout,topSheetBehavior.getPeekHeight());
+    }
+
+    private void initTopSheetCallback(TopSheetBehavior topSheetBehavior) {
+        topSheetBehavior.setTopSheetCallback(new TopSheetBehavior.TopSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if(newState == 3){
+                    mapLongClickListener.setPeekHeight(bottomSheet.getHeight());
+                }else if(newState == 4){
+                    mapLongClickListener.setPeekHeight(topSheetBehavior.getPeekHeight());
+                }
+            }
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset, @Nullable Boolean isOpening) {
+
+            }
+        });
     }
 
     public MapLongClickListener getMapLongClickListener() {

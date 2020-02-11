@@ -43,7 +43,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
         FrameLayout frameLayout = (FrameLayout)getActivity().findViewById(R.id.tab3_map);
-        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout);
+        mapLongClickListener = new MapLongClickListener(googleMap,frameLayout,0);
     }
 
     public MapLongClickListener getMapLongClickListener() {
