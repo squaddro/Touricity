@@ -42,6 +42,10 @@ public class PopupWindowView {
         return WIDTH;
     }
 
+    public int getHeight() {
+        return HEIGHT;
+    }
+
     public int getTotalHeight() {
         return totalHeight;
     }
