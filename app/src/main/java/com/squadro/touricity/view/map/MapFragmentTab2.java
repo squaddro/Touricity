@@ -2,12 +2,15 @@ package com.squadro.touricity.view.map;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,8 +24,6 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.requests.LocationRequests;
-import com.squadro.touricity.requests.StopRequests;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater {
 
     SupportMapFragment supportMapFragment;
+    MapLongClickListener mapLongClickListener;
     RouteCreateView routeCreateView;
     GoogleMap map;
 
@@ -46,8 +48,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             supportMapFragment.getMapAsync(this);
         }
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
-        new LocationRequests();
-        new StopRequests();
         return rootView;
     }
 
@@ -63,9 +63,38 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         routeCreateView = getActivity().findViewById(R.id.route_create);
         routeCreateView.setRoute(initialialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
+        FrameLayout frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
+
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
+        initBottomSheetCallback(bottomSheetBehavior);
+
+        mapLongClickListener = new MapLongClickListener(googleMap, frameLayout, 0, bottomSheetBehavior.getPeekHeight());
     }
 
-    private Route initialialRoute(){
+    public MapLongClickListener getMapLongClickListener() {
+        return mapLongClickListener;
+    }
+
+    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior) {
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                if (i == 3) {
+                    mapLongClickListener.setBottomPeekHeight(view.getHeight());
+                } else if (i == 4) {
+                    mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+    }
+
+
+    private Route initialialRoute() {
         Route route = new Route();
         route.setCreator("id_creator_1");
         route.setRoute_id("id_route_id_2");
@@ -162,7 +191,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     @Override
     public void focus(AbstractEntry entry) {
-        Log.d("fmap" ,"focus to the entry " + entry.getComment());
+        Log.d("fmap", "focus to the entry " + entry.getComment());
 
     }
 }

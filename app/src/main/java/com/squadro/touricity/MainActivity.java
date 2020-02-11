@@ -6,12 +6,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.view.MotionEvent;
 
 import com.squadro.touricity.cookie.CookieMethods;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.MapLongClickListener;
 import com.squadro.touricity.view.tabView.FragmentAdapter;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static Context context;
     private List<Fragment> fragments;
+    MapFragmentTab1 fragment;
+    MapFragmentTab2 fragment2;
+    MapFragmentTab3 fragment3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +50,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeFragments() {
-        MapFragmentTab1 fragment = new MapFragmentTab1();
+        fragment = new MapFragmentTab1();
         fragments.add(fragment);
 
-        MapFragmentTab2 fragment2 = new MapFragmentTab2();
+        fragment2 = new MapFragmentTab2();
         fragments.add(fragment2);
 
-        MapFragmentTab3 fragment3 = new MapFragmentTab3();
+        fragment3 = new MapFragmentTab3();
         fragments.add(fragment3);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            double x = ev.getX();
+            double y = ev.getY();
+
+            if (fragment != null) {
+                MapLongClickListener mapLongClickListener = fragment.getMapLongClickListener();
+                if(mapLongClickListener != null){
+                    mapLongClickListener.setX(x);
+                    mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
+                }
+            }
+            if (fragment2 != null) {
+                MapLongClickListener mapLongClickListener = fragment2.getMapLongClickListener();
+                if(mapLongClickListener != null){
+                    mapLongClickListener.setX(x);
+                    mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
+                }
+            }
+            if (fragment3 != null) {
+                MapLongClickListener mapLongClickListener = fragment3.getMapLongClickListener();
+                if(mapLongClickListener != null){
+                    mapLongClickListener.setX(x);
+                    mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override

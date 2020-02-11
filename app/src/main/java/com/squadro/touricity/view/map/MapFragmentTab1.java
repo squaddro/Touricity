@@ -2,11 +2,15 @@ package com.squadro.touricity.view.map;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,6 +39,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
     SupportMapFragment supportMapFragment;
     RouteExploreView routeExploreView;
+    MapLongClickListener mapLongClickListener;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,9 +74,59 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 durationSeekBar, transportationCheckBox);
         routeExploreView = getActivity().findViewById(R.id.route_explore);
         routeExploreView.setRouteList(exampleRouteList());
+
+        TopSheetBehavior topSheetBehavior = TopSheetBehavior.from(getActivity().findViewById(R.id.filter_search));
+        initTopSheetCallback(topSheetBehavior);
+
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_explore));
+        initBottomSheetCallback(bottomSheetBehavior);
+
+        FrameLayout frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab1_map);
+        mapLongClickListener = new MapLongClickListener(googleMap, frameLayout,
+                topSheetBehavior.getPeekHeight(), bottomSheetBehavior.getPeekHeight());
     }
 
-    private ArrayList<Route> exampleRouteList(){
+    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior) {
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                if (i == 3) { //expanded
+                    mapLongClickListener.setBottomPeekHeight(view.getHeight());
+                } else if (i == 4) { //collapsed
+                    mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+    }
+
+    private void initTopSheetCallback(TopSheetBehavior topSheetBehavior) {
+        topSheetBehavior.setTopSheetCallback(new TopSheetBehavior.TopSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == 3) {
+                    mapLongClickListener.setTopPeekHeight(bottomSheet.getHeight());
+                } else if (newState == 4) {
+                    mapLongClickListener.setTopPeekHeight(topSheetBehavior.getPeekHeight());
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset, @Nullable Boolean isOpening) {
+
+            }
+        });
+    }
+
+    public MapLongClickListener getMapLongClickListener() {
+        return mapLongClickListener;
+    }
+
+    private ArrayList<Route> exampleRouteList() {
         ArrayList<Route> routes = new ArrayList<Route>();
         Route route = new Route();
         route.setCreator("id_creator_1");
@@ -208,6 +263,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         routes.add(route2);
         return routes;
     }
+
     private void addFilterSearchPanel() {
         LinearLayout linearLayout = getView().findViewById(R.id.filter_search);
         TopSheetBehavior.from(linearLayout).setState(TopSheetBehavior.STATE_COLLAPSED);
