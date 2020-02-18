@@ -67,12 +67,44 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab1_map);
 
         LatLng tobb = new LatLng(39.921260, 32.798165);
+        LatLng somewhere = new LatLng(36.921210, 31.798120);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
 
         createFilterView();
         createRouteExploreView();
         initializeSheetBehaviors();
+
+
+        //This is how we draw a path between 2 points.
+        String url = getDirectionsURL(tobb, somewhere);
+        FetchUrl FetchUrl = new FetchUrl(map);
+        FetchUrl.execute(url);
+
+    }
+
+    private String getDirectionsURL(LatLng origin, LatLng dest) {
+
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+
+        return url;
     }
 
     private void initializeSheetBehaviors() {
