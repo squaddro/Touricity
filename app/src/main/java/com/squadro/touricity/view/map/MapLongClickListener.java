@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.R;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.popupWindowView.PopupWindowView;
@@ -25,6 +26,7 @@ public class MapLongClickListener {
     private PopupWindowParameters popupWindowParameters;
     private PopupWindowView popupWindowView;
     private PopupWindow popupWindow;
+    private LatLng latLng;
 
     public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout, int topPeekHeight, int bottomPeekHeight, PopupWindowParameters popupWindowParameters) {
         this.googleMap = googleMap;
@@ -36,6 +38,9 @@ public class MapLongClickListener {
     }
 
     private void initializeListener() {
+        LinearLayout popupLayout = (LinearLayout) frameLayout.inflate(frameLayout.getContext(), R.layout.popup_window, null);
+        popupWindowView = new PopupWindowView(popupWindowParameters, popupLayout);
+
         googleMap.setOnMapLongClickListener(latLng -> {
 
             if (popupWindow != null) {
@@ -53,9 +58,6 @@ public class MapLongClickListener {
             if ((int) y <= rect.top + topPeekHeight || frameLayout.getRootView().getBottom() - ((int) y) <= bottomPeekHeight) {
                 return;
             }
-            LinearLayout popupLayout = (LinearLayout) frameLayout.inflate(frameLayout.getContext(), R.layout.popup_window, null);
-
-            popupWindowView = new PopupWindowView(popupWindowParameters, popupLayout);
 
             popupWindow = new PopupWindow(popupWindowView.getLinearLayout(), LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -68,6 +70,7 @@ public class MapLongClickListener {
             }
 
             popupWindow.showAtLocation(frameLayout, Gravity.BOTTOM | Gravity.LEFT, xPosition, yPosition);
+            this.latLng = latLng;
         });
     }
 
@@ -94,7 +97,11 @@ public class MapLongClickListener {
         }
     }
 
-    public List<Button> getButtons(){
+    public List<Button> getButtons() {
         return popupWindowView.getButtons();
+    }
+
+    public LatLng getLatLng(){
+        return latLng;
     }
 }

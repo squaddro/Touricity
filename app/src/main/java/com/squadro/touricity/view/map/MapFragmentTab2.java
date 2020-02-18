@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
+import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
@@ -81,6 +82,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         return mapLongClickListener;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initializeSheetBehaviors() {
         bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
         int numberOfButtons = 1;
@@ -92,10 +94,14 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void createButtonListeners(List<Button> buttons) {
         Button button = buttons.get(0);
         button.setOnClickListener(v -> {
-            
+            LatLng latLng = mapLongClickListener.getLatLng();
+            Location location = new Location("sample_id",latLng.latitude,latLng.longitude);
+            routeCreateView.onInsertLocation(location);
+            mapLongClickListener.dissmissPopUp();
         });
     }
 
