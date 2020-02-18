@@ -15,7 +15,7 @@ public class Path extends AbstractEntry implements IPath {
     private String path_type;
     private List<PathVertex> vertices;
 
-    public Path(String entry_id, double expense, double duration, String comment, String path_id,
+    public Path(String entry_id, int expense, int duration, String comment, String path_id,
                 String path_type, List<PathVertex> vertices) {
         super(entry_id, expense, duration, comment);
         this.path_id = path_id;

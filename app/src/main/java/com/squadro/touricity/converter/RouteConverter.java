@@ -9,6 +9,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class RouteConverter implements IConverter {
                 entries.add(stop);
             }
         }
-        return new Route(route_id, creator, entries);
+        return new Route(route_id, creator, (IEntry[]) entries.toArray(), "ank", "title1", 0);
     }
 
     public JsonObject objectToJson(Object object) {
@@ -64,11 +65,11 @@ public class RouteConverter implements IConverter {
         json.addProperty("creator", route.getCreator());
 
         JsonArray entry_list = new JsonArray();
-        ArrayList<AbstractEntry> entries = route.getAbstractEntryList();
+        List<IEntry> entries = route.getAbstractEntryList();
 
         for (int i = 0; i < entries.size(); i++) {
 
-            AbstractEntry entry = entries.get(i);
+            IEntry entry = entries.get(i);
             JsonObject obj = new JsonObject();
 
             obj.addProperty("duration", entry.getDuration());
