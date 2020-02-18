@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.squadro.touricity.cookie.CookieMethods;
 import com.squadro.touricity.view.map.MapFragmentTab1;
@@ -29,25 +31,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         context = getApplicationContext();
         setContentView(R.layout.activity_main);
 
-        fragments = new ArrayList<>();
-
-        initializeFragments();
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setOffscreenPageLimit(fragments.size());
-        FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), context, fragments);
-        viewPager.setAdapter(fragmentAdapter);
+        ViewPager viewPager = getViewPager();
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
+        setTabNames(tabLayout);
+    }
+
+    private void setTabNames(TabLayout tabLayout) {
         tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
         tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
         tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
+    }
 
+    private ViewPager getViewPager() {
+        fragments = new ArrayList<>();
+        initializeFragments();
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager.setOffscreenPageLimit(fragments.size());
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), context, fragments);
+        viewPager.setAdapter(fragmentAdapter);
+        return viewPager;
     }
 
     private void initializeFragments() {
@@ -69,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (fragment != null) {
                 MapLongClickListener mapLongClickListener = fragment.getMapLongClickListener();
-                if(mapLongClickListener != null){
+                if (mapLongClickListener != null) {
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
                     mapLongClickListener.dissmissPopUp();
@@ -77,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (fragment2 != null) {
                 MapLongClickListener mapLongClickListener = fragment2.getMapLongClickListener();
-                if(mapLongClickListener != null){
+                if (mapLongClickListener != null) {
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
                     mapLongClickListener.dissmissPopUp();
@@ -85,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (fragment3 != null) {
                 MapLongClickListener mapLongClickListener = fragment3.getMapLongClickListener();
-                if(mapLongClickListener != null){
+                if (mapLongClickListener != null) {
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
                     mapLongClickListener.dissmissPopUp();

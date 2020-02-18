@@ -19,9 +19,11 @@ import com.squadro.touricity.R;
 
 public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
 
-    SupportMapFragment supportMapFragment;
-
-    static MapLongClickListener mapLongClickListener;
+    private SupportMapFragment supportMapFragment;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private FrameLayout frameLayout;
+    private GoogleMap map;
+    private MapLongClickListener mapLongClickListener = null;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,24 +43,39 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
+
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
-        FrameLayout frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_explore));
 
-        initBottomSheetCallback(bottomSheetBehavior);
-        mapLongClickListener = new MapLongClickListener(googleMap, frameLayout, 0, bottomSheetBehavior.getPeekHeight());
+        initializeSheetbehavior(googleMap);
     }
 
-    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior) {
+    private void initializeSheetbehavior(GoogleMap googleMap) {
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_save));
+        /* Open this if you want to open popup when map is long clicked
+                 List<String> buttonNames = new ArrayList<>();
+                 buttonNames.add("Add to route");
+                 PopupWindowParameters popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
+                 mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
+                */
+        initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
+    }
+
+    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior, MapLongClickListener mapLongClickListener) {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (i == 3) {
-                    mapLongClickListener.setBottomPeekHeight(view.getHeight());
-                } else if (i == 4) {
-                    mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                if (i == BottomSheetBehavior.STATE_EXPANDED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setBottomPeekHeight(view.getHeight());
+                    }
+                } else if (i == BottomSheetBehavior.STATE_COLLAPSED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                    }
                 }
             }
 

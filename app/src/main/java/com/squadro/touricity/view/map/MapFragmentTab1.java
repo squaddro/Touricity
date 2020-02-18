@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,9 +36,13 @@ import java.util.ArrayList;
 
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
-    SupportMapFragment supportMapFragment;
-    RouteExploreView routeExploreView;
-    MapLongClickListener mapLongClickListener;
+    private SupportMapFragment supportMapFragment;
+    private RouteExploreView routeExploreView;
+    private MapLongClickListener mapLongClickListener = null;
+    private TopSheetBehavior topSheetBehavior;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private GoogleMap map;
+    private FrameLayout frameLayout;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +63,40 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        addFilterSearchPanel();
+        map = googleMap;
+        frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab1_map);
+
         LatLng tobb = new LatLng(39.921260, 32.798165);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
 
+        createFilterView();
+        createRouteExploreView();
+        initializeSheetBehaviors();
+    }
+
+    private void initializeSheetBehaviors() {
+         /* Open this if you want to open popup when map is long clicked
+                 List<String> buttonNames = new ArrayList<>();
+                 buttonNames.add("Add to route");
+                 PopupWindowParameters popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
+                 mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
+                */
+
+        topSheetBehavior = TopSheetBehavior.from(getActivity().findViewById(R.id.filter_search));
+        initTopSheetCallback(topSheetBehavior, mapLongClickListener);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_explore));
+        initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void createRouteExploreView() {
+        routeExploreView = getActivity().findViewById(R.id.route_explore);
+        routeExploreView.setRouteList(exampleRouteList());
+    }
+
+    private void createFilterView() {
         SearchBar searchBar = new SearchBar(getActivity(), getContext());
         MinRatingBar minRatingBar = new MinRatingBar(getActivity());
         AverageCostSeekBar averageCostSeekBar = new AverageCostSeekBar(getActivity());
@@ -72,28 +104,24 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         TransportationCheckBox transportationCheckBox = new TransportationCheckBox(getActivity());
         Filter filter = new Filter(getActivity(), searchBar, minRatingBar, averageCostSeekBar,
                 durationSeekBar, transportationCheckBox);
-        routeExploreView = getActivity().findViewById(R.id.route_explore);
-        routeExploreView.setRouteList(exampleRouteList());
-
-        TopSheetBehavior topSheetBehavior = TopSheetBehavior.from(getActivity().findViewById(R.id.filter_search));
-        initTopSheetCallback(topSheetBehavior);
-
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_explore));
-        initBottomSheetCallback(bottomSheetBehavior);
-
-        FrameLayout frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab1_map);
-        mapLongClickListener = new MapLongClickListener(googleMap, frameLayout,
-                topSheetBehavior.getPeekHeight(), bottomSheetBehavior.getPeekHeight());
     }
 
-    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior) {
+    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior, MapLongClickListener mapLongClickListener) {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (i == 3) { //expanded
-                    mapLongClickListener.setBottomPeekHeight(view.getHeight());
-                } else if (i == 4) { //collapsed
-                    mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                if (i == BottomSheetBehavior.STATE_DRAGGING) {
+                    if (topSheetBehavior != null) {
+                        topSheetBehavior.setState(TopSheetBehavior.STATE_COLLAPSED);
+                    }
+                } else if (i == BottomSheetBehavior.STATE_EXPANDED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setBottomPeekHeight(view.getHeight());
+                    }
+                } else if (i == BottomSheetBehavior.STATE_COLLAPSED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                    }
                 }
             }
 
@@ -104,14 +132,23 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void initTopSheetCallback(TopSheetBehavior topSheetBehavior) {
+    private void initTopSheetCallback(TopSheetBehavior topSheetBehavior, MapLongClickListener mapLongClickListener) {
         topSheetBehavior.setTopSheetCallback(new TopSheetBehavior.TopSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == 3) {
-                    mapLongClickListener.setTopPeekHeight(bottomSheet.getHeight());
-                } else if (newState == 4) {
-                    mapLongClickListener.setTopPeekHeight(topSheetBehavior.getPeekHeight());
+                if (newState == TopSheetBehavior.STATE_DRAGGING) {
+                    if (bottomSheetBehavior != null) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                } else if (newState == TopSheetBehavior.STATE_EXPANDED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setTopPeekHeight(bottomSheet.getHeight());
+                    }
+
+                } else if (newState == TopSheetBehavior.STATE_COLLAPSED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setTopPeekHeight(topSheetBehavior.getPeekHeight());
+                    }
                 }
             }
 
@@ -263,10 +300,4 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         routes.add(route2);
         return routes;
     }
-
-    private void addFilterSearchPanel() {
-        LinearLayout linearLayout = getView().findViewById(R.id.filter_search);
-        TopSheetBehavior.from(linearLayout).setState(TopSheetBehavior.STATE_COLLAPSED);
-    }
-
 }
