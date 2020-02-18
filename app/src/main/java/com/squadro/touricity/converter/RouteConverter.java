@@ -21,6 +21,9 @@ public class RouteConverter implements IConverter {
 
         String route_id = json.get("route_id").getAsString();
         String creator = json.get("creator").getAsString();
+        String city_id = json.get("city_id").getAsString();
+        String title = json.get("title").getAsString();
+        int privacy = json.get("privacy").getAsInt();
         JsonArray entry_list = json.get("entries").getAsJsonArray();
 
         for (int i = 0; i < entry_list.size(); i++) {
@@ -53,7 +56,7 @@ public class RouteConverter implements IConverter {
                 entries.add(stop);
             }
         }
-        return new Route(route_id, creator, (IEntry[]) entries.toArray(), "ank", "title1", 0);
+        return new Route(route_id, creator, (IEntry[]) entries.toArray(), city_id, title, privacy);
     }
 
     public JsonObject objectToJson(Object object) {
@@ -63,6 +66,9 @@ public class RouteConverter implements IConverter {
 
         json.addProperty("route_id", route.getRoute_id());
         json.addProperty("creator", route.getCreator());
+        json.addProperty("city_id", route.getCity_id());
+        json.addProperty("title", route.getTitle());
+        json.addProperty("privacy", route.getPrivacy());
 
         JsonArray entry_list = new JsonArray();
         List<IEntry> entries = route.getAbstractEntryList();
