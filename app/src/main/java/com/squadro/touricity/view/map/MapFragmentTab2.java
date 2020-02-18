@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,21 +21,26 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
+import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater {
 
-    SupportMapFragment supportMapFragment;
-    MapLongClickListener mapLongClickListener;
-    RouteCreateView routeCreateView;
-    GoogleMap map;
+    private SupportMapFragment supportMapFragment;
+    private MapLongClickListener mapLongClickListener = null;
+    private RouteCreateView routeCreateView;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private FrameLayout frameLayout;
+    private GoogleMap map;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,34 +61,62 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
 
         LatLng tobb = new LatLng(10, 10);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
 
+        createRouteCreateView();
+        initializeSheetBehaviors();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void createRouteCreateView() {
         routeCreateView = getActivity().findViewById(R.id.route_create);
         routeCreateView.setRoute(initialialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
-        FrameLayout frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
-
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
-        initBottomSheetCallback(bottomSheetBehavior);
-
-        mapLongClickListener = new MapLongClickListener(googleMap, frameLayout, 0, bottomSheetBehavior.getPeekHeight());
     }
 
     public MapLongClickListener getMapLongClickListener() {
         return mapLongClickListener;
     }
 
-    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior) {
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initializeSheetBehaviors() {
+        bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
+        int numberOfButtons = 1;
+        List<String> buttonNames = new ArrayList<>();
+        buttonNames.add("Add to route");
+        PopupWindowParameters popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
+        mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
+        createButtonListeners(mapLongClickListener.getButtons());
+        initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void createButtonListeners(List<Button> buttons) {
+        Button button = buttons.get(0);
+        button.setOnClickListener(v -> {
+            LatLng latLng = mapLongClickListener.getLatLng();
+            Location location = new Location("sample_id",latLng.latitude,latLng.longitude);
+            routeCreateView.onInsertLocation(location);
+            mapLongClickListener.dissmissPopUp();
+        });
+    }
+
+    private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior, MapLongClickListener mapLongClickListener) {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (i == 3) {
-                    mapLongClickListener.setBottomPeekHeight(view.getHeight());
-                } else if (i == 4) {
-                    mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                if (i == BottomSheetBehavior.STATE_EXPANDED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setBottomPeekHeight(view.getHeight());
+                    }
+                } else if (i == BottomSheetBehavior.STATE_COLLAPSED) {
+                    if (mapLongClickListener != null) {
+                        mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                    }
                 }
             }
 
@@ -92,7 +126,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             }
         });
     }
-
 
     private Route initialialRoute() {
         Route route = new Route();
