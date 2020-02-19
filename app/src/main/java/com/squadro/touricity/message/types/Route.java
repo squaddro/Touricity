@@ -18,7 +18,7 @@ public class Route implements IRoute {
     private String route_id;
     private String creator;
     private IEntry[] entries;
-    private List<IEntry> abstractEntryList;
+    private List<IEntry> abstractEntryList = new ArrayList<>();
     private String city_id;
     private String title;
     private int privacy;
@@ -26,7 +26,6 @@ public class Route implements IRoute {
     public Route() {
         this.route_id = null;
         this.creator = null;
-        this.abstractEntryList = new ArrayList<>();
         this.city_id = null;
         this.title = null;
         this.privacy = 0;

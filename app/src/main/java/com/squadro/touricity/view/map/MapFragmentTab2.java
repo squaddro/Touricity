@@ -26,6 +26,8 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
@@ -69,6 +71,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
         createRouteCreateView();
         initializeSheetBehaviors();
+        RouteRequests routeRequests = new RouteRequests();
+        routeRequests.updateRoute(initialialRoute());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -128,11 +132,12 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     private Route initialialRoute() {
+        IEntry[] arr = new IEntry[6];
         Route route = new Route();
         route.setCreator("id_creator_1");
         route.setRoute_id("id_route_id_2");
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
@@ -146,7 +151,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         path1.add(new PathVertex(1.5, 1.3));
 
         route.addEntry(new Path(
-                "this should be null",
+                null,
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
@@ -155,7 +160,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 path1
         ));
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
@@ -169,7 +174,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         path2.add(new PathVertex(1.5, 1.3));
 
         route.addEntry(new Path(
-                "this should be null",
+                null,
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
@@ -178,7 +183,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 path1
         ));
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
@@ -192,7 +197,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         path3.add(new PathVertex(1.5, 1.3));
 
         route.addEntry(new Path(
-                "this should be null",
+                null,
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
@@ -201,7 +206,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 path1
         ));
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",

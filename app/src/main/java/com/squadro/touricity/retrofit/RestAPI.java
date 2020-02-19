@@ -8,7 +8,7 @@ import retrofit2.http.POST;
 
 public interface RestAPI {
 
-    @POST("update/route")
+    @POST("route/update")
     Call<JsonObject> updateRoute(@Body JsonObject body);
 
     @POST("mock/path")

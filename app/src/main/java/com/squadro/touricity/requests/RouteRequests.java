@@ -31,7 +31,7 @@ public class RouteRequests {
 
         Gson gson = new Gson();
         String jsonString = gson.toJson(route);
-
+        jsonString = jsonString.replace("abstractEntryList","entries");
         JsonParser jsonParser = new JsonParser();
         JsonObject asJsonObject = jsonParser.parse(jsonString).getAsJsonObject();
 
