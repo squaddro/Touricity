@@ -133,7 +133,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private Route initialialRoute() {
         Route route = new Route();
         route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
-        route.setRoute_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8e9");
+        route.setRoute_id(null);
         route.setCity_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8f9");
         route.setTitle("titleee");
         route.setPrivacy(2);
