@@ -132,15 +132,18 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private Route initialialRoute() {
         Route route = new Route();
-        route.setCreator("id_creator_1");
-        route.setRoute_id("id_route_id_2");
+        route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
+        route.setRoute_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8e9");
+        route.setCity_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8f9");
+        route.setTitle("titleee");
+        route.setPrivacy(2);
         route.addEntry(new Stop(
                 null,
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "id_location_1",
-                "id_stop_1"
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                null
         ));
         ArrayList path1 = new ArrayList<PathVertex>();
         path1.add(new PathVertex(1.1, 1.0));
@@ -153,7 +156,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
-                "id_path_1",
+                null,
                 Path.PathType.BUS,
                 path1
         ));
@@ -162,8 +165,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "id_location_2",
-                "id_stop_2"
+                "82ed63bc-d12s-cab7-21f1-785be113d044",
+                null
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
         path2.add(new PathVertex(1.1, 1.0));
@@ -176,7 +179,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
-                "id_path_2",
+                null,
                 Path.PathType.BUS,
                 path1
         ));
@@ -185,8 +188,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
-                "id_location_3",
-                "id_stop_3"
+                "c09fc4c0-638d-e8e6-bf35-53a5b113d046",
+                null
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
         path3.add(new PathVertex(1.1, 1.0));
@@ -199,7 +202,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
-                "id_path_3",
+                null,
                 Path.PathType.BUS,
                 path1
         ));
@@ -208,8 +211,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",
-                "id_location_4",
-                "id_stop_4"
+                "c09fc4c0-638d-e8e6-bf35-53a5b113d049",
+                null
         ));
 
         return route;
