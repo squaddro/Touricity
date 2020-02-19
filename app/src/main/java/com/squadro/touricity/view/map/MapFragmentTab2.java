@@ -26,7 +26,6 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
@@ -132,7 +131,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     private Route initialialRoute() {
-        IEntry[] arr = new IEntry[6];
         Route route = new Route();
         route.setCreator("id_creator_1");
         route.setRoute_id("id_route_id_2");
@@ -156,7 +154,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_1",
-                "path_type",
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
@@ -179,7 +177,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_2",
-                "path_type",
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
@@ -202,7 +200,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_3",
-                "path_type",
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(

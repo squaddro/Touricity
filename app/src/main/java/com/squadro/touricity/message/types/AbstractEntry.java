@@ -2,14 +2,12 @@ package com.squadro.touricity.message.types;
 
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder(toBuilder = true)
-public class AbstractEntry implements IEntry {
+public abstract class AbstractEntry implements IEntry {
 
     private String entry_id;
     private int expense;
@@ -45,4 +43,5 @@ public class AbstractEntry implements IEntry {
         this.comment = comment;
         this.index = index;
     }
+    public abstract String getType();
 }

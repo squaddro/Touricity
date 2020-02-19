@@ -36,7 +36,7 @@ public class RouteConverter implements IConverter {
                 int duration = obj.get("duration").getAsInt();
                 int expense = obj.get("expense").getAsInt();
                 String comment = obj.get("comment").getAsString();
-                String path_type = obj.get("path_type").getAsString();
+                Path.PathType path_type =Path.PathType.values()[json.get("path_type").getAsInt()];
                 JsonArray vertices = obj.get("vertices").getAsJsonArray();
                 List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
 
@@ -89,7 +89,7 @@ public class RouteConverter implements IConverter {
                 JsonArray vertexArr = vertexListToJsonArray(path.getVertices());
 
                 obj.addProperty("path_id", path.getPath_id());
-                obj.addProperty("path_type", path.getPath_type());
+                obj.addProperty("path_type", path.getPath_type().getValue());
                 obj.add("vertices", vertexArr);
             } else if (entry instanceof Stop) { //entry is a stop.
 
