@@ -70,7 +70,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
         createRouteCreateView();
         initializeSheetBehaviors();
-        RouteRequests routeRequests = new RouteRequests();
+        RouteRequests routeRequests = new RouteRequests(routeCreateView);
         routeRequests.updateRoute(initialialRoute());
     }
 
