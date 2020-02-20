@@ -165,7 +165,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "82ed63bc-d12s-cab7-21f1-785be113d044",
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
                 null
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
@@ -188,7 +188,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
-                "c09fc4c0-638d-e8e6-bf35-53a5b113d046",
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
                 null
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
@@ -211,7 +211,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",
-                "c09fc4c0-638d-e8e6-bf35-53a5b113d049",
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
                 null
         ));
 
