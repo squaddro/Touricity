@@ -12,8 +12,6 @@ import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +27,7 @@ public class RouteRequests {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateRoute(Route route){
+    public void updateRoute(Route route) {
         RouteConverter routeConverter = new RouteConverter();
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
@@ -38,7 +36,7 @@ public class RouteRequests {
 
         Gson gson = new Gson();
         String jsonString = gson.toJson(route);
-        jsonString = jsonString.replace("abstractEntryList","entries");
+        jsonString = jsonString.replace("abstractEntryList", "entries");
         JsonParser jsonParser = new JsonParser();
         JsonObject asJsonObject = jsonParser.parse(jsonString).getAsJsonObject();
 

@@ -26,6 +26,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
