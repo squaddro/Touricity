@@ -188,7 +188,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_1",
-                "path_type",
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
@@ -211,7 +211,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_2",
-                "path_type",
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
@@ -234,7 +234,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_3",
-                "path_type",
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
@@ -269,7 +269,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_1",
-                "path_type",
+                Path.PathType.BUS,
                 path4
         ));
         route2.addEntry(new Stop(
@@ -292,7 +292,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 5,
                 "Bu yolu takip edin 5 dakika",
                 "id_path_2",
-                "path_type",
+                Path.PathType.BUS,
                 path5
         ));
 

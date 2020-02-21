@@ -9,6 +9,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,9 @@ public class RouteConverter implements IConverter {
 
         String route_id = json.get("route_id").getAsString();
         String creator = json.get("creator").getAsString();
+        String city_id = json.get("city_id").getAsString();
+        String title = json.get("title").getAsString();
+        int privacy = json.get("privacy").getAsInt();
         JsonArray entry_list = json.get("entries").getAsJsonArray();
 
         for (int i = 0; i < entry_list.size(); i++) {
@@ -32,7 +36,7 @@ public class RouteConverter implements IConverter {
                 int duration = obj.get("duration").getAsInt();
                 int expense = obj.get("expense").getAsInt();
                 String comment = obj.get("comment").getAsString();
-                String path_type = obj.get("path_type").getAsString();
+                Path.PathType path_type =Path.PathType.values()[json.get("path_type").getAsInt()];
                 JsonArray vertices = obj.get("vertices").getAsJsonArray();
                 List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
 
@@ -52,7 +56,7 @@ public class RouteConverter implements IConverter {
                 entries.add(stop);
             }
         }
-        return new Route(route_id, creator, entries);
+        return new Route(route_id, creator, (IEntry[]) entries.toArray(), city_id, title, privacy);
     }
 
     public JsonObject objectToJson(Object object) {
@@ -62,13 +66,16 @@ public class RouteConverter implements IConverter {
 
         json.addProperty("route_id", route.getRoute_id());
         json.addProperty("creator", route.getCreator());
+        json.addProperty("city_id", route.getCity_id());
+        json.addProperty("title", route.getTitle());
+        json.addProperty("privacy", route.getPrivacy());
 
         JsonArray entry_list = new JsonArray();
-        ArrayList<AbstractEntry> entries = route.getAbstractEntryList();
+        List<IEntry> entries = route.getAbstractEntryList();
 
         for (int i = 0; i < entries.size(); i++) {
 
-            AbstractEntry entry = entries.get(i);
+            IEntry entry = entries.get(i);
             JsonObject obj = new JsonObject();
 
             obj.addProperty("duration", entry.getDuration());
@@ -82,7 +89,7 @@ public class RouteConverter implements IConverter {
                 JsonArray vertexArr = vertexListToJsonArray(path.getVertices());
 
                 obj.addProperty("path_id", path.getPath_id());
-                obj.addProperty("path_type", path.getPath_type());
+                obj.addProperty("path_type", path.getPath_type().getValue());
                 obj.add("vertices", vertexArr);
             } else if (entry instanceof Stop) { //entry is a stop.
 

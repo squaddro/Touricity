@@ -17,6 +17,7 @@ import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.entry.PathCardView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 
@@ -39,7 +40,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         textRouteId.setText(route.getRoute_id());
         textCreator.setText(route.getCreator());
         textEntries.setText("");
-        for(AbstractEntry entry : route.getAbstractEntryList()){
+        for(IEntry entry : route.getAbstractEntryList()){
             if(entry instanceof Stop) {
                 Stop stop = (Stop) entry;
                 textEntries.append(stop.getStop_id() + " ");

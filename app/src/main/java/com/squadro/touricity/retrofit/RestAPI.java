@@ -8,8 +8,8 @@ import retrofit2.http.POST;
 
 public interface RestAPI {
 
-    @POST("mock/route")
-    Call<JsonObject> sendRouteRequest(@Body JsonObject body);
+    @POST("route/update")
+    Call<JsonObject> updateRoute(@Body JsonObject body);
 
     @POST("mock/path")
     Call<JsonObject> sendPathRequest(@Body JsonObject body);
@@ -17,6 +17,6 @@ public interface RestAPI {
     @POST("mock/stop")
     Call<JsonObject> sendStopRequest(@Body JsonObject body);
 
-    @POST("mock/location")
-    Call<JsonObject> sendlocationRequest(@Body JsonObject body);
+    @POST("create/location")
+    Call<JsonObject> createLocation(@Body JsonObject body);
 }

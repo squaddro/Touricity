@@ -18,7 +18,7 @@ public class PathConverter implements IConverter {
         int duration = json.get("duration").getAsInt();
         int expense = json.get("expense").getAsInt();
         String comment = json.get("comment").getAsString();
-        String path_type = json.get("path_type").getAsString();
+        Path.PathType path_type =Path.PathType.values()[json.get("path_type").getAsInt()];
         JsonArray vertices = json.get("vertices").getAsJsonArray();
         List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
 
@@ -36,7 +36,7 @@ public class PathConverter implements IConverter {
         json.addProperty("duration", path.getDuration());
         json.addProperty("expense", path.getExpense());
         json.addProperty("comment", path.getComment());
-        json.addProperty("path_type", path.getPath_type());
+        json.addProperty("path_type", path.getPath_type().getValue());
         json.add("vertices", vertexArr);
         return json;
     }
