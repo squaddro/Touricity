@@ -77,13 +77,13 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
 
         //This is how we draw a path between 2 points.
-        String url = getDirectionsURL(tobb, somewhere);
+        String url = getDirectionsURL(tobb, somewhere, null, "driving");
         FetchUrl FetchUrl = new FetchUrl(map);
         FetchUrl.execute(url);
 
     }
 
-    private String getDirectionsURL(LatLng origin, LatLng dest) {
+    private String getDirectionsURL(LatLng origin, LatLng dest, LatLng[] waypoints, String mode) {
 
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -94,8 +94,21 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         // Sensor enabled
         String sensor = "sensor=false";
 
+        String str_mode = "mode=" + mode;
+
+        String str_waypoints = "";
+
+        if(waypoints != null && waypoints.length > 0){
+            str_waypoints += "waypoints=";
+
+            for(int i=0 ; i<waypoints.length ; i++){
+                str_waypoints += waypoints[i].latitude + "," + waypoints[i].longitude + "|";
+            }
+            str_waypoints = str_waypoints.substring(0, str_waypoints.length()-1);
+        }
+
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+        String parameters = str_mode + "&" + str_origin + "&" + str_dest + "&" + sensor + "&" + str_waypoints;
 
         // Output format
         String output = "json";
@@ -103,11 +116,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
 
-        map.addMarker(new MarkerOptions().position(new LatLng(37.757946,39.4048)).title("siverek1"));
-        map.addMarker(new MarkerOptions().position(new LatLng(37.757954,38.426349)).title("siverek2"));
-        map.addMarker(new MarkerOptions().position(new LatLng(37.746560,38.408328)).title("siverek3"));
-
-        url = "https://maps.googleapis.com/maps/api/directions/json?sensor=true&mode=walking&origin=37.757946%2C39.4048&destination=37.757954%2C38.426349&waypoints=37.746560%2C38.408328&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
+        //url = "https://maps.googleapis.com/maps/api/directions/json?sensor=true&mode=walking&origin=37.757946%2C39.4048&destination=37.757954%2C38.426349&waypoints=37.746560%2C38.408328&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
         return url;
     }
 
