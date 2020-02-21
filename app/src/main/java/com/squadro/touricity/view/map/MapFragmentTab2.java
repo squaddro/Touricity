@@ -26,7 +26,6 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
@@ -72,7 +71,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         createRouteCreateView();
         initializeSheetBehaviors();
         RouteRequests routeRequests = new RouteRequests(routeCreateView);
-        routeRequests.updateRoute(initialialRoute());
+        //routeRequests.updateRoute(initialialRoute());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -103,7 +102,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Button button = buttons.get(0);
         button.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
-            Location location = new Location("sample_id",latLng.latitude,latLng.longitude);
+            Location location = new Location("sample_id", "city", latLng.latitude,latLng.longitude);
             routeCreateView.onInsertLocation(location);
             mapLongClickListener.dissmissPopUp();
         });
