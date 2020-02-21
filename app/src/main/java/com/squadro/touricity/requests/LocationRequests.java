@@ -24,9 +24,8 @@ public class LocationRequests {
     }
 
     public Location getLocationInfo(String location_id) {
-        
+
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicBoolean requestDone = new AtomicBoolean(false);
         AtomicReference<Location> location = new AtomicReference<>(null);
         final LocationConverter locationConverter = new LocationConverter();
 
@@ -46,13 +45,11 @@ public class LocationRequests {
                 if (body != null) {
                     location.set((Location) locationConverter.jsonToObject(response.body()));
                 }
-                requestDone.set(true);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                requestDone.set(true);
                 countDownLatch.countDown();
             }
         });
