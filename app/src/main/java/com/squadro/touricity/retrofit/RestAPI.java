@@ -19,4 +19,7 @@ public interface RestAPI {
 
     @POST("create/location")
     Call<JsonObject> createLocation(@Body JsonObject body);
+
+    @POST("filter")
+    Call<JsonObject> filter(@Body JsonObject body);
 }
