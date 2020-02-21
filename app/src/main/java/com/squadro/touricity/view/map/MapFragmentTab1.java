@@ -101,9 +101,13 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
         String output = "json";
 
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
 
+        map.addMarker(new MarkerOptions().position(new LatLng(37.757946,39.4048)).title("siverek1"));
+        map.addMarker(new MarkerOptions().position(new LatLng(37.757954,38.426349)).title("siverek2"));
+        map.addMarker(new MarkerOptions().position(new LatLng(37.746560,38.408328)).title("siverek3"));
 
+        url = "https://maps.googleapis.com/maps/api/directions/json?sensor=true&mode=walking&origin=37.757946%2C39.4048&destination=37.757954%2C38.426349&waypoints=37.746560%2C38.408328&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
         return url;
     }
 
