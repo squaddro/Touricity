@@ -1,5 +1,7 @@
 package com.squadro.touricity.converter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,6 +11,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,39 +23,32 @@ public class RouteConverter implements IConverter {
 
         String route_id = json.get("route_id").getAsString();
         String creator = json.get("creator").getAsString();
+        String city_id = json.get("city_id").getAsString();
+        String title = json.get("title").getAsString();
+        int privacy = json.get("privacy").getAsInt();
         JsonArray entry_list = json.get("entries").getAsJsonArray();
 
         for (int i = 0; i < entry_list.size(); i++) {
 
             JsonObject obj = entry_list.get(i).getAsJsonObject();
+            Log.d("RouteCnvrt", "" + i + " " + obj);
+
+            if(obj == null)
+                continue;
 
             if (obj.has("path_id")) { //entry is a path.
 
-                String path_id = obj.get("path_id").getAsString();
-                int duration = obj.get("duration").getAsInt();
-                int expense = obj.get("expense").getAsInt();
-                String comment = obj.get("comment").getAsString();
-                String path_type = obj.get("path_type").getAsString();
-                JsonArray vertices = obj.get("vertices").getAsJsonArray();
-                List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
-
-                Path path = new Path(null, expense, duration, comment, path_id, path_type, pathVertex_list);
+                Path path = (Path) new PathConverter().jsonToObject(obj);
 
                 entries.add(path);
             } else { //entry is a stop.
-
-                String stop_id = obj.get("stop_id").getAsString();
-                int duration = obj.get("duration").getAsInt();
-                int expense = obj.get("expense").getAsInt();
-                String comment = obj.get("comment").getAsString();
-                String location_id = obj.get("location_id").getAsString();
-
-                Stop stop = new Stop(null, expense, duration, comment, location_id, stop_id);
+                Stop stop = (Stop) new StopConverter().jsonToObject(obj);
 
                 entries.add(stop);
             }
         }
-        return new Route(route_id, creator, entries);
+
+        return new Route(route_id, creator, (IEntry[]) entries.toArray(), city_id, title, privacy);
     }
 
     public JsonObject objectToJson(Object object) {
@@ -62,13 +58,16 @@ public class RouteConverter implements IConverter {
 
         json.addProperty("route_id", route.getRoute_id());
         json.addProperty("creator", route.getCreator());
+        json.addProperty("city_id", route.getCity_id());
+        json.addProperty("title", route.getTitle());
+        json.addProperty("privacy", route.getPrivacy());
 
         JsonArray entry_list = new JsonArray();
-        ArrayList<AbstractEntry> entries = route.getAbstractEntryList();
+        List<IEntry> entries = route.getAbstractEntryList();
 
         for (int i = 0; i < entries.size(); i++) {
 
-            AbstractEntry entry = entries.get(i);
+            IEntry entry = entries.get(i);
             JsonObject obj = new JsonObject();
 
             obj.addProperty("duration", entry.getDuration());
@@ -82,7 +81,7 @@ public class RouteConverter implements IConverter {
                 JsonArray vertexArr = vertexListToJsonArray(path.getVertices());
 
                 obj.addProperty("path_id", path.getPath_id());
-                obj.addProperty("path_type", path.getPath_type());
+                obj.addProperty("path_type", path.getPath_type().getValue());
                 obj.add("vertices", vertexArr);
             } else if (entry instanceof Stop) { //entry is a stop.
 

@@ -1,7 +1,8 @@
 package com.squadro.touricity.requests;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.squadro.touricity.converter.LocationConverter;
+import com.google.gson.JsonParser;
 import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
@@ -15,20 +16,25 @@ public class LocationRequests {
 
     public LocationRequests() {
 
-        LocationConverter locationConverter = new LocationConverter();
+    }
+
+    public void createLocation(Location location) {
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
         Retrofit retrofit = retrofitCreate.createRetrofit();
         RestAPI restAPI = retrofit.create(RestAPI.class);
 
-        JsonObject obj = new JsonObject();
+        Gson gson = new Gson();
+        String s = gson.toJson(location);
+        JsonParser jsonParser = new JsonParser();
+        JsonObject asJsonObject = jsonParser.parse(s).getAsJsonObject();
 
-        Call<JsonObject> jsonObjectCall = restAPI.sendlocationRequest(obj);
+        Call<JsonObject> jsonObjectCall = restAPI.createLocation(asJsonObject);
 
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Location location = (Location) locationConverter.jsonToObject(response.body());
+                String message = response.message();
             }
 
             @Override

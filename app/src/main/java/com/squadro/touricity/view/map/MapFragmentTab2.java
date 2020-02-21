@@ -26,6 +26,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
@@ -69,6 +70,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
         createRouteCreateView();
         initializeSheetBehaviors();
+        RouteRequests routeRequests = new RouteRequests(routeCreateView);
+        //routeRequests.updateRoute(initialialRoute());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -99,7 +102,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Button button = buttons.get(0);
         button.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
-            Location location = new Location("sample_id",latLng.latitude,latLng.longitude);
+            Location location = new Location("sample_id", "city", latLng.latitude,latLng.longitude);
             routeCreateView.onInsertLocation(location);
             mapLongClickListener.dissmissPopUp();
         });
@@ -129,15 +132,18 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private Route initialialRoute() {
         Route route = new Route();
-        route.setCreator("id_creator_1");
-        route.setRoute_id("id_route_id_2");
+        route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
+        route.setRoute_id(null);
+        route.setCity_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8f9");
+        route.setTitle("titleee");
+        route.setPrivacy(2);
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "id_location_1",
-                "id_stop_1"
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                null
         ));
         ArrayList path1 = new ArrayList<PathVertex>();
         path1.add(new PathVertex(1.1, 1.0));
@@ -146,21 +152,21 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         path1.add(new PathVertex(1.5, 1.3));
 
         route.addEntry(new Path(
-                "this should be null",
+                null,
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
-                "id_path_1",
-                "path_type",
+                null,
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "id_location_2",
-                "id_stop_2"
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                null
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
         path2.add(new PathVertex(1.1, 1.0));
@@ -169,21 +175,21 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         path2.add(new PathVertex(1.5, 1.3));
 
         route.addEntry(new Path(
-                "this should be null",
+                null,
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
-                "id_path_2",
-                "path_type",
+                null,
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
-                "id_location_3",
-                "id_stop_3"
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                null
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
         path3.add(new PathVertex(1.1, 1.0));
@@ -192,21 +198,21 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         path3.add(new PathVertex(1.5, 1.3));
 
         route.addEntry(new Path(
-                "this should be null",
+                null,
                 10,
                 5,
                 "Bu yolu takip edin 5 dakika",
-                "id_path_3",
-                "path_type",
+                null,
+                Path.PathType.BUS,
                 path1
         ));
         route.addEntry(new Stop(
-                "this should be null",
+                null,
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",
-                "id_location_4",
-                "id_stop_4"
+                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                null
         ));
 
         return route;

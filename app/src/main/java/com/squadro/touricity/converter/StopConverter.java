@@ -1,23 +1,19 @@
 package com.squadro.touricity.converter;
 
 import com.google.gson.JsonObject;
-import com.squadro.touricity.converter.interfaces.IConverter;
 import com.squadro.touricity.message.types.Stop;
 
-public class StopConverter implements IConverter {
+public class StopConverter extends AbstractEntryConverter<Stop> {
 
-    public Object jsonToObject(JsonObject json) {
+    protected Stop jsonToEntry(JsonObject json) {
 
         String stop_id = json.get("stop_id").getAsString();
-        int duration = json.get("duration").getAsInt();
-        int expense = json.get("expense").getAsInt();
-        String comment = json.get("comment").getAsString();
         String location_id = json.get("location_id").getAsString();
 
-        return new Stop(null, expense, duration, comment, location_id, stop_id);
+        return new Stop(null, 0, 0, null, location_id, stop_id);
     }
 
-    public JsonObject objectToJson(Object object) {
+    protected JsonObject entryToJson(Object object) {
 
         JsonObject json = new JsonObject();
         Stop stop = (Stop) object;
@@ -29,6 +25,5 @@ public class StopConverter implements IConverter {
         json.addProperty("location_id", stop.getLocation_id());
 
         return json;
-
     }
 }

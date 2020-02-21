@@ -38,7 +38,7 @@ public class PathCardView extends RouteListItem<Path> {
         this.path = entry;
 
         textPathId.setText(path.getPath_id());
-        textPathType.setText(path.getPath_type());
+        textPathType.setText(path.getPath_type().getValue()+"");
         textComment.setText(path.getComment());
         textDuration.setText(path.getDuration() + " minutes");
         textExpense.setText(path.getExpense() + "&");

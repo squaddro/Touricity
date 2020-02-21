@@ -1,10 +1,16 @@
 package com.squadro.touricity.requests;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.squadro.touricity.converter.RouteConverter;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
+import com.squadro.touricity.view.routeList.RouteCreateView;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -13,22 +19,33 @@ import retrofit2.Retrofit;
 
 public class RouteRequests {
 
-    public RouteRequests() {
 
+    private final RouteCreateView routeCreateView;
+
+    public RouteRequests(RouteCreateView routeCreateView) {
+        this.routeCreateView = routeCreateView;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void updateRoute(Route route) {
         RouteConverter routeConverter = new RouteConverter();
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
         Retrofit retrofit = retrofitCreate.createRetrofit();
         RestAPI restAPI = retrofit.create(RestAPI.class);
 
-        JsonObject obj = new JsonObject();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(route);
+        jsonString = jsonString.replace("abstractEntryList", "entries");
+        JsonParser jsonParser = new JsonParser();
+        JsonObject asJsonObject = jsonParser.parse(jsonString).getAsJsonObject();
 
-        Call<JsonObject> jsonObjectCall = restAPI.sendRouteRequest(obj);
+        Call<JsonObject> jsonObjectCall = restAPI.updateRoute(asJsonObject);
 
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Route route = (Route) routeConverter.jsonToObject(response.body());
+                routeCreateView.setRoute((Route) routeConverter.jsonToObject(response.body()));
             }
 
             @Override

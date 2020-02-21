@@ -18,6 +18,7 @@ import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.entry.PathCardView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryEventListener;
@@ -26,6 +27,7 @@ import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 import com.squadro.touricity.view.routeList.event.IRouteUpdateEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -60,7 +62,7 @@ public class RouteCreateView extends LinearLayout implements IEntryEventListener
 
         Context context = getContext();
 
-        for(AbstractEntry entry : route.getAbstractEntryList()){
+        for(IEntry entry : route.getAbstractEntryList()){
             if(entry instanceof Stop) {
                 Stop stop = (Stop) entry;
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
@@ -162,7 +164,7 @@ public class RouteCreateView extends LinearLayout implements IEntryEventListener
     @Override
     public void onMoveEntry(AbstractEntry entry, EDirection direction) {
         Log.d("fcreate", "Move " + direction + " " + entry.getComment());
-        ArrayList<AbstractEntry> entries = route.getAbstractEntryList();
+        List<IEntry> entries = route.getAbstractEntryList();
         int index = Math.min(entries.size() - 1, Math.max(0, entries.indexOf(entry) + (direction == EDirection.DOWN ? 1 : -1)));
 
         route.changeEntryPosition(entry, index);
