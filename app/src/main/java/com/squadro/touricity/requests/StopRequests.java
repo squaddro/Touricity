@@ -22,7 +22,7 @@ public class StopRequests {
         RestAPI restAPI = retrofit.create(RestAPI.class);
 
         JsonObject obj = new JsonObject();
-
+/*
         Call<JsonObject> jsonObjectCall = restAPI.sendStopRequest(obj);
 
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
@@ -36,5 +36,6 @@ public class StopRequests {
                 String message = t.getMessage();
             }
         });
+         */
     }
 }
