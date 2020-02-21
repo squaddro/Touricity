@@ -1,5 +1,7 @@
 package com.squadro.touricity.converter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -29,33 +31,23 @@ public class RouteConverter implements IConverter {
         for (int i = 0; i < entry_list.size(); i++) {
 
             JsonObject obj = entry_list.get(i).getAsJsonObject();
+            Log.d("RouteCnvrt", "" + i + " " + obj);
+
+            if(obj == null)
+                continue;
 
             if (obj.has("path_id")) { //entry is a path.
 
-                String path_id = obj.get("path_id").getAsString();
-                int duration = obj.get("duration").getAsInt();
-                int expense = obj.get("expense").getAsInt();
-                String comment = obj.get("comment").getAsString();
-                Path.PathType path_type =Path.PathType.values()[json.get("path_type").getAsInt()];
-                JsonArray vertices = obj.get("vertices").getAsJsonArray();
-                List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
-
-                Path path = new Path(null, expense, duration, comment, path_id, path_type, pathVertex_list);
+                Path path = (Path) new PathConverter().jsonToObject(obj);
 
                 entries.add(path);
             } else { //entry is a stop.
-
-                String stop_id = obj.get("stop_id").getAsString();
-                int duration = obj.get("duration").getAsInt();
-                int expense = obj.get("expense").getAsInt();
-                String comment = obj.get("comment").getAsString();
-                String location_id = obj.get("location_id").getAsString();
-
-                Stop stop = new Stop(null, expense, duration, comment, location_id, stop_id);
+                Stop stop = (Stop) new StopConverter().jsonToObject(obj);
 
                 entries.add(stop);
             }
         }
+
         return new Route(route_id, creator, (IEntry[]) entries.toArray(), city_id, title, privacy);
     }
 

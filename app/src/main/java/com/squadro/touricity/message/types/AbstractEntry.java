@@ -15,13 +15,6 @@ public abstract class AbstractEntry implements IEntry {
     private String comment;
     private int index;
 
-    public AbstractEntry() {
-        this.entry_id = null;
-        this.expense = 0;
-        this.duration = 0;
-        this.comment = "";
-    }
-
     public AbstractEntry(String entry_id, int expense, int duration, String comment) {
         this.entry_id = entry_id;
         this.expense = expense;
@@ -43,5 +36,6 @@ public abstract class AbstractEntry implements IEntry {
         this.comment = comment;
         this.index = index;
     }
+
     public abstract String getType();
 }
