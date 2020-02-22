@@ -12,7 +12,7 @@
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:id="@+id/route_explore_scroll">
@@ -22,6 +22,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/route_explore_list">
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </com.squadro.touricity.view.routeList.RouteExploreView>

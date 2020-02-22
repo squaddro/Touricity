@@ -45,6 +45,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private BottomSheetBehavior bottomSheetBehavior;
     private FrameLayout frameLayout;
     private GoogleMap map;
+    private PopupWindowParameters popupWindowParameters;
 
     private IEditor editor;
 
@@ -102,7 +103,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         int numberOfButtons = 1;
         List<String> buttonNames = new ArrayList<>();
         buttonNames.add("Add to route");
-        PopupWindowParameters popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
+        popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
         mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
         createButtonListeners(mapLongClickListener.getButtons());
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
@@ -172,6 +173,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private void disposeEditor() {
         if(editor != null) {
             editor.dispose();
+            mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
             editor = null;
         }
     }

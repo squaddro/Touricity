@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -24,7 +25,7 @@ public class RouteExploreView extends LinearLayout{
     private ArrayList<Route> routeList;
 
     LinearLayout routes;
-    ScrollView scrollView;
+    NestedScrollView scrollView;
     private AbstractEntry prevHighlighted;
 
     public RouteExploreView(Context context, @Nullable AttributeSet attrs) {
