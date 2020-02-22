@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 
 import com.squadro.touricity.message.types.AbstractEntry;
-import com.squadro.touricity.view.routeList.event.IEntryEventListener;
+import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 
 public abstract class RouteListItem<T extends AbstractEntry> extends CardView implements View.OnClickListener, OnLongClickListener {
 
-    protected IEntryEventListener entryEventListener;
+    protected IEntryButtonEventsListener entryEventListener;
 
     public RouteListItem(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -47,12 +47,12 @@ public abstract class RouteListItem<T extends AbstractEntry> extends CardView im
         setLongClickable(true);
     }
 
-    public void setEntryEventListener(IEntryEventListener listener) {
+    public void setEntryEventListener(IEntryButtonEventsListener listener) {
         entryEventListener = listener;
 
         findViewById(getRemoveButtonId()).setOnClickListener(view -> entryEventListener.onRemoveEntry(getEntry()));
-        findViewById(getMoveUpButtonId()).setOnClickListener(view -> entryEventListener.onMoveEntry(getEntry(), IEntryEventListener.EDirection.UP));
-        findViewById(getMoveDownButtonId()).setOnClickListener(view -> entryEventListener.onMoveEntry(getEntry(), IEntryEventListener.EDirection.DOWN));
+        findViewById(getMoveUpButtonId()).setOnClickListener(view -> entryEventListener.onMoveEntry(getEntry(), IEntryButtonEventsListener.EDirection.UP));
+        findViewById(getMoveDownButtonId()).setOnClickListener(view -> entryEventListener.onMoveEntry(getEntry(), IEntryButtonEventsListener.EDirection.DOWN));
         findViewById(getEditButtonId()).setOnClickListener(view -> entryEventListener.onEditEntry(getEntry()));
     }
 

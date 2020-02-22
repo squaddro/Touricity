@@ -21,7 +21,7 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.entry.PathCardView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
-import com.squadro.touricity.view.routeList.event.IEntryEventListener;
+import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 import com.squadro.touricity.view.routeList.event.IRouteInsertListener;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 import com.squadro.touricity.view.routeList.event.IRouteUpdateEventListener;
@@ -33,16 +33,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class RouteCreateView extends LinearLayout implements IEntryEventListener, IRouteInsertListener, ScrollView.OnScrollChangeListener {
+public class RouteCreateView extends LinearLayout implements IEntryButtonEventsListener, IRouteInsertListener, IRouteUpdateEventListener, ScrollView.OnScrollChangeListener {
 
     @Getter
     private Route route;
 
     @Setter
     private IRouteMapViewUpdater routeMapViewUpdater;
-
-    @Setter
-    private IRouteUpdateEventListener routeUpdateListener;
 
     LinearLayout entryList;
     ScrollView scrollView;
@@ -87,8 +84,8 @@ public class RouteCreateView extends LinearLayout implements IEntryEventListener
     private void UpdateRouteInfo() {
         UpdateView();
 
-        if(routeUpdateListener != null)
-            routeUpdateListener.onRouteUpdate(route);
+        if(routeMapViewUpdater != null)
+            routeMapViewUpdater.updateRoute(route);
     }
 
     @Override
@@ -158,7 +155,8 @@ public class RouteCreateView extends LinearLayout implements IEntryEventListener
     @Override
     public void onEditEntry(AbstractEntry entry) {
         Log.d("fcreate", "Edit " + entry.getComment());
-
+        if(routeMapViewUpdater != null)
+            routeMapViewUpdater.focus(entry);
     }
 
     @Override
@@ -202,5 +200,15 @@ public class RouteCreateView extends LinearLayout implements IEntryEventListener
                 break;
             }
         }
+    }
+
+    @Override
+    public void onPathUpdate(Path path) {
+
+    }
+
+    @Override
+    public void onStopUpdate(Stop stop) {
+
     }
 }

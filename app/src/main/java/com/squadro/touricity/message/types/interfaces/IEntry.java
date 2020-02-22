@@ -1,6 +1,6 @@
 package com.squadro.touricity.message.types.interfaces;
 
-public interface IEntry {
+public interface IEntry extends IDataType {
     int getDuration();
     int getExpense();
     String getComment();
