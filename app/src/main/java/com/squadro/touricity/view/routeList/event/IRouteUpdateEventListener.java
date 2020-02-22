@@ -1,7 +1,9 @@
 package com.squadro.touricity.view.routeList.event;
 
-import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.Path;
+import com.squadro.touricity.message.types.Stop;
 
 public interface IRouteUpdateEventListener {
-    void onRouteUpdate(Route route);
+    void onPathUpdate(Path path);
+    void onStopUpdate(Stop stop);
 }

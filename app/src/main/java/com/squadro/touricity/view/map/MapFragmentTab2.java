@@ -28,6 +28,8 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.RouteRequests;
+import com.squadro.touricity.view.map.editor.IEditor;
+import com.squadro.touricity.view.map.editor.PathEditor;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
@@ -43,6 +45,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private BottomSheetBehavior bottomSheetBehavior;
     private FrameLayout frameLayout;
     private GoogleMap map;
+
+    private IEditor editor;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +88,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void createRouteCreateView() {
         routeCreateView = getActivity().findViewById(R.id.route_create);
-        routeCreateView.setRoute(initialialRoute());
+        routeCreateView.setRoute(initialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
     }
 
@@ -126,6 +130,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 } else if (i == BottomSheetBehavior.STATE_COLLAPSED) {
                     if (mapLongClickListener != null) {
                         mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
+                        Log.d("map", map.getProjection().getVisibleRegion().latLngBounds.toString());
+
                     }
                 }
             }
@@ -137,7 +143,40 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         });
     }
 
-    private Route initialialRoute() {
+    @Override
+    public void updateRoute(Route route) {
+        Log.d("fmap", "Update the route ");
+    }
+
+    @Override
+    public void highlight(AbstractEntry entry) {
+        Log.d("fmap", "highligt the entry " + entry.getComment());
+         disposeEditor();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void focus(AbstractEntry entry) {
+        Log.d("fmap", "focus to the entry " + entry.getComment());
+
+        disposeEditor();
+
+        if(entry instanceof Path) {
+            PathEditor pathEditor = new PathEditor();
+            pathEditor.prepare(map, (Path) entry);
+            pathEditor.setDataUpdateListener(data -> routeCreateView.onPathUpdate(data));
+            editor = pathEditor;
+        }
+    }
+
+    private void disposeEditor() {
+        if(editor != null) {
+            editor.dispose();
+            editor = null;
+        }
+    }
+
+    private Route initialRoute() {
         Route route = new Route();
         route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
         route.setRoute_id(null);
@@ -153,10 +192,10 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 null
         ));
         ArrayList path1 = new ArrayList<PathVertex>();
-        path1.add(new PathVertex(1.1, 1.0));
-        path1.add(new PathVertex(1.2, 1.1));
-        path1.add(new PathVertex(1.4, 1.2));
-        path1.add(new PathVertex(1.5, 1.3));
+        path1.add(new PathVertex(39.921260, 32.796165));
+        path1.add(new PathVertex(39.924260, 32.797165));
+        path1.add(new PathVertex(39.922260, 32.798165));
+        path1.add(new PathVertex(39.925260, 32.799165));
 
         route.addEntry(new Path(
                 null,
@@ -176,19 +215,19 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 null
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
-        path2.add(new PathVertex(1.1, 1.0));
-        path2.add(new PathVertex(1.2, 1.1));
-        path2.add(new PathVertex(1.4, 1.2));
-        path2.add(new PathVertex(1.5, 1.3));
+        path2.add(new PathVertex(39.921260, 32.795165));
+        path2.add(new PathVertex(39.924260, 32.796165));
+        path2.add(new PathVertex(39.922260, 32.797165));
+        path2.add(new PathVertex(39.925260, 32.798165));
 
         route.addEntry(new Path(
                 null,
                 10,
                 5,
-                "Bu yolu takip edin 5 dakika",
+                "Bu yolu takip edin 10 dakika",
                 null,
-                Path.PathType.BUS,
-                path1
+                Path.PathType.DRIVING,
+                path2
         ));
         route.addEntry(new Stop(
                 null,
@@ -199,19 +238,19 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 null
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
-        path3.add(new PathVertex(1.1, 1.0));
-        path3.add(new PathVertex(1.2, 1.1));
-        path3.add(new PathVertex(1.4, 1.2));
-        path3.add(new PathVertex(1.5, 1.3));
+        path3.add(new PathVertex(39.921260, 32.794165));
+        path3.add(new PathVertex(39.924260, 32.795165));
+        path3.add(new PathVertex(39.922260, 32.796165));
+        path3.add(new PathVertex(39.925260, 32.797165));
 
         route.addEntry(new Path(
                 null,
                 10,
                 5,
-                "Bu yolu takip edin 5 dakika",
+                "Bu yolu takip edin 15 dakika",
                 null,
-                Path.PathType.BUS,
-                path1
+                Path.PathType.WALKING,
+                path3
         ));
         route.addEntry(new Stop(
                 null,
@@ -223,21 +262,5 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         ));
 
         return route;
-    }
-
-    @Override
-    public void updateRoute(Route route) {
-        Log.d("fmap", "Update the route ");
-    }
-
-    @Override
-    public void highlight(AbstractEntry entry) {
-        Log.d("fmap", "highligt the entry " + entry.getComment());
-    }
-
-    @Override
-    public void focus(AbstractEntry entry) {
-        Log.d("fmap", "focus to the entry " + entry.getComment());
-
     }
 }

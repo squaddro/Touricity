@@ -2,7 +2,7 @@ package com.squadro.touricity.message.types.interfaces;
 
 import com.squadro.touricity.message.types.AbstractEntry;
 
-public interface IRoute {
+public interface IRoute  extends IDataType {
 
     void addEntry(AbstractEntry abstractEntry);
     void addEntry(AbstractEntry abstractEntry, int index);

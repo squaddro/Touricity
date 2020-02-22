@@ -1,5 +1,7 @@
 package com.squadro.touricity.message.types;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +17,9 @@ public class PathVertex {
     public PathVertex(double lat, double lon){
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public LatLng toLatLong() {
+        return new LatLng(lat, lon);
     }
 }
