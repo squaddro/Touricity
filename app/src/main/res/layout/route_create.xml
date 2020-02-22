@@ -26,7 +26,7 @@
             android:layout_toRightOf="@+id/route_create_add_path_button"
             android:text="Add Stop" />
     </RelativeLayout>
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:id="@+id/route_create_scroll">
@@ -36,6 +36,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/route_create_list">
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </com.squadro.touricity.view.routeList.RouteCreateView>

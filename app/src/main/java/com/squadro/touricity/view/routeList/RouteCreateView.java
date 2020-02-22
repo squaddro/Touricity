@@ -1,10 +1,13 @@
 package com.squadro.touricity.view.routeList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +38,7 @@ import lombok.Setter;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class RouteCreateView extends LinearLayout implements IEntryButtonEventsListener, IRouteInsertListener, IRouteUpdateEventListener, ScrollView.OnScrollChangeListener {
 
+    public static Activity activity;
     @Getter
     private Route route;
 
@@ -42,7 +46,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     private IRouteMapViewUpdater routeMapViewUpdater;
 
     LinearLayout entryList;
-    ScrollView scrollView;
+    NestedScrollView scrollView;
     private AbstractEntry prevHighlighted;
 
     public RouteCreateView(Context context, @Nullable AttributeSet attrs) {
@@ -189,7 +193,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     public void onScrollChange(View view, int x, int i1, int i2, int i3) {
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
-
         for(int i=0; i<entryList.getChildCount(); i++) {
             RouteListItem entryView = (RouteListItem) entryList.getChildAt(i);
             if(entryView.getLocalVisibleRect(rect)){
