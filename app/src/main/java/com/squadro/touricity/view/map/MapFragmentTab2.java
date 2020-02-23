@@ -149,6 +149,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Log.d("fmap", "Update the route ");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
@@ -170,10 +171,12 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void disposeEditor() {
         if(editor != null) {
             editor.dispose();
             mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
+            createButtonListeners(mapLongClickListener.getButtons());
             editor = null;
         }
     }
