@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.squadro.touricity.view.routeList.RouteExploreView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.squadro.touricity.view.routeList.SavedRouteView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/route_save"
     android:layout_width="match_parent"
@@ -10,4 +10,18 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="90dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-</com.squadro.touricity.view.routeList.RouteExploreView>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/route_save_scroll">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/route_save_list">
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</com.squadro.touricity.view.routeList.SavedRouteView>

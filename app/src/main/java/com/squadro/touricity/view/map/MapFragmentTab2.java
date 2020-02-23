@@ -181,7 +181,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
-    private Route initialRoute() {
+    public static Route initialRoute() {
         Route route = new Route();
         route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
         route.setRoute_id(null);
