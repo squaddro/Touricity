@@ -1,18 +1,36 @@
 package com.squadro.touricity.view.routeList.entry;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.requests.ILocationRequest;
+import com.squadro.touricity.requests.LocationRequests;
+import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.RouteListItem;
 
-public class StopCardView extends RouteListItem<Stop> {
+public class StopCardView extends RouteListItem<Stop> implements ILocationRequest {
 
     private Stop stop;
+    private String viewId;
+
+
+    public String getViewId() {
+        return viewId;
+    }
+
+    public void setViewId(String viewId) {
+        this.viewId = viewId;
+    }
 
     private TextView textStopId;
     private TextView textLocationId;
@@ -44,6 +62,21 @@ public class StopCardView extends RouteListItem<Stop> {
         textExpense.setText(stop.getExpense() + "$");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public boolean onLongClick(View view) {
+        if (this.getViewId().equals("explore")) {
+            String location_id = this.getEntry().getLocation_id();
+            RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
+
+            if (routeCreateView != null) {
+                LocationRequests locationRequests = new LocationRequests();
+                locationRequests.getLocationInfo(location_id, this);
+            }
+        }
+        return false;
+    }
+
     @Override
     protected int getRemoveButtonId() {
         return R.id.stop_view_remove_button;
@@ -67,5 +100,12 @@ public class StopCardView extends RouteListItem<Stop> {
     @Override
     public Stop getEntry() {
         return stop;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onResponseLocationInfo(Location location) {
+        RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
+        routeCreateView.onInsertLocation(location);
     }
 }

@@ -8,10 +8,6 @@ import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,10 +19,7 @@ public class LocationRequests {
 
     }
 
-    public Location getLocationInfo(String location_id) {
-
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicReference<Location> location = new AtomicReference<>(null);
+    public void getLocationInfo(String location_id, ILocationRequest iLocationRequest) {
         final LocationConverter locationConverter = new LocationConverter();
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
@@ -43,22 +36,15 @@ public class LocationRequests {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject body = response.body();
                 if (body != null) {
-                    location.set((Location) locationConverter.jsonToObject(response.body()));
+                    iLocationRequest.onResponseLocationInfo((Location) locationConverter.jsonToObject(response.body()));
                 }
-                countDownLatch.countDown();
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                countDownLatch.countDown();
+
             }
         });
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return location.get();
     }
 
     public void createLocation(Location location) {
