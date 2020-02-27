@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squadro.touricity.R;
-import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
@@ -28,6 +27,15 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private TextView textCreator;
     private TextView textEntries;
     private LinearLayout entryList;
+    private String viewId;
+
+    public String getViewId() {
+        return viewId;
+    }
+
+    public void setViewId(String viewId) {
+        this.viewId = viewId;
+    }
 
     public RouteCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -45,6 +53,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 Stop stop = (Stop) entry;
                 textEntries.append(stop.getStop_id() + " ");
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
+                cardView.setViewId(this.viewId);
                 cardView.update(stop);
                 RelativeLayout bLayer = cardView.findViewById(R.id.stop_view_button_layer);
                 bLayer.setVisibility(INVISIBLE);

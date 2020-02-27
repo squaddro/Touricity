@@ -8,7 +8,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
@@ -45,6 +44,7 @@ public class RouteExploreView extends LinearLayout{
         for(int i = 0; i<routeList.size(); i++){
             Route route = routeList.get(i);
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
+            cardView.setViewId("explore");
             cardView.loadRoute(route);
             routes.addView(cardView);
         }

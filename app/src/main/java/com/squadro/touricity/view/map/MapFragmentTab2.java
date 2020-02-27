@@ -26,7 +26,6 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
@@ -41,7 +40,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private SupportMapFragment supportMapFragment;
     private MapLongClickListener mapLongClickListener = null;
-    private RouteCreateView routeCreateView;
+    private static RouteCreateView routeCreateView;
     private BottomSheetBehavior bottomSheetBehavior;
     private FrameLayout frameLayout;
     private GoogleMap map;
@@ -86,6 +85,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
          */
     }
 
+    public static RouteCreateView getRouteCreateView(){
+        return routeCreateView;
+    }
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void createRouteCreateView() {
         routeCreateView = getActivity().findViewById(R.id.route_create);

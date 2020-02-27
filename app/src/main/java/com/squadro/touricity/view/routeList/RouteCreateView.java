@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -67,6 +66,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             if(entry instanceof Stop) {
                 Stop stop = (Stop) entry;
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
+                cardView.setViewId("create");
                 cardView.update(stop);
                 cardView.setEntryEventListener(this);
                 entryList.addView(cardView);
