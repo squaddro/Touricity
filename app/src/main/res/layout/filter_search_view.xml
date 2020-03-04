@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
+    android:background="#EBCB6A"
     android:orientation="vertical"
     android:paddingLeft="40dp"
     android:paddingRight="35dp"
-    android:paddingBottom="50dp"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="90dp"
+    app:behavior_peekHeight="80dp"
     app:layout_behavior="com.squadro.touricity.topSheetBehavior.TopSheetBehavior">
-
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        >
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/minRateTextView"
@@ -28,10 +24,7 @@
             android:text="Minimum rate: "
             android:layout_below="@+id/SearchBar"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="20dp"
-
-             />
-
+            android:layout_marginBottom="20dp" />
 
         <AutoCompleteTextView
             android:id="@+id/SearchBar"
@@ -41,9 +34,7 @@
             android:completionThreshold="1"
             android:hint="Select a city"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
-
-            >
+            android:layout_marginBottom="30dp">
         </AutoCompleteTextView>
 
         <RatingBar
@@ -57,9 +48,7 @@
             android:stepSize="0.1"
             android:layout_toRightOf="@+id/minRateTextView"
             android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            />
-
+            android:layout_marginLeft="15dp" />
 
         <TextView
             android:id="@+id/minRateValueTextView"
@@ -79,8 +68,7 @@
             android:layout_below="@+id/minRateTextView"
             android:layout_marginBottom="20dp"
             android:layout_marginRight="15dp"
-            android:layout_alignParentLeft="true"
-            />
+            android:layout_alignParentLeft="true"/>
 
         <SeekBar
             android:id="@+id/avgCostSeekBar"
@@ -119,8 +107,7 @@
             android:layout_below="@+id/avgCostTextView"
             android:layout_marginBottom="20dp"
             android:layout_toRightOf="@+id/durationTextView"
-            android:layout_marginLeft="12dp"
-            />
+            android:layout_marginLeft="12dp" />
 
         <TextView
             android:id="@+id/durationValueTextView"
@@ -138,8 +125,7 @@
             android:layout_height="wrap_content"
             android:text="Transportation"
             android:layout_below="@+id/durationTextView"
-            android:layout_marginBottom="20dp"
-            />
+            android:layout_marginBottom="20dp" />
 
         <CheckBox
             android:id="@+id/walkCheckBox"
@@ -147,8 +133,7 @@
             android:layout_height="wrap_content"
             android:text="walk"
             android:layout_below="@+id/transportationTextView"
-            android:layout_marginBottom="15dp"
-            />
+            android:layout_marginBottom="15dp"/>
 
         <CheckBox
             android:id="@+id/carCheckBox"
@@ -157,8 +142,7 @@
             android:text="car"
             android:layout_below="@+id/transportationTextView"
             android:layout_toRightOf="@+id/walkCheckBox"
-            android:layout_marginLeft="15dp"
-            />
+            android:layout_marginLeft="15dp"/>
 
         <CheckBox
             android:id="@+id/busCheckBox"
@@ -166,8 +150,7 @@
             android:layout_height="wrap_content"
             android:text="bus"
             android:layout_below="@+id/walkCheckBox"
-            android:layout_marginBottom="15dp"
-            />
+            android:layout_marginBottom="15dp"/>
 
         <CheckBox
             android:id="@+id/trainCheckBox"
@@ -177,8 +160,7 @@
             android:layout_below="@+id/walkCheckBox"
             android:layout_toRightOf="@+id/busCheckBox"
             android:layout_marginBottom="15dp"
-            android:layout_marginLeft="20dp"
-             />
+            android:layout_marginLeft="20dp"/>
 
         <Button
             android:id="@+id/filterButton"
@@ -186,12 +168,23 @@
             android:layout_height="wrap_content"
             android:text="FILTER"
             android:layout_below="@+id/busCheckBox"
-            android:layout_centerHorizontal="true"
-            />
-
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
-
-
-
-
+    <TextView
+        android:id="@+id/createRouteHeading"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_below="@+id/barImg"
+        android:gravity="center|top"
+        android:text="Filter"
+        android:textSize="24sp"
+        android:textStyle="bold">
+    </TextView>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/barImg"
+        android:layout_above="@+id/createRouteHeading"
+        android:layout_gravity="center|bottom"
+        android:src="@drawable/ic_filter_list_24px" />
 </LinearLayout>

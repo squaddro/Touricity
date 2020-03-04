@@ -100,8 +100,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         scrollView = findViewById(R.id.route_create_scroll);
 
         scrollView.setOnScrollChangeListener(this);
-        findViewById(R.id.route_create_add_path_button).setOnClickListener(view -> createPath());
-        findViewById(R.id.route_create_add_stop_button).setOnClickListener(view -> createStop());
+ //       findViewById(R.id.route_create_add_path_button).setOnClickListener(view -> createPath());
+ //       findViewById(R.id.route_create_add_stop_button).setOnClickListener(view -> createStop());
     }
 
     private void scrollToEntry(AbstractEntry entry) {
