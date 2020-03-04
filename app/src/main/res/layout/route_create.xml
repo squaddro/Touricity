@@ -4,37 +4,42 @@
     android:id="@+id/route_create"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
+    android:background="#EBA8BA"
     android:orientation="vertical"
-    android:padding="16dp"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="90dp"
+    app:behavior_peekHeight="80dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/barImg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/route_create_add_path_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Path"/>
-        <Button
-            android:id="@+id/route_create_add_stop_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/route_create_add_path_button"
-            android:text="Add Stop" />
-    </RelativeLayout>
+        android:layout_height="40dp"
+        android:layout_below="@+id/createRouteHeading"
+        android:layout_gravity="center|top"
+        android:src="@drawable/ic_remove_24px" />
+
+    <TextView
+        android:id="@+id/createRouteHeading"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_above="@+id/barImg"
+        android:gravity="center|bottom"
+
+        android:text="Create Route"
+        android:textSize="24sp"
+        android:textStyle="bold">
+    </TextView>
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/route_create_scroll"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:id="@+id/route_create_scroll">
+        android:layout_height="250dp">
+
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/route_create_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/route_create_list">
+            android:orientation="vertical">
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
