@@ -78,8 +78,8 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
         //This is how we draw a path between 2 points.
         String url = getDirectionsURL(tobb, somewhere, null, "driving");
-        FetchUrl FetchUrl = new FetchUrl(map);
-        FetchUrl.execute(url);
+  //      FetchUrl FetchUrl = new FetchUrl(map);
+  //      FetchUrl.execute(url);
 
     }
 
