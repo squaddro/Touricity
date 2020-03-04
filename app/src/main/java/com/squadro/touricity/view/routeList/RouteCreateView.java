@@ -1,16 +1,18 @@
 package com.squadro.touricity.view.routeList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -21,6 +23,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.entry.PathCardView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
@@ -37,7 +40,6 @@ import lombok.Setter;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class RouteCreateView extends LinearLayout implements IEntryButtonEventsListener, IRouteInsertListener, IRouteUpdateEventListener, ScrollView.OnScrollChangeListener {
 
-    public static Activity activity;
     @Getter
     private Route route;
 
@@ -62,16 +64,15 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
         Context context = getContext();
 
-        for(IEntry entry : route.getAbstractEntryList()){
-            if(entry instanceof Stop) {
+        for (IEntry entry : route.getAbstractEntryList()) {
+            if (entry instanceof Stop) {
                 Stop stop = (Stop) entry;
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setViewId("create");
                 cardView.update(stop);
                 cardView.setEntryEventListener(this);
                 entryList.addView(cardView);
-            }
-            else if(entry instanceof  Path) {
+            } else if (entry instanceof Path) {
                 Path path = (Path) entry;
                 PathCardView cardView = (PathCardView) LayoutInflater.from(context).inflate(R.layout.path_card_view, null);
                 cardView.update(path);
@@ -88,7 +89,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     private void UpdateRouteInfo() {
         UpdateView();
 
-        if(routeMapViewUpdater != null)
+        if (routeMapViewUpdater != null)
             routeMapViewUpdater.updateRoute(route);
     }
 
@@ -111,7 +112,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     }
 
     public Stop createStop() {
-        if(route == null)
+        if (route == null)
             return null;
 
         Stop stop = new Stop(null, 0, 0, "", null, null);
@@ -124,7 +125,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     }
 
     public Path createPath() {
-        if(route == null)
+        if (route == null)
             return null;
 
         Path path = new Path(null, 0, 0, "", null, null, new ArrayList<>());
@@ -159,8 +160,27 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     @Override
     public void onEditEntry(AbstractEntry entry) {
         Log.d("fcreate", "Edit " + entry.getComment());
-        if(routeMapViewUpdater != null)
+        if (routeMapViewUpdater != null)
             routeMapViewUpdater.focus(entry);
+
+        MapFragmentTab2 routeMapViewUpdater = (MapFragmentTab2) this.routeMapViewUpdater;
+        ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(1);
+        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
+        ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(inflate, new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.MATCH_PARENT));
+
+        Button button = inflate.findViewById(R.id.stop_edit_save);
+        button.setOnClickListener(v -> {
+            if(entry instanceof Stop){
+                entry.setComment(((EditText)inflate.findViewById(R.id.stop_edit_comment_text)).getText().toString());
+                entry.setDuration(Integer.parseInt(((EditText)inflate.findViewById(R.id.stop_edit_duration_text)).getText().toString()));
+                entry.setExpense(Integer.parseInt(((EditText)inflate.findViewById(R.id.stop_edit_expense_text)).getText().toString()));
+                onStopUpdate((Stop)entry);
+                ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(1);
+                ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
+            }
+        });
+
     }
 
     @Override
@@ -193,10 +213,10 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     public void onScrollChange(View view, int x, int i1, int i2, int i3) {
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
-        for(int i=0; i<entryList.getChildCount(); i++) {
+        for (int i = 0; i < entryList.getChildCount(); i++) {
             RouteListItem entryView = (RouteListItem) entryList.getChildAt(i);
-            if(entryView.getLocalVisibleRect(rect)){
-                if(routeMapViewUpdater != null && (prevHighlighted != entryView.getEntry()))
+            if (entryView.getLocalVisibleRect(rect)) {
+                if (routeMapViewUpdater != null && (prevHighlighted != entryView.getEntry()))
                     routeMapViewUpdater.highlight(entryView.getEntry());
                 prevHighlighted = entryView.getEntry();
 
@@ -212,6 +232,17 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     @Override
     public void onStopUpdate(Stop stop) {
-
+        IEntry[] entries = getRoute().getEntries();
+        for(IEntry entry : entries){
+            if(entry instanceof Stop){
+                if(entry == stop){
+                    entry.setComment(stop.getComment());
+                    entry.setDuration(stop.getDuration());
+                    entry.setExpense(stop.getExpense());
+                }
+            }
+        }
+        route.setEntries(entries);
+        UpdateView();
     }
 }

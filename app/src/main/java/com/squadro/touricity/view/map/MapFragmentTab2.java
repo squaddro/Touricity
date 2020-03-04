@@ -40,9 +40,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private SupportMapFragment supportMapFragment;
     private MapLongClickListener mapLongClickListener = null;
-    private static RouteCreateView routeCreateView;
+    public static RouteCreateView routeCreateView;
     private BottomSheetBehavior bottomSheetBehavior;
-    private FrameLayout frameLayout;
+    public FrameLayout frameLayout;
     private GoogleMap map;
     private PopupWindowParameters popupWindowParameters;
 
