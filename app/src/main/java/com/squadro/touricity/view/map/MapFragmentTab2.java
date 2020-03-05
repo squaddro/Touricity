@@ -13,12 +13,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
@@ -34,6 +40,7 @@ import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater {
@@ -75,14 +82,31 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
         createRouteCreateView();
         initializeSheetBehaviors();
-        RouteRequests routeRequests = new RouteRequests(routeCreateView);
-        //routeRequests.updateRoute(initialialRoute());
-        /* example location request
-        new Thread(() -> {
-            LocationRequests locationRequests = new LocationRequests();
-            locationRequests.getLocationInfo("5c0ca3bb-638d-41ef-8e36-53a5b113d044");
-        }).start();
-         */
+
+        initializePlacesAutofill();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initializePlacesAutofill() {
+        if(!Places.isInitialized()){
+            Places.initialize(this.getContext(),getResources().getString(R.string.api_key));
+        }
+
+        PlacesClient placesClient = Places.createClient(getContext());
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.autoCompleteFragment);
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                routeCreateView.onInsertLocation(new Location(place.getId(),null,place.getLatLng().latitude,place.getLatLng().longitude));
+            }
+
+            @Override
+            public void onError(Status status) {
+
+            }
+        });
     }
 
     public static RouteCreateView getRouteCreateView(){
