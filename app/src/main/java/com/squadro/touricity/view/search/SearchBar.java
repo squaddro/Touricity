@@ -13,7 +13,7 @@ import lombok.Getter;
 public class SearchBar {
 
     @Getter
-    private String inputCity;
+    private String inputCity = "";
     private AutoCompleteTextView autoCompleteTextView = null;
     private ArrayAdapter<String> adapter = null;
 

@@ -28,6 +28,7 @@ public class FilterHandler {
     public FilterHandler(Activity activity, SearchBar searchBar, MinRatingBar minRatingBar, AverageCostSeekBar averageCostSeekBar,
                   DurationSeekBar durationSeekBar, TransportationCheckBox transportationCheckBox){
 
+        this.filter = new Filter();
         this.searchBar = searchBar;
         this.minRatingBar = minRatingBar;
         this.averageCostSeekBar = averageCostSeekBar;
