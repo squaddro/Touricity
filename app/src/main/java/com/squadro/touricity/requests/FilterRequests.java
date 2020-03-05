@@ -10,13 +10,13 @@ import com.google.gson.JsonParser;
 import com.squadro.touricity.message.types.FilterResult;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
-import com.squadro.touricity.view.filter.Filter;
 import com.squadro.touricity.view.routeList.RouteExploreView;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import com.squadro.touricity.view.filter.Filter;
 
 public class FilterRequests {
 
