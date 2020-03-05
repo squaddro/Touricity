@@ -197,8 +197,8 @@ public class PathEditor implements IEditor<Path>, GoogleMap.OnMarkerDragListener
         int index = editMarkers.indexOf(marker);
         if(index >= 0) {
             PathVertex vertex = path.getVertices().get(index);
-            vertex.setLat(marker.getPosition().latitude);
-            vertex.setLon(marker.getPosition().longitude);
+            vertex.setLatitude(marker.getPosition().latitude);
+            vertex.setLongitude(marker.getPosition().longitude);
 
             drawPolyline();
         }
