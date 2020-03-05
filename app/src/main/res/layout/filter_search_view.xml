@@ -152,16 +152,6 @@
             android:layout_below="@+id/walkCheckBox"
             android:layout_marginBottom="15dp"/>
 
-        <CheckBox
-            android:id="@+id/trainCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="train"
-            android:layout_below="@+id/walkCheckBox"
-            android:layout_toRightOf="@+id/busCheckBox"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="20dp"/>
-
         <Button
             android:id="@+id/filterButton"
             android:layout_width="wrap_content"

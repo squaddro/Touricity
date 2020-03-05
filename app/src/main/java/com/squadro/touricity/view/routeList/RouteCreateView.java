@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.routeList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -163,11 +164,16 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         if (routeMapViewUpdater != null)
             routeMapViewUpdater.focus(entry);
 
+
         MapFragmentTab2 routeMapViewUpdater = (MapFragmentTab2) this.routeMapViewUpdater;
-        ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
+        Activity activity = routeMapViewUpdater.getActivity();
+        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.MATCH_PARENT);
+
+        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).removeViewAt(2);
+
         View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
-        ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(inflate, new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
-                CoordinatorLayout.LayoutParams.MATCH_PARENT));
+        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate,layoutParams );
 
         Button button = inflate.findViewById(R.id.stop_edit_save);
         button.setOnClickListener(v -> {
