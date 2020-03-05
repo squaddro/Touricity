@@ -23,13 +23,21 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_width="50dp"
+                android:layout_width="match_parent"
                 android:layout_height="50dp">
                 <Button
                     android:id="@+id/stop_edit_save"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:text="Save">
+                    android:background="@drawable/ic_save_24px">
+                </Button>
+                <Button
+                    android:id="@+id/stop_edit_cancel"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toEndOf="@+id/stop_edit_save"
+                    android:background="@drawable/ic_cancel_24px">
                 </Button>
             </RelativeLayout>
                 <RelativeLayout
@@ -39,6 +47,8 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
+                        android:background="@drawable/edit_text_background"
+                        android:gravity="top|left"
                         android:id="@+id/stop_edit_comment_text"
                         android:inputType="textMultiLine"
                         android:overScrollMode="always"
@@ -55,6 +65,8 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:background="@drawable/edit_text_background"
+                        android:gravity="top|left"
                         android:id="@+id/stop_edit_duration_text"
                         android:inputType="textMultiLine"
                         android:overScrollMode="always"
@@ -71,6 +83,8 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:background="@drawable/edit_text_background"
+                        android:gravity="top|left"
                         android:id="@+id/stop_edit_expense_text"
                         android:inputType="textMultiLine"
                         android:overScrollMode="always"

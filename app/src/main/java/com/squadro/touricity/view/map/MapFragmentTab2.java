@@ -198,7 +198,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void disposeEditor() {
+    public void disposeEditor() {
         if(editor != null) {
             editor.dispose();
             mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);

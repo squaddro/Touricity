@@ -8,13 +8,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.squadro.touricity.R;
@@ -102,8 +105,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         scrollView = findViewById(R.id.route_create_scroll);
 
         scrollView.setOnScrollChangeListener(this);
- //       findViewById(R.id.route_create_add_path_button).setOnClickListener(view -> createPath());
- //       findViewById(R.id.route_create_add_stop_button).setOnClickListener(view -> createStop());
+        //       findViewById(R.id.route_create_add_path_button).setOnClickListener(view -> createPath());
+        //       findViewById(R.id.route_create_add_stop_button).setOnClickListener(view -> createStop());
     }
 
     private void scrollToEntry(AbstractEntry entry) {
@@ -172,21 +175,104 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
         ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).removeViewAt(2);
 
-        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
-        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate,layoutParams );
+        if (entry instanceof Stop) {
+            editStopView(entry, routeMapViewUpdater, activity, layoutParams);
+        } else if (entry instanceof Path) {
+            editPathView(entry, routeMapViewUpdater, activity, layoutParams);
+        }
+    }
 
-        Button button = inflate.findViewById(R.id.stop_edit_save);
-        button.setOnClickListener(v -> {
-            if(entry instanceof Stop){
-                entry.setComment(((EditText)inflate.findViewById(R.id.stop_edit_comment_text)).getText().toString());
-                entry.setDuration(Integer.parseInt(((EditText)inflate.findViewById(R.id.stop_edit_duration_text)).getText().toString()));
-                entry.setExpense(Integer.parseInt(((EditText)inflate.findViewById(R.id.stop_edit_expense_text)).getText().toString()));
-                onStopUpdate((Stop)entry);
-                ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-                ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-            }
+    private void editPathView(AbstractEntry entry, MapFragmentTab2 routeMapViewUpdater, Activity activity, CoordinatorLayout.LayoutParams layoutParams) {
+        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.path_edit_view, null);
+        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate, layoutParams);
+        Button button = inflate.findViewById(R.id.path_edit_save);
+
+        Button cancelButton = inflate.findViewById(R.id.path_edit_cancel);
+
+        cancelButton.setOnClickListener(v -> {
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
+            routeMapViewUpdater.disposeEditor();
+            return;
         });
+        button.setOnClickListener(v1 -> {
+            Editable commentText = ((EditText) inflate.findViewById(R.id.path_edit_comment_text)).getText();
+            if (!commentText.toString().isEmpty()) {
+                entry.setComment(commentText.toString());
+            } else {
+                entry.setComment("No comment has been entered..");
+            }
 
+            Editable durationText = ((EditText) inflate.findViewById(R.id.path_edit_duration_text)).getText();
+            if (!durationText.toString().isEmpty()) {
+                entry.setDuration(Integer.parseInt(durationText.toString()));
+            } else {
+                entry.setDuration(0);
+            }
+
+            Editable expenseText = ((EditText) inflate.findViewById(R.id.path_edit_expense_text)).getText();
+            if (!expenseText.toString().isEmpty()) {
+                entry.setExpense(Integer.parseInt(expenseText.toString()));
+            } else {
+                entry.setExpense(0);
+            }
+
+            RelativeLayout relativeLayout = inflate.findViewById(R.id.transportationCheckboxes);
+            for (int i = 0; i < relativeLayout.getChildCount(); i++) {
+                View childAt = relativeLayout.getChildAt(i);
+                if (childAt instanceof CheckBox) {
+                    CheckBox checkBox = (CheckBox) childAt;
+                    if (checkBox.isChecked()) {
+                        ((Path) entry).setPath_type(Path.PathType.values()[i - 1]);
+                        break;
+                    }
+                }
+            }
+            onPathUpdate((Path) entry);
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
+
+        });
+    }
+
+    private void editStopView(AbstractEntry entry, MapFragmentTab2 routeMapViewUpdater, Activity activity, CoordinatorLayout.LayoutParams layoutParams) {
+        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
+        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate, layoutParams);
+        Button saveButton = inflate.findViewById(R.id.stop_edit_save);
+        Button cancelButton = inflate.findViewById(R.id.stop_edit_cancel);
+
+        cancelButton.setOnClickListener(v -> {
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
+            return;
+        });
+        saveButton.setOnClickListener(v1 -> {
+            Editable commentText = ((EditText) inflate.findViewById(R.id.stop_edit_comment_text)).getText();
+            if (!commentText.toString().isEmpty()) {
+                entry.setComment(commentText.toString());
+            } else {
+                entry.setComment("No comment has been entered..");
+            }
+
+            Editable durationText = ((EditText) inflate.findViewById(R.id.stop_edit_duration_text)).getText();
+            if (!durationText.toString().isEmpty()) {
+                entry.setDuration(Integer.parseInt(durationText.toString()));
+            } else {
+                entry.setDuration(0);
+            }
+
+            Editable expenseText = ((EditText) inflate.findViewById(R.id.stop_edit_expense_text)).getText();
+            if (!expenseText.toString().isEmpty()) {
+                entry.setExpense(Integer.parseInt(expenseText.toString()));
+            } else {
+                entry.setExpense(0);
+            }
+
+            onStopUpdate((Stop) entry);
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
+            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
+
+        });
     }
 
     @Override
@@ -233,15 +319,27 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     @Override
     public void onPathUpdate(Path path) {
-
+        IEntry[] entries = getRoute().getEntries();
+        for (IEntry entry : entries) {
+            if (entry instanceof Path) {
+                if (entry == path) {
+                    entry.setComment(path.getComment());
+                    entry.setDuration(path.getDuration());
+                    entry.setExpense(path.getExpense());
+                    ((Path) entry).setPath_type(path.getPath_type());
+                }
+            }
+        }
+        route.setEntries(entries);
+        UpdateView();
     }
 
     @Override
     public void onStopUpdate(Stop stop) {
         IEntry[] entries = getRoute().getEntries();
-        for(IEntry entry : entries){
-            if(entry instanceof Stop){
-                if(entry == stop){
+        for (IEntry entry : entries) {
+            if (entry instanceof Stop) {
+                if (entry == stop) {
                     entry.setComment(stop.getComment());
                     entry.setDuration(stop.getDuration());
                     entry.setExpense(stop.getExpense());
