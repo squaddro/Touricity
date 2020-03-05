@@ -32,6 +32,7 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
@@ -117,6 +118,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         routeCreateView = getActivity().findViewById(R.id.route_create);
         routeCreateView.setRoute(initialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
+        Button saveButton = routeCreateView.findViewById(R.id.route_create_save);
+        saveButton.setOnClickListener(v -> {
+            RouteRequests routeRequests = new RouteRequests(routeCreateView);
+            routeRequests.updateRoute(routeCreateView.getRoute());
+        });
     }
 
     public MapLongClickListener getMapLongClickListener() {

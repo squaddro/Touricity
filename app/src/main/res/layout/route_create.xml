@@ -24,11 +24,17 @@
         android:layout_height="38dp"
         android:layout_above="@+id/barImg"
         android:gravity="center|bottom"
-
         android:text="Create Route"
         android:textSize="24sp"
         android:textStyle="bold">
     </TextView>
+
+    <Button
+        android:id="@+id/route_create_save"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_save_24px">
+    </Button>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/route_create_scroll"

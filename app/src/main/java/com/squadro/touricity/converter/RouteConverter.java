@@ -47,8 +47,8 @@ public class RouteConverter implements IConverter {
                 entries.add(stop);
             }
         }
-
-        return new Route(route_id, creator, (IEntry[]) entries.toArray(), city_id, title, privacy);
+        IEntry[] iEntries = new IEntry[entries.size()];
+        return new Route(route_id, creator, entries.toArray(iEntries), city_id, title, privacy);
     }
 
     public JsonObject objectToJson(Object object) {
