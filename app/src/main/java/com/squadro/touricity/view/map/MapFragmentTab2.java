@@ -86,6 +86,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializePlacesAutofill();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initializePlacesAutofill() {
         if(!Places.isInitialized()){
             Places.initialize(this.getContext(),getResources().getString(R.string.api_key));
@@ -94,11 +95,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         PlacesClient placesClient = Places.createClient(getContext());
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autoCompleteFragment);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-
+                routeCreateView.onInsertLocation(new Location(place.getId(),null,place.getLatLng().latitude,place.getLatLng().longitude));
             }
 
             @Override
