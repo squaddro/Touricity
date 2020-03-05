@@ -43,4 +43,5 @@ dependencies {
     implementation('com.thoughtworks.xstream:xstream:1.4.8') {
         exclude group: 'xmlpull', module: 'xmlpull'
     }
+    implementation 'com.google.android.libraries.places:places:1.1.0'
 }

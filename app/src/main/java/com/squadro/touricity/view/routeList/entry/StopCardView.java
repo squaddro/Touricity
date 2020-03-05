@@ -55,7 +55,7 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     public void update(Stop stop) {
         this.stop = stop;
 
-        textLocationId.setText(stop.getStop_id());
+        textLocationId.setText(stop.getLocation_id());
         textStopId.setText(stop.getStop_id());
         textComment.setText(stop.getComment());
         textDuration.setText(stop.getDuration() + " minutes");
