@@ -42,7 +42,7 @@ public class PolylineDrawer implements ILocationRequest {
             } else if (entry instanceof Path) {
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
-                    polylineOptions.add(new LatLng(vertices.get(i).getLat(), vertices.get(i).getLon()));
+                    polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
                 }
             }
         }

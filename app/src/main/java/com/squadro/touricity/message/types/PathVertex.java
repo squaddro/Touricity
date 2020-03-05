@@ -11,15 +11,15 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class PathVertex {
 
-    private double lat;
-    private double lon;
+    private double latitude;
+    private double longitude;
 
     public PathVertex(double lat, double lon){
-        this.lat = lat;
-        this.lon = lon;
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     public LatLng toLatLong() {
-        return new LatLng(lat, lon);
+        return new LatLng(latitude, longitude);
     }
 }
