@@ -164,7 +164,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             routeMapViewUpdater.focus(entry);
 
         MapFragmentTab2 routeMapViewUpdater = (MapFragmentTab2) this.routeMapViewUpdater;
-        ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(1);
+        ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
         View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
         ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(inflate, new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
                 CoordinatorLayout.LayoutParams.MATCH_PARENT));
@@ -176,7 +176,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entry.setDuration(Integer.parseInt(((EditText)inflate.findViewById(R.id.stop_edit_duration_text)).getText().toString()));
                 entry.setExpense(Integer.parseInt(((EditText)inflate.findViewById(R.id.stop_edit_expense_text)).getText().toString()));
                 onStopUpdate((Stop)entry);
-                ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(1);
+                ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
                 ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
             }
         });
