@@ -1,7 +1,9 @@
 package com.squadro.touricity;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,6 +18,7 @@ import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.MapLongClickListener;
 import com.squadro.touricity.view.tabView.FragmentAdapter;
+import com.squadro.touricity.view.user.UserFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     MapFragmentTab1 fragment;
     MapFragmentTab2 fragment2;
     MapFragmentTab3 fragment3;
+    UserFragment fragment4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
         tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
         tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
+        tabLayout.getTabAt(3).setIcon(R.drawable.user_icon);
     }
 
     private ViewPager getViewPager() {
@@ -68,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
         fragment3 = new MapFragmentTab3();
         fragments.add(fragment3);
+
+        fragment4 = new UserFragment();
+        fragments.add(fragment4);
     }
 
     @Override
