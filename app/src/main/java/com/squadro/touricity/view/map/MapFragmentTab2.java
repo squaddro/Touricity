@@ -185,7 +185,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
-        //PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        polylineDrawer.drawRoute(routeCreateView.getRoute());
 
          disposeEditor();
     }
@@ -235,7 +236,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                new Location(31.3, 31.3),
                 null
         ));
         ArrayList path1 = new ArrayList<PathVertex>();
@@ -258,7 +259,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                new Location(32.3, 42.3),
                 null
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
@@ -281,7 +282,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
-                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                new Location(21.3, 21.3),
                 null
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
@@ -304,7 +305,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",
-                "5c0ca3bb-638d-41ef-8e36-53a5b113d044",
+                new Location(22.3, 22.3),
                 null
         ));
 
