@@ -78,10 +78,10 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
         for(int j=0; j<routes.getChildCount(); j++) {
-            RouteCardView routeView = (RouteCardView) routes.getChildAt(i);
+            RouteCardView routeView = (RouteCardView) routes.getChildAt(j);
             Route route = routeView.getRoute();
             if(routeView.getLocalVisibleRect(rect)){
-                if(route != null && (prevHighlighted != route)){
+                if((iRouteDraw != null) && (route != null) && (prevHighlighted != route)){
                     iRouteDraw.drawHighlighted(route);
                 }
                 prevHighlighted = route;
