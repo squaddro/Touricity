@@ -102,7 +102,7 @@ public class PolylineDrawer implements ILocationRequest {
                 LocationRequests locationRequest = new LocationRequests();
                 locationRequest.getLocationInfo("5f8a2f28-c78b-47f6-ba7e-62d389062df6", this);
             } else if (entry instanceof Path) {
-                if(path.getPath_id().equals(editingPath.getPath_id())) {
+                if(entry.equals(editingPath)) {
                     List<PathVertex> vertices = ((Path) entry).getVertices();
                     for (int i = 0; i < vertices.size(); i++) {
                         polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
