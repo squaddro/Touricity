@@ -185,6 +185,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
+        //PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+
          disposeEditor();
     }
 
@@ -192,6 +194,14 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void focus(AbstractEntry entry) {
         Log.d("fmap", "focus to the entry " + entry.getComment());
+
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+
+        if(entry instanceof Stop)
+            polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
+
+        else if(entry instanceof Path)
+            polylineDrawer.drawRoute(routeCreateView.getRoute(), (Path) entry);
 
         disposeEditor();
 
