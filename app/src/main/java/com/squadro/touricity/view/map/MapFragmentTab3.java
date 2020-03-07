@@ -83,6 +83,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
         SavedRouteView savedRouteView = getActivity().findViewById(R.id.route_save);
         savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
+        savedRouteView.setIRouteDraw(this);
     }
 
     private void saveRoutesToFile(List<Route> routes, File file) {

@@ -76,7 +76,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
         for(int j=0; j<routes.getChildCount(); j++) {
-            RouteCardView routeView = (RouteCardView) routes.getChildAt(i);
+            RouteCardView routeView = (RouteCardView) routes.getChildAt(j);
             Route route = routeView.getRoute();
             if(routeView.getLocalVisibleRect(rect)){
                 if(route != null && (prevHighlighted != route)){
