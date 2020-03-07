@@ -112,4 +112,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     public boolean onLongClick(View v) {
         return false;
     }
+
+    public Route getRoute(){
+        return route;
+    }
 }

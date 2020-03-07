@@ -20,15 +20,15 @@ public class PolylineDrawer implements ILocationRequest {
 
     private GoogleMap map;
     private MarkerOptions markerOptions;
+    private PolylineOptions polylineOptions;
 
     public PolylineDrawer(GoogleMap map) {
         this.map = map;
+        markerOptions = new MarkerOptions();
+        polylineOptions  = new PolylineOptions();
     }
 
     public GoogleMap drawRoute(Route route) {
-
-        PolylineOptions polylineOptions = new PolylineOptions();
-        markerOptions = new MarkerOptions();
 
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
@@ -38,7 +38,7 @@ public class PolylineDrawer implements ILocationRequest {
 
             if (entry instanceof Stop) {
                 LocationRequests locationRequest = new LocationRequests();
-                locationRequest.getLocationInfo(((Stop) entry).getLocation_id(), this);
+                locationRequest.getLocationInfo("5f8a2f28-c78b-47f6-ba7e-62d389062df6", this);
             } else if (entry instanceof Path) {
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
@@ -46,14 +46,14 @@ public class PolylineDrawer implements ILocationRequest {
                 }
             }
         }
-
-        map.addMarker(markerOptions);
         map.addPolyline(polylineOptions);
+
         return map;
     }
 
     @Override
     public void onResponseLocationInfo(Location location) {
         markerOptions.position(new LatLng(location.getLatitude(), location.getLongitude()));
+        map.addMarker(markerOptions);
     }
 }

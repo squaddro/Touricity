@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.routeList.SavedRouteView;
+import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.thoughtworks.xstream.XStream;
 
 import java.io.File;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
+public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRouteDraw {
 
     private SupportMapFragment supportMapFragment;
     private BottomSheetBehavior bottomSheetBehavior;
@@ -134,5 +135,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback {
 
     public MapLongClickListener getMapLongClickListener() {
         return mapLongClickListener;
+    }
+
+    @Override
+    public void drawHighlighted(Route route) {
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        polylineDrawer.drawRoute(route);
     }
 }
