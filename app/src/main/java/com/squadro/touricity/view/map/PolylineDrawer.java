@@ -36,6 +36,8 @@ public class PolylineDrawer implements ILocationRequest {
 
     public GoogleMap drawRoute(Route route) {
 
+        map.clear();
+
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
 
@@ -58,6 +60,8 @@ public class PolylineDrawer implements ILocationRequest {
     }
 
     public GoogleMap drawRoute(Route route, Stop stop) {
+
+        map.clear();
 
         this.editingStop = stop;
 
@@ -83,6 +87,8 @@ public class PolylineDrawer implements ILocationRequest {
     }
 
     public GoogleMap drawRoute(Route route, Path path) {
+
+        map.clear();
 
         this.editingPath = path;
 
