@@ -84,7 +84,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     private List<Route> getRoutesFromFile(File file) {
         if (file.length() == 0) return null;
         else {
-            return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
+            try{
+                return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
+            }catch(Exception e){
+                return (ArrayList<Route>)(xStream.fromXML(file));
+            }
         }
     }
 
