@@ -13,9 +13,17 @@ public class PathConverter extends AbstractEntryConverter<Path> {
 
     protected Path jsonToEntry(JsonObject json) {
 
-        String path_id = json.get("path_id").getAsString();
-        Path.PathType path_type =Path.PathType.valueOf(json.get("path_type").getAsString());
-        JsonArray vertices = json.get("vertices").getAsJsonArray();
+        String path_id = "";
+        Path.PathType path_type = Path.PathType.DRIVING;
+        JsonArray vertices = null;
+
+        try {
+            path_id = json.get("path_id").getAsString();
+            path_type = Path.PathType.valueOf(json.get("path_type").getAsString());
+            vertices = json.get("vertices").getAsJsonArray();
+        } catch (Exception e) {
+        }
+
         List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);
 
         return new Path(null, 0, 0, null, path_id, path_type, pathVertex_list);

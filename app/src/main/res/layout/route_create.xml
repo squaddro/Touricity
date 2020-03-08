@@ -29,12 +29,25 @@
         android:textStyle="bold">
     </TextView>
 
-    <Button
-        android:id="@+id/route_create_save"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/ic_save_24px">
-    </Button>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/route_create_save"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_save_24px">
+        </Button>
+
+        <Button
+            android:id="@+id/route_create_add_path"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@+id/route_create_save"
+            android:background="@drawable/ic_add_24px">
+        </Button>
+    </RelativeLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/route_create_scroll"

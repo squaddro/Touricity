@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,19 +33,20 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
-import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
+import com.squadro.touricity.view.routeList.IRouteResponse;
 import com.squadro.touricity.view.routeList.RouteCreateView;
+import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater {
+public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater, IRouteResponse {
 
     private SupportMapFragment supportMapFragment;
     private MapLongClickListener mapLongClickListener = null;
@@ -89,18 +91,18 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initializePlacesAutofill() {
-        if(!Places.isInitialized()){
-            Places.initialize(this.getContext(),getResources().getString(R.string.api_key));
+        if (!Places.isInitialized()) {
+            Places.initialize(this.getContext(), getResources().getString(R.string.api_key));
         }
 
         PlacesClient placesClient = Places.createClient(getContext());
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autoCompleteFragment);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                routeCreateView.onInsertLocation(new Location(place.getId(),null,place.getLatLng().latitude,place.getLatLng().longitude));
+                routeCreateView.onInsertLocation(new Location(place.getId(), null, place.getLatLng().latitude, place.getLatLng().longitude));
             }
 
             @Override
@@ -110,18 +112,20 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         });
     }
 
-    public static RouteCreateView getRouteCreateView(){
+    public static RouteCreateView getRouteCreateView() {
         return routeCreateView;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void createRouteCreateView() {
         routeCreateView = getActivity().findViewById(R.id.route_create);
-        routeCreateView.setRoute(initialRoute());
+        routeCreateView.setRoute(new Route());
         routeCreateView.setRouteMapViewUpdater(this);
         Button saveButton = routeCreateView.findViewById(R.id.route_create_save);
         saveButton.setOnClickListener(v -> {
-            RouteRequests routeRequests = new RouteRequests(routeCreateView);
-            routeRequests.updateRoute(routeCreateView.getRoute());
+            RouteRequests routeRequests = new RouteRequests();
+            routeRequests.updateRoute(routeCreateView.getRoute(), this);
+            routeCreateView.CleanView();
         });
     }
 
@@ -135,8 +139,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         int numberOfButtons = 1;
         List<String> buttonNames = new ArrayList<>();
         buttonNames.add("Add to route");
-        popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
-        mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
+        popupWindowParameters = new PopupWindowParameters(numberOfButtons, buttonNames);
+        mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(), popupWindowParameters);
         createButtonListeners(mapLongClickListener.getButtons());
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
     }
@@ -146,7 +150,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Button button = buttons.get(0);
         button.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
-            Location location = new Location("sample_id", "city", latLng.latitude,latLng.longitude);
+            Location location = new Location("sample_id", "city", latLng.latitude, latLng.longitude);
             routeCreateView.onInsertLocation(location);
             mapLongClickListener.dissmissPopUp();
         });
@@ -187,7 +191,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Log.d("fmap", "highligt the entry " + entry.getComment());
         //PolylineDrawer polylineDrawer = new PolylineDrawer(map);
 
-         disposeEditor();
+        disposeEditor();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -197,15 +201,15 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
 
-        if(entry instanceof Stop)
+        if (entry instanceof Stop)
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
 
-        else if(entry instanceof Path)
+        else if (entry instanceof Path)
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Path) entry);
 
         disposeEditor();
 
-        if(entry instanceof Path) {
+        if (entry instanceof Path) {
             PathEditor pathEditor = new PathEditor();
             pathEditor.prepare(map, (Path) entry);
             pathEditor.setDataUpdateListener(data -> routeCreateView.onPathUpdate(data));
@@ -215,9 +219,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void disposeEditor() {
-        if(editor != null) {
+        if (editor != null) {
             editor.dispose();
-            mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
+            mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(), popupWindowParameters);
             createButtonListeners(mapLongClickListener.getButtons());
             editor = null;
         }
@@ -309,5 +313,14 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         ));
 
         return route;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRouteResponse(Route route) {
+        SavedRouteView savedRouteView = getActivity().findViewById(R.id.route_save);
+        savedRouteView.getIRouteSave().saveRoute(route);
+        TabLayout tabLayout = getActivity().findViewById(R.id.tabLayout);
+        tabLayout.getTabAt(2).select();
     }
 }

@@ -86,7 +86,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         }
     }
 
-    private void CleanView() {
+    public void CleanView() {
         entryList.removeAllViews();
     }
 
@@ -105,8 +105,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         scrollView = findViewById(R.id.route_create_scroll);
 
         scrollView.setOnScrollChangeListener(this);
-        //       findViewById(R.id.route_create_add_path_button).setOnClickListener(view -> createPath());
-        //       findViewById(R.id.route_create_add_stop_button).setOnClickListener(view -> createStop());
+        findViewById(R.id.route_create_add_path).setOnClickListener(view -> createPath());
     }
 
     private void scrollToEntry(AbstractEntry entry) {
@@ -132,7 +131,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         if (route == null)
             return null;
 
-        Path path = new Path(null, 0, 0, "", null, null, new ArrayList<>());
+        Path path = new Path(null, 0, 0, "", null, Path.PathType.DRIVING, new ArrayList<>());
         route.addEntry(path);
 
         UpdateView();
