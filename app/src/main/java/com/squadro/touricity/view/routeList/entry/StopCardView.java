@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Location;
+import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.ILocationRequest;
 import com.squadro.touricity.requests.LocationRequests;
@@ -21,13 +22,15 @@ import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.RouteListItem;
 
+import lombok.Setter;
+
 public class StopCardView extends RouteListItem<Stop> implements ILocationRequest {
 
     private Stop stop;
     private String viewId;
 
-    private int clickCounter1 = 0;
-    private int clickCounter2 = 0;
+    @Setter
+    private Route route;
 
 
     public String getViewId() {
@@ -80,19 +83,15 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     @Override
     public void onClick(View view) {
         if(this.getViewId().equals("explore")){
-            clickCounter1++;
 
             PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap());
-            polylineDrawer.drawStop(stop);
-
-            
+            polylineDrawer.drawRoute(this.route, stop);
         }
 
         else if(this.getViewId().equals("saved")){
-            clickCounter2++;
 
             PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap());
-            polylineDrawer.drawStop(stop);
+            polylineDrawer.drawRoute(this.route, stop);
         }
     }
 
