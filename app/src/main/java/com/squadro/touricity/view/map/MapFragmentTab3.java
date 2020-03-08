@@ -30,6 +30,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.Getter;
 
 public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRouteDraw, IRouteSave {
 
@@ -39,7 +42,8 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     private GoogleMap map;
     private MapLongClickListener mapLongClickListener = null;
     private File offlineDataFile;
-    private SavedRouteView savedRouteView;
+    @Getter
+    private static SavedRouteView savedRouteView;
     private XStream xStream;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -83,32 +87,53 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
             return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void writeRoutesToFile(Route route) {
+    public void writeRouteToFile(Route route) {
         FileWriter fileWriter = null;
         try {
-            fileWriter = new FileWriter(offlineDataFile,true);
+            fileWriter = new FileWriter(offlineDataFile, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (offlineDataFile.length() == 0) {
             List<Route> routes = new ArrayList<>();
             routes.add(route);
-            xStream.toXML(new SavedRoutesItem(routes),fileWriter);
+            xStream.toXML(new SavedRoutesItem(routes), fileWriter);
             savedRouteView.setRouteList(routes);
-        }else{
+        } else {
             List<Route> routes = getRoutesFromFile(offlineDataFile);
             routes.add(route);
             offlineDataFile.delete();
             try {
                 offlineDataFile.createNewFile();
-                fileWriter = new FileWriter(offlineDataFile,true);
+                fileWriter = new FileWriter(offlineDataFile, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            xStream.toXML(new SavedRoutesItem(routes),fileWriter);
+            xStream.toXML(new SavedRoutesItem(routes), fileWriter);
             savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void writeRoutesToFile(List<Route> routes) {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(offlineDataFile, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        offlineDataFile.delete();
+        try {
+            offlineDataFile.createNewFile();
+            fileWriter = new FileWriter(offlineDataFile, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        xStream.toXML(new SavedRoutesItem(routes), fileWriter);
+        savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
     }
 
     private void initializeSheetbehavior(GoogleMap googleMap) {
@@ -153,9 +178,20 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(route);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void deleteRoute(Route route) {
+        List<Route> routesFromFile = getRoutesFromFile(offlineDataFile);
+        List<Route> collect = routesFromFile.stream()
+                .filter(route1 -> !route1.getRoute_id().equals(route.getRoute_id()))
+                .collect(Collectors.toList());
+        writeRoutesToFile(collect);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void saveRoute(Route route) {
-        writeRoutesToFile(route);
+        writeRouteToFile(route);
     }
 }

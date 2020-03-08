@@ -24,7 +24,7 @@ import lombok.Setter;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 
-public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollChangeListener {
+public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollChangeListener, View.OnLongClickListener {
 
     @Getter
     private List<Route> routeList;
@@ -72,6 +72,8 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        setOnLongClickListener(this);
+        setLongClickable(true);
         routes = findViewById(R.id.route_save_list);
         scrollView = findViewById(R.id.route_save_scroll);
         scrollView.setOnScrollChangeListener(this);
@@ -93,5 +95,12 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
                 break;
             }
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Route route = ((RouteCardView) v).getRoute();
+        iRouteSave.deleteRoute(route);
+        return false;
     }
 }
