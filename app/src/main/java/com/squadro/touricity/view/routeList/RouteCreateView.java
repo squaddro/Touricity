@@ -118,7 +118,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         if (route == null)
             return null;
 
-        Stop stop = new Stop(null, 0, 0, "", null, null);
+        Stop stop = new Stop(null, 0, 0, "", "", null);
         route.addEntry(stop);
 
         UpdateView();

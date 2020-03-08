@@ -27,4 +27,11 @@ public class Location implements ILocation {
         latitude = 0.0;
         longitude = 0.0;
     }
+
+    public Location(double lat, double lon){
+        location_id = null;
+        city_id = null;
+        this.latitude = lat;
+        this.longitude = lon;
+    }
 }
