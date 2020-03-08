@@ -3,6 +3,7 @@ package com.squadro.touricity.view.map;
 import android.content.Context;
 
 import java.io.File;
+import java.io.IOException;
 
 public class CreateOfflineDataDirectory {
 
@@ -15,7 +16,6 @@ public class CreateOfflineDataDirectory {
         }
 
         File dataFile = new File(file, "route.xml");
-
         return dataFile;
     }
 }

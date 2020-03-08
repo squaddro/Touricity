@@ -32,8 +32,6 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
         this.viewId = viewId;
     }
 
-    private TextView textStopId;
-    private TextView textLocationId;
     private TextView textExpense;
     private TextView textComment;
     private TextView textDuration;
@@ -44,8 +42,6 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
 
     @Override
     protected void initialize() {
-        textStopId = findViewById(R.id.card_view_stop_id_content);
-        textLocationId = findViewById(R.id.card_view_location_id_content);
         textComment = findViewById(R.id.card_view_comment_content);
         textExpense = findViewById(R.id.card_view_expense_content);
         textDuration = findViewById(R.id.card_view_duration_content);
@@ -55,8 +51,6 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     public void update(Stop stop) {
         this.stop = stop;
 
-        textLocationId.setText(stop.getLocation_id());
-        textStopId.setText(stop.getStop_id());
         textComment.setText(stop.getComment());
         textDuration.setText(stop.getDuration() + " minutes");
         textExpense.setText(stop.getExpense() + "$");

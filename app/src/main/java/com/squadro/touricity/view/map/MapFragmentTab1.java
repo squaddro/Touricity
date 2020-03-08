@@ -19,6 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
@@ -220,14 +221,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "id_location_1",
+                new Location(35.3, 40.3),
                 "id_stop_1"
         ));
         ArrayList path1 = new ArrayList<PathVertex>();
-        path1.add(new PathVertex(10.1, 10.0));
-        path1.add(new PathVertex(10.2, 10.1));
-        path1.add(new PathVertex(10.4, 10.2));
-        path1.add(new PathVertex(10.5, 10.3));
+        path1.add(new PathVertex(36.1, 38.1));
+        path1.add(new PathVertex(36.2, 38.2));
+        path1.add(new PathVertex(36.3, 38.3));
+        path1.add(new PathVertex(36.4, 38.5));
 
         route.addEntry(new Path(
                 "this should be null",
@@ -243,14 +244,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "id_location_2",
+                new Location(36.3, 41.3),
                 "id_stop_2"
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
-        path2.add(new PathVertex(11.1, 11.0));
-        path2.add(new PathVertex(11.2, 11.1));
-        path2.add(new PathVertex(11.4, 11.2));
-        path2.add(new PathVertex(11.5, 11.3));
+        path2.add(new PathVertex(32.5, 30.1));
+        path2.add(new PathVertex(32.6, 30.2));
+        path2.add(new PathVertex(32.7, 30.3));
+        path2.add(new PathVertex(32.8, 30.4));
 
         route.addEntry(new Path(
                 "this should be null",
@@ -266,7 +267,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
-                "id_location_3",
+                new Location(36.3, 41.3),
                 "id_stop_3"
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
@@ -289,7 +290,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",
-                "id_location_4",
+                new Location(39.3, 46.3),
                 "id_stop_4"
         ));
 
@@ -301,7 +302,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "id_location_1",
+                new Location(15.3, 10.3),
                 "id_stop_1"
         ));
         ArrayList path4 = new ArrayList<PathVertex>();
@@ -324,7 +325,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "id_location_2",
+                new Location(11.3, 12.3),
                 "id_stop_2"
         ));
         ArrayList path5 = new ArrayList<PathVertex>();

@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
+import com.squadro.touricity.view.routeList.event.IRouteSave;
 
 import java.util.List;
 
@@ -23,13 +24,17 @@ import lombok.Setter;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 
-public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollChangeListener {
+public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollChangeListener, View.OnLongClickListener {
 
     @Getter
     private List<Route> routeList;
 
     @Setter
     private IRouteDraw iRouteDraw;
+
+    @Setter
+    @Getter
+    private IRouteSave iRouteSave;
 
     private Route prevHighlighted;
     LinearLayout routes;
@@ -49,6 +54,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
 
         Context context = getContext();
 
+        if(routeList == null || routeList.isEmpty()) return;
         for(int i = 0; i<routeList.size(); i++){
             Route route = routeList.get(i);
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
@@ -66,6 +72,8 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        setOnLongClickListener(this);
+        setLongClickable(true);
         routes = findViewById(R.id.route_save_list);
         scrollView = findViewById(R.id.route_save_scroll);
         scrollView.setOnScrollChangeListener(this);
@@ -76,7 +84,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
         for(int j=0; j<routes.getChildCount(); j++) {
-            RouteCardView routeView = (RouteCardView) routes.getChildAt(i);
+            RouteCardView routeView = (RouteCardView) routes.getChildAt(j);
             Route route = routeView.getRoute();
             if(routeView.getLocalVisibleRect(rect)){
                 if(route != null && (prevHighlighted != route)){
@@ -87,5 +95,12 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
                 break;
             }
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Route route = ((RouteCardView) v).getRoute();
+        iRouteSave.deleteRoute(route);
+        return false;
     }
 }

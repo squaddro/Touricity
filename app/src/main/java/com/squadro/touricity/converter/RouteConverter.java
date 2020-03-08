@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.squadro.touricity.converter.interfaces.IConverter;
 import com.squadro.touricity.message.types.AbstractEntry;
@@ -22,10 +23,11 @@ public class RouteConverter implements IConverter {
         ArrayList<AbstractEntry> entries = new ArrayList<>();
 
         String route_id = json.get("route_id").getAsString();
-        String creator = json.get("creator").getAsString();
-        String city_id = json.get("city_id").getAsString();
-        String title = json.get("title").getAsString();
-        int privacy = json.get("privacy").getAsInt();
+        String creator = "";
+        String title = "";
+        String city_id = "";
+        int privacy = 0;
+
         JsonArray entry_list = json.get("entries").getAsJsonArray();
 
         for (int i = 0; i < entry_list.size(); i++) {
@@ -33,7 +35,7 @@ public class RouteConverter implements IConverter {
             JsonObject obj = entry_list.get(i).getAsJsonObject();
             Log.d("RouteCnvrt", "" + i + " " + obj);
 
-            if(obj == null)
+            if (obj == null)
                 continue;
 
             if (obj.has("path_id")) { //entry is a path.
@@ -47,8 +49,8 @@ public class RouteConverter implements IConverter {
                 entries.add(stop);
             }
         }
-
-        return new Route(route_id, creator, (IEntry[]) entries.toArray(), city_id, title, privacy);
+        IEntry[] iEntries = new IEntry[entries.size()];
+        return new Route(route_id, creator, entries.toArray(iEntries), city_id, title, privacy);
     }
 
     public JsonObject objectToJson(Object object) {

@@ -49,38 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="30dp">
             <TextView
-                android:id="@+id/card_view_stop_id_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stop id: "/>
-
-            <TextView
-                android:id="@+id/card_view_stop_id_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/card_view_stop_id_label"
-                android:text="aşlkdfjaşdjfşalsdjf" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp">
-            <TextView
-                android:id="@+id/card_view_location_id_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Locaion id: "/>
-
-            <TextView
-                android:id="@+id/card_view_location_id_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/card_view_location_id_label"
-                android:text="aşlkdfjaşdjfşalsdjf" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp">
-            <TextView
                 android:id="@+id/card_view_comment_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
