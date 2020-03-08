@@ -36,6 +36,8 @@ import com.squadro.touricity.view.search.SearchBar;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRouteDraw {
 
     private SupportMapFragment supportMapFragment;
@@ -43,7 +45,8 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     private MapLongClickListener mapLongClickListener = null;
     private TopSheetBehavior topSheetBehavior;
     private BottomSheetBehavior bottomSheetBehavior;
-    private GoogleMap map;
+    @Getter
+    private static GoogleMap map;
     private FrameLayout frameLayout;
 
     public void onCreate(Bundle savedInstanceState) {

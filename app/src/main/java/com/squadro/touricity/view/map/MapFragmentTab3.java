@@ -39,7 +39,8 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     private SupportMapFragment supportMapFragment;
     private BottomSheetBehavior bottomSheetBehavior;
     private FrameLayout frameLayout;
-    private GoogleMap map;
+    @Getter
+    private static GoogleMap map;
     private MapLongClickListener mapLongClickListener = null;
     private File offlineDataFile;
     @Getter

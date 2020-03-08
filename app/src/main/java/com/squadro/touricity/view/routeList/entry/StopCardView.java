@@ -14,7 +14,10 @@ import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.ILocationRequest;
 import com.squadro.touricity.requests.LocationRequests;
+import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.RouteListItem;
 
@@ -22,6 +25,9 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
 
     private Stop stop;
     private String viewId;
+
+    private int clickCounter1 = 0;
+    private int clickCounter2 = 0;
 
 
     public String getViewId() {
@@ -69,6 +75,25 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
             }
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(this.getViewId().equals("explore")){
+            clickCounter1++;
+
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap());
+            polylineDrawer.drawStop(stop);
+
+            
+        }
+
+        else if(this.getViewId().equals("saved")){
+            clickCounter2++;
+
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap());
+            polylineDrawer.drawStop(stop);
+        }
     }
 
     @Override
