@@ -7,8 +7,14 @@ public class StopConverter extends AbstractEntryConverter<Stop> {
 
     protected Stop jsonToEntry(JsonObject json) {
 
-        String stop_id = json.get("stop_id").getAsString();
-        String location_id = json.get("location_id").getAsString();
+        String stop_id = "";
+        String location_id = "";
+        try {
+            stop_id = json.get("stop_id").getAsString();
+            location_id = json.get("location_id").getAsString();
+        } catch (Exception e) {
+        }
+
 
         return new Stop(null, 0, 0, null, location_id, stop_id);
     }

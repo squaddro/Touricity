@@ -14,7 +14,6 @@ public class PathCardView extends RouteListItem<Path> {
 
     private Path path;
 
-    private TextView textPathId;
     private TextView textPathType;
     private TextView textComment;
     private TextView textDuration;
@@ -26,7 +25,6 @@ public class PathCardView extends RouteListItem<Path> {
 
     @Override
     protected void initialize() {
-        textPathId = findViewById(R.id.path_view_path_id_content);
         textPathType = findViewById(R.id.path_view_path_type_content);
         textComment = findViewById(R.id.path_view_comment_content);
         textDuration = findViewById(R.id.path_view_duration_content);
@@ -37,11 +35,10 @@ public class PathCardView extends RouteListItem<Path> {
     public void update(Path entry) {
         this.path = entry;
 
-        textPathId.setText(path.getPath_id());
-        textPathType.setText(path.getPath_type().getValue()+"");
+        textPathType.setText(path.getPath_type().name()+"");
         textComment.setText(path.getComment());
         textDuration.setText(path.getDuration() + " minutes");
-        textExpense.setText(path.getExpense() + "&");
+        textExpense.setText(path.getExpense() + "$");
     }
 
     @Override

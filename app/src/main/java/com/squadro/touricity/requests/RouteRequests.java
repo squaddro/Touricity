@@ -10,7 +10,7 @@ import com.squadro.touricity.converter.RouteConverter;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
-import com.squadro.touricity.view.routeList.RouteCreateView;
+import com.squadro.touricity.view.routeList.IRouteResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,15 +19,12 @@ import retrofit2.Retrofit;
 
 public class RouteRequests {
 
+    public RouteRequests() {
 
-    private final RouteCreateView routeCreateView;
-
-    public RouteRequests(RouteCreateView routeCreateView) {
-        this.routeCreateView = routeCreateView;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateRoute(Route route) {
+    public void updateRoute(Route route, IRouteResponse iRouteResponse) {
         RouteConverter routeConverter = new RouteConverter();
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
@@ -45,7 +42,7 @@ public class RouteRequests {
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                routeCreateView.setRoute((Route) routeConverter.jsonToObject(response.body()));
+                iRouteResponse.onRouteResponse((Route) routeConverter.jsonToObject(response.body()));
             }
 
             @Override

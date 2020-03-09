@@ -19,6 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
@@ -30,11 +31,12 @@ import com.squadro.touricity.view.filter.FilterHandler;
 import com.squadro.touricity.view.filter.MinRatingBar;
 import com.squadro.touricity.view.filter.TransportationCheckBox;
 import com.squadro.touricity.view.routeList.RouteExploreView;
+import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.search.SearchBar;
 
 import java.util.ArrayList;
 
-public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
+public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRouteDraw {
 
     private SupportMapFragment supportMapFragment;
     private RouteExploreView routeExploreView;
@@ -139,6 +141,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
     private void createRouteExploreView() {
         routeExploreView = getActivity().findViewById(R.id.route_explore);
         routeExploreView.setRouteList(exampleRouteList());
+        routeExploreView.setIRouteDraw(this);
     }
 
     private void createFilterView() {
@@ -218,14 +221,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "id_location_1",
+                new Location(35.3, 40.3),
                 "id_stop_1"
         ));
         ArrayList path1 = new ArrayList<PathVertex>();
-        path1.add(new PathVertex(1.1, 1.0));
-        path1.add(new PathVertex(1.2, 1.1));
-        path1.add(new PathVertex(1.4, 1.2));
-        path1.add(new PathVertex(1.5, 1.3));
+        path1.add(new PathVertex(36.1, 38.1));
+        path1.add(new PathVertex(36.2, 38.2));
+        path1.add(new PathVertex(36.3, 38.3));
+        path1.add(new PathVertex(36.4, 38.5));
 
         route.addEntry(new Path(
                 "this should be null",
@@ -241,14 +244,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "id_location_2",
+                new Location(36.3, 41.3),
                 "id_stop_2"
         ));
         ArrayList path2 = new ArrayList<PathVertex>();
-        path2.add(new PathVertex(1.1, 1.0));
-        path2.add(new PathVertex(1.2, 1.1));
-        path2.add(new PathVertex(1.4, 1.2));
-        path2.add(new PathVertex(1.5, 1.3));
+        path2.add(new PathVertex(32.5, 30.1));
+        path2.add(new PathVertex(32.6, 30.2));
+        path2.add(new PathVertex(32.7, 30.3));
+        path2.add(new PathVertex(32.8, 30.4));
 
         route.addEntry(new Path(
                 "this should be null",
@@ -264,14 +267,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 60,
                 10,
                 "burada yaklaşık 10 dakika bekleyin",
-                "id_location_3",
+                new Location(36.3, 41.3),
                 "id_stop_3"
         ));
         ArrayList path3 = new ArrayList<PathVertex>();
-        path3.add(new PathVertex(1.1, 1.0));
-        path3.add(new PathVertex(1.2, 1.1));
-        path3.add(new PathVertex(1.4, 1.2));
-        path3.add(new PathVertex(1.5, 1.3));
+        path3.add(new PathVertex(12.1, 12.0));
+        path3.add(new PathVertex(12.2, 12.1));
+        path3.add(new PathVertex(12.4, 12.2));
+        path3.add(new PathVertex(12.5, 12.3));
 
         route.addEntry(new Path(
                 "this should be null",
@@ -287,7 +290,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 100,
                 140,
                 "burada yaklaşık 140 dakika bekleyin",
-                "id_location_4",
+                new Location(39.3, 46.3),
                 "id_stop_4"
         ));
 
@@ -299,14 +302,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 10,
                 40,
                 "burada yaklaşık 40 dakika bekleyin",
-                "id_location_1",
+                new Location(15.3, 10.3),
                 "id_stop_1"
         ));
         ArrayList path4 = new ArrayList<PathVertex>();
-        path4.add(new PathVertex(1.1, 1.0));
-        path4.add(new PathVertex(1.2, 1.1));
-        path4.add(new PathVertex(1.4, 1.2));
-        path4.add(new PathVertex(1.5, 1.3));
+        path4.add(new PathVertex(13.1, 13.0));
+        path4.add(new PathVertex(13.2, 13.1));
+        path4.add(new PathVertex(13.4, 13.2));
+        path4.add(new PathVertex(13.5, 13.3));
 
         route2.addEntry(new Path(
                 "this should be null",
@@ -322,14 +325,14 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
                 20,
                 50,
                 "burada yaklaşık 50 dakika bekleyin",
-                "id_location_2",
+                new Location(11.3, 12.3),
                 "id_stop_2"
         ));
         ArrayList path5 = new ArrayList<PathVertex>();
-        path5.add(new PathVertex(1.1, 1.0));
-        path5.add(new PathVertex(1.2, 1.1));
-        path5.add(new PathVertex(1.4, 1.2));
-        path5.add(new PathVertex(1.5, 1.3));
+        path5.add(new PathVertex(14.1, 14.0));
+        path5.add(new PathVertex(14.2, 14.1));
+        path5.add(new PathVertex(14.4, 14.2));
+        path5.add(new PathVertex(14.5, 14.3));
 
         route2.addEntry(new Path(
                 "this should be null",
@@ -343,6 +346,16 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback {
 
         routes.add(route);
         routes.add(route2);
+        routes.add(route);
+        routes.add(route2);
+        routes.add(route);
         return routes;
     }
+
+    public void drawHighlighted(Route route){
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        polylineDrawer.drawRoute(route);
+    }
+
+
 }

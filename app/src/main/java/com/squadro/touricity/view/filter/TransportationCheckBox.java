@@ -13,7 +13,6 @@ public class TransportationCheckBox {
     private CheckBox walkCheckBox = null;
     private CheckBox carCheckBox = null;
     private CheckBox busCheckBox = null;
-    private CheckBox trainCheckBox = null;
 
     @Getter
     private int transportation = 0;
@@ -22,7 +21,6 @@ public class TransportationCheckBox {
         initializeWalkCheckBox(activity);
         initializeCarCheckBox(activity);
         initializeBusCheckBox(activity);
-        initializeTrainCheckBox(activity);
     }
 
     private void initializeWalkCheckBox(Activity activity) {
@@ -38,11 +36,6 @@ public class TransportationCheckBox {
     private void initializeBusCheckBox(Activity activity){
         busCheckBox = activity.findViewById(R.id.busCheckBox);
         busCheckBox.setOnCheckedChangeListener(getBusOnCheckedChangeListener());
-    }
-
-    private void initializeTrainCheckBox(Activity activity){
-        trainCheckBox = activity.findViewById(R.id.trainCheckBox);
-        trainCheckBox.setOnCheckedChangeListener(getTrainOnCheckedChangeListener());
     }
 
     private CompoundButton.OnCheckedChangeListener getWalkOnCheckedChangeListener(){
@@ -69,15 +62,6 @@ public class TransportationCheckBox {
                 transportation += 4;
             else
                 transportation -= 4;
-        };
-    }
-
-    private CompoundButton.OnCheckedChangeListener getTrainOnCheckedChangeListener(){
-        return (compoundButton, isChecked) -> {
-            if(isChecked)
-                transportation += 8;
-            else
-                transportation -= 8;
         };
     }
 }

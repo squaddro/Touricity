@@ -49,22 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="30dp">
             <TextView
-                android:id="@+id/path_view_path_id_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Path id: "/>
-
-            <TextView
-                android:id="@+id/path_view_path_id_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/path_view_path_id_label"
-                android:text="aşlkdfjaşdjfşalsdjf" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp">
-            <TextView
                 android:id="@+id/path_view_path_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
