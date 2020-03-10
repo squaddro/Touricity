@@ -23,8 +23,11 @@ import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.routeList.entry.PathCardView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 
+import lombok.Getter;
+
 public class RouteCardView extends CardView implements View.OnClickListener, View.OnLongClickListener {
 
+    @Getter
     private Route route;
     private TextView textRouteId;
     private TextView textCreator;
@@ -57,6 +60,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 Stop stop = (Stop) entry;
                 textEntries.append(stop.getStop_id() + " ");
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
+                cardView.setRoute(route);
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
                 RelativeLayout bLayer = cardView.findViewById(R.id.stop_view_button_layer);
@@ -68,6 +72,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 Path path = (Path) entry;
                 textEntries.append(path.getPath_id() + " ");
                 PathCardView cardView = (PathCardView) LayoutInflater.from(context).inflate(R.layout.path_card_view, null);
+                cardView.setRoute(route);
+                cardView.setViewId(this.viewId);
                 cardView.update(path);
                 RelativeLayout bLayer = cardView.findViewById(R.id.path_view_button_layer);
                 bLayer.setVisibility(INVISIBLE);

@@ -19,7 +19,7 @@ import com.squadro.touricity.requests.LocationRequests;
 import java.util.Iterator;
 import java.util.List;
 
-public class PolylineDrawer{
+public class PolylineDrawer {
 
     private GoogleMap map;
     private MarkerOptions markerOptions;
@@ -33,7 +33,7 @@ public class PolylineDrawer{
     public PolylineDrawer(GoogleMap map) {
         this.map = map;
         markerOptions = new MarkerOptions();
-        polylineOptions  = new PolylineOptions();
+        polylineOptions = new PolylineOptions();
     }
 
     public GoogleMap drawRoute(Route route) {
@@ -77,16 +77,14 @@ public class PolylineDrawer{
 
             if (entry instanceof Stop) {
 
-                if(((Stop) entry).getLocation().getLatitude() == stop.getLocation().getLatitude() &&
-                        ((Stop) entry).getLocation().getLongitude() == stop.getLocation().getLongitude()){
+                if (((Stop) entry).getLocation().getLatitude() == stop.getLocation().getLatitude() &&
+                        ((Stop) entry).getLocation().getLongitude() == stop.getLocation().getLongitude()) {
 
                     markerOptions = new MarkerOptions();
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                     markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
                     map.addMarker(markerOptions);
-                }
-
-                else{
+                } else {
                     markerOptions = new MarkerOptions();
                     markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
                     map.addMarker(markerOptions);
@@ -122,7 +120,7 @@ public class PolylineDrawer{
             } else if (entry instanceof Path) {
 
                 polylineOptions = new PolylineOptions();
-                if(entry.equals(path)) {
+                if (entry.equals(path)) {
                     List<PathVertex> vertices = ((Path) entry).getVertices();
                     for (int i = 0; i < vertices.size(); i++) {
                         polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
@@ -130,9 +128,7 @@ public class PolylineDrawer{
                         map.addPolyline(polylineOptions);
                         polylineOptions.color(Color.BLACK);
                     }
-                }
-
-                else{
+                } else {
                     List<PathVertex> vertices = ((Path) entry).getVertices();
                     for (int i = 0; i < vertices.size(); i++) {
                         polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
@@ -145,6 +141,27 @@ public class PolylineDrawer{
     }
 
 
+    public GoogleMap drawStop(Stop stop) {
+        markerOptions = new MarkerOptions();
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+        markerOptions.position(new LatLng((stop.getLocation().getLatitude()), stop.getLocation().getLongitude()));
+        map.addMarker(markerOptions);
+        return map;
+    }
+
+    public GoogleMap drawPath(Path path) {
+
+        polylineOptions = new PolylineOptions();
+        List<PathVertex> vertices = path.getVertices();
+        for (int i = 0; i < vertices.size(); i++) {
+            polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
+            polylineOptions.color(Color.BLUE);
+            map.addPolyline(polylineOptions);
+
+
+        }
+        return map;
+    }
    /*
     @Override
     public void onResponseLocationInfo(Location location) {
@@ -164,4 +181,5 @@ public class PolylineDrawer{
     }
 
     */
+
 }
