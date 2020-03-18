@@ -11,17 +11,26 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Location;
+import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.ILocationRequest;
 import com.squadro.touricity.requests.LocationRequests;
+import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.RouteListItem;
+
+import lombok.Setter;
 
 public class StopCardView extends RouteListItem<Stop> implements ILocationRequest {
 
     private Stop stop;
     private String viewId;
+
+    @Setter
+    private Route route;
 
 
     public String getViewId() {
@@ -69,6 +78,21 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
             }
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(this.getViewId().equals("explore")){
+
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap());
+            polylineDrawer.drawRoute(this.route, stop);
+        }
+
+        else if(this.getViewId().equals("saved")){
+
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap());
+            polylineDrawer.drawRoute(this.route, stop);
+        }
     }
 
     @Override

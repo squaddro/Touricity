@@ -79,6 +79,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             } else if (entry instanceof Path) {
                 Path path = (Path) entry;
                 PathCardView cardView = (PathCardView) LayoutInflater.from(context).inflate(R.layout.path_card_view, null);
+                cardView.setViewId("create");
                 cardView.update(path);
                 cardView.setEntryEventListener(this);
                 entryList.addView(cardView);
