@@ -119,7 +119,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void createRouteCreateView() {
         routeCreateView = getActivity().findViewById(R.id.route_create);
-        routeCreateView.setRoute(new Route());
+        routeCreateView.setRoute(initialRoute());
         routeCreateView.setRouteMapViewUpdater(this);
         Button saveButton = routeCreateView.findViewById(R.id.route_create_save);
         saveButton.setOnClickListener(v -> {

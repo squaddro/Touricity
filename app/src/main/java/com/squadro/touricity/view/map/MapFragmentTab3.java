@@ -15,10 +15,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Path;
+import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
@@ -69,10 +72,6 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         map = googleMap;
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
 
-        LatLng tobb = new LatLng(39.921260, 32.798165);
-        googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
-
         initializeSheetbehavior(googleMap);
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
@@ -80,6 +79,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
+
+        map.setMapType(GoogleMap.MAP_TYPE_NONE);
+        TileOverlayOptions tileOverlay = new TileOverlayOptions();
+        tileOverlay.tileProvider(new CustomMapTileProvider());
+        map.addTileOverlay(tileOverlay).setZIndex(20);
     }
 
     private List<Route> getRoutesFromFile(File file) {
@@ -95,6 +99,20 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void writeRouteToFile(Route route) {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        for(IEntry entry : route.getEntries()){
+            if (entry instanceof Path) {
+                Path path = (Path) entry;
+                for(PathVertex vertex : path.getVertices()){
+                    builder.include(vertex.toLatLong());
+                }
+            }
+        }
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
+        new Thread(() -> {
+            for(int i = 5;i<20;i++)
+            new DownloadMapTiles().downloadTiles(builder.build(),i);
+        }).start();
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(offlineDataFile, true);
