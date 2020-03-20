@@ -5,18 +5,23 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.squadro.touricity.message.types.FilterResult;
+import com.squadro.touricity.converter.RouteConverter;
+import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
+import com.squadro.touricity.view.filter.Filter;
 import com.squadro.touricity.view.routeList.RouteExploreView;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import com.squadro.touricity.view.filter.Filter;
 
 public class FilterRequests {
 
@@ -43,7 +48,13 @@ public class FilterRequests {
             @Override
             @RequiresApi(api = Build.VERSION_CODES.M)
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                routeExploreView.setRouteList( (gson.fromJson(response.body().getAsString(), FilterResult.class).getRouteList()));
+                JsonArray routeList = response.body().getAsJsonArray("routeList");
+                ArrayList<Route> routes = new ArrayList<>();
+                RouteConverter routeConverter = new RouteConverter();
+                for(JsonElement element : routeList){
+                    routes.add((Route)routeConverter.jsonToObject(element.getAsJsonObject()));
+                }
+                routeExploreView.setRouteList(routes);
             }
 
             @Override
