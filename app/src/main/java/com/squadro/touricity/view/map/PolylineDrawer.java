@@ -6,15 +6,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
-import com.squadro.touricity.requests.ILocationRequest;
-import com.squadro.touricity.requests.LocationRequests;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +36,7 @@ public class PolylineDrawer {
 
     public GoogleMap drawRoute(Route route) {
 
-        map.clear();
+ //       map.clear();
 
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
@@ -55,7 +53,8 @@ public class PolylineDrawer {
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
                     polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-                    map.addPolyline(polylineOptions);
+                    Polyline polyline = map.addPolyline(polylineOptions);
+                    polyline.setZIndex(1);
                 }
             }
         }

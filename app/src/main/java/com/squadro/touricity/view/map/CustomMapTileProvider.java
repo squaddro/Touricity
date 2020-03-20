@@ -13,19 +13,22 @@ import java.io.IOException;
 public class CustomMapTileProvider implements TileProvider {
     private static final int TILE_WIDTH = 256;
     private static final int TILE_HEIGHT = 256;
-    private static final int BUFFER_SIZE = 16 * 1024;
+    private static final int BUFFER_SIZE = 1024 * 1024;
 
     @Override
     public Tile getTile(int x, int y, int zoom) {
         byte[] image = readTileImage(x, y, zoom);
-        return image == null ? null : new Tile(TILE_WIDTH, TILE_HEIGHT, image);
+        return image == null ? NO_TILE : new Tile(TILE_WIDTH, TILE_HEIGHT, image);
     }
 
     private byte[] readTileImage(int x, int y, int zoom) {
         FileInputStream in = null;
         ByteArrayOutputStream buffer = null;
 
-        try { in = new FileInputStream(getTileFile(x, y, zoom));
+        try {
+            File tileFile = getTileFile(x, y, zoom);
+            if(tileFile == null) return null;
+            in = new FileInputStream(tileFile);
             buffer = new ByteArrayOutputStream();
             int nRead;
             byte[] data = new byte[BUFFER_SIZE];
@@ -56,6 +59,9 @@ public class CustomMapTileProvider implements TileProvider {
         File sdcard = Environment.getExternalStorageDirectory();
         String tileFile = "/TILES/" + zoom + '_' + x + '_' + y + ".png";
         File file = new File(sdcard, tileFile);
-        return file;
+        if(file.exists()){
+            return file;
+        }else{return null;}
+
     }
 }

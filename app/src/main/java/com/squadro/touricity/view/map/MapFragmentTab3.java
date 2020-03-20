@@ -1,5 +1,8 @@
 package com.squadro.touricity.view.map;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,9 +21,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
@@ -76,43 +81,68 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
         savedRouteView = getActivity().findViewById(R.id.route_save);
-        savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
+        savedRouteView.setRouteList(exampleRouteList());
+
+        Route route = exampleRouteList().get(0);
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        for (IEntry entry : route.getEntries()) {
+            if (entry instanceof Path) {
+                Path path = (Path) entry;
+                for (PathVertex vertex : path.getVertices()) {
+                    builder.include(vertex.toLatLong());
+                }
+            }
+        }
+
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
 
-        map.setMapType(GoogleMap.MAP_TYPE_NONE);
-        TileOverlayOptions tileOverlay = new TileOverlayOptions();
-        tileOverlay.tileProvider(new CustomMapTileProvider());
-        map.addTileOverlay(tileOverlay).setZIndex(20);
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        polylineDrawer.drawRoute(route);
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            new Thread(() -> {
+                for (IEntry entry : route.getEntries()) {
+                    if (entry instanceof Path) {
+                        Path path = (Path) entry;
+                        for (PathVertex vertex : path.getVertices()) {
+                            double padding = -0.005;
+                            for(int i=0;i<10;i++){
+                                padding += 0.001;
+                                DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
+                                downloadMapTiles.downloadTiles(vertex.getLongitude()+padding, vertex.getLatitude()+padding);
+                            }
+                        }
+                    }
+                }
+            }).start();
+
+
+        } else {
+            map.setMapType(GoogleMap.MAP_TYPE_NONE);
+            TileOverlayOptions tileOverlay = new TileOverlayOptions();
+            tileOverlay.tileProvider(new CustomMapTileProvider());
+            tileOverlay.zIndex(0);
+            map.addTileOverlay(tileOverlay);
+        }
     }
 
     private List<Route> getRoutesFromFile(File file) {
         if (file.length() == 0) return null;
         else {
-            try{
+            try {
                 return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
-            }catch(Exception e){
-                return (ArrayList<Route>)(xStream.fromXML(file));
+            } catch (Exception e) {
+                return (ArrayList<Route>) (xStream.fromXML(file));
             }
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void writeRouteToFile(Route route) {
-        LatLngBounds.Builder builder = LatLngBounds.builder();
-        for(IEntry entry : route.getEntries()){
-            if (entry instanceof Path) {
-                Path path = (Path) entry;
-                for(PathVertex vertex : path.getVertices()){
-                    builder.include(vertex.toLatLong());
-                }
-            }
-        }
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
-        new Thread(() -> {
-            for(int i = 5;i<20;i++)
-            new DownloadMapTiles().downloadTiles(builder.build(),i);
-        }).start();
+
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(offlineDataFile, true);
@@ -216,5 +246,94 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void saveRoute(Route route) {
         writeRouteToFile(route);
+    }
+
+    private ArrayList<Route> exampleRouteList() {
+        ArrayList<Route> routes = new ArrayList<Route>();
+        Route route = new Route();
+        route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
+        route.setRoute_id(null);
+        route.setCity_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8f9");
+        route.setTitle("titleee");
+        route.setPrivacy(2);
+        route.addEntry(new Stop(
+                null,
+                10,
+                40,
+                "burada yaklaşık 40 dakika bekleyin",
+                new Location(39.921260, 32.796165),
+                null
+        ));
+        ArrayList path1 = new ArrayList<PathVertex>();
+        path1.add(new PathVertex(39.921260, 32.796165));
+        path1.add(new PathVertex(39.924260, 32.797165));
+        path1.add(new PathVertex(39.922260, 32.798165));
+        path1.add(new PathVertex(39.925260, 32.799165));
+
+        route.addEntry(new Path(
+                null,
+                10,
+                5,
+                "Bu yolu takip edin 5 dakika",
+                null,
+                Path.PathType.BUS,
+                path1
+        ));
+        route.addEntry(new Stop(
+                null,
+                20,
+                50,
+                "burada yaklaşık 50 dakika bekleyin",
+                new Location(39.921260, 32.795165),
+                null
+        ));
+        ArrayList path2 = new ArrayList<PathVertex>();
+        path2.add(new PathVertex(39.921260, 32.795165));
+        path2.add(new PathVertex(39.924260, 32.796165));
+        path2.add(new PathVertex(39.922260, 32.797165));
+        path2.add(new PathVertex(39.925260, 32.798165));
+
+        route.addEntry(new Path(
+                null,
+                10,
+                5,
+                "Bu yolu takip edin 10 dakika",
+                null,
+                Path.PathType.DRIVING,
+                path2
+        ));
+        route.addEntry(new Stop(
+                null,
+                60,
+                10,
+                "burada yaklaşık 10 dakika bekleyin",
+                new Location(39.921260, 32.794165),
+                null
+        ));
+        ArrayList path3 = new ArrayList<PathVertex>();
+        path3.add(new PathVertex(39.921260, 32.794165));
+        path3.add(new PathVertex(39.924260, 32.795165));
+        path3.add(new PathVertex(39.922260, 32.796165));
+        path3.add(new PathVertex(39.925260, 32.797165));
+
+        route.addEntry(new Path(
+                null,
+                10,
+                5,
+                "Bu yolu takip edin 15 dakika",
+                null,
+                Path.PathType.WALKING,
+                path3
+        ));
+        route.addEntry(new Stop(
+                null,
+                100,
+                140,
+                "burada yaklaşık 140 dakika bekleyin",
+                new Location(22.3, 22.3),
+                null
+        ));
+        routes.add(route);
+        return routes;
     }
 }
