@@ -136,6 +136,6 @@ public class MapMaths {
                 }
             }
         }
-        return MapMaths.boundsPadding(builder.build(), 20);
+        return MapMaths.boundsPadding(builder.build(),5,10,65,10 );
     }
 }
