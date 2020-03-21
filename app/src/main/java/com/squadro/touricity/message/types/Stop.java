@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 public class Stop extends AbstractEntry implements IStop {
 
-    private String location_id;
     private String stop_id;
     private String type = "stop";
 

@@ -69,7 +69,7 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     @Override
     public boolean onLongClick(View view) {
         if (this.getViewId().equals("explore")) {
-            String location_id = this.getEntry().getLocation_id();
+            String location_id = this.getEntry().getLocation().getLocation_id();
             RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
 
             if (routeCreateView != null) {
