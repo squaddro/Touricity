@@ -23,7 +23,7 @@ public class DownloadMapTiles {
     public void downloadTileBounds(LatLngBounds latLngBounds) {
         String urlStr = "";
 
-        for (int zoom = 0; zoom <= 18; zoom++) {
+        for (int zoom = 5; zoom <= 18; zoom++) {
             double n = Math.pow(2, zoom);
             double xMin = latLngBounds.southwest.longitude;
             double xMax = latLngBounds.northeast.longitude;
