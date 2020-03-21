@@ -9,11 +9,10 @@ public class LocationConverter implements IConverter {
     public Object jsonToObject(JsonObject json) {
 
         String location_id = json.get("location_id").getAsString();
-        String city_id = null;
         double latitude = json.get("latitude").getAsDouble();
         double longitude = json.get("longitude").getAsDouble();
 
-        return new Location(location_id, city_id, latitude, longitude);
+        return new Location(location_id, latitude, longitude);
     }
 
     public JsonObject objectToJson(Object object) {
@@ -24,7 +23,6 @@ public class LocationConverter implements IConverter {
         json.addProperty("location_id", location.getLocation_id());
         json.addProperty("latitude", location.getLatitude());
         json.addProperty("longitude", location.getLongitude());
-        json.addProperty("city_id", location.getCity_id());
 
         return json;
     }
