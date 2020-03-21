@@ -76,12 +76,16 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
         savedRouteView = getActivity().findViewById(R.id.route_save);
-        savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
+        List<Route> routesFromFile = getRoutesFromFile(offlineDataFile);
+        savedRouteView.setRouteList(routesFromFile);
+        if(routesFromFile != null && routesFromFile.size() > 0){
+            drawHighlighted(routesFromFile.get(0));
+        }
 
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
 
-        if(!checkConnection()){
+        if (!checkConnection()) {
             map.setMapType(GoogleMap.MAP_TYPE_NONE);
             TileOverlayOptions tileOverlay = new TileOverlayOptions();
             tileOverlay.tileProvider(new CustomMapTileProvider());
@@ -103,9 +107,9 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void writeRouteToFile(Route route) {
-        if(checkConnection()){
+        if (checkConnection()) {
+            DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
             new Thread(() -> {
-                DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
                 downloadMapTiles.downloadTileBounds(MapMaths.getRouteBoundings(route));
             }).start();
         }
@@ -197,6 +201,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(route);
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
+        map.setMinZoomPreference(map.getCameraPosition().zoom);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -215,11 +220,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         writeRouteToFile(route);
     }
 
-    private boolean checkConnection(){
+    private boolean checkConnection() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             return true;
-        }else return false;
+        } else return false;
     }
 }
