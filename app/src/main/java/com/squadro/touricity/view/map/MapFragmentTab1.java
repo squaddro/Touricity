@@ -30,6 +30,8 @@ import com.squadro.touricity.view.filter.DurationSeekBar;
 import com.squadro.touricity.view.filter.FilterHandler;
 import com.squadro.touricity.view.filter.MinRatingBar;
 import com.squadro.touricity.view.filter.TransportationCheckBox;
+import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.FetchUrl;
 import com.squadro.touricity.view.routeList.RouteExploreView;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.search.SearchBar;
@@ -80,49 +82,12 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         createRouteExploreView();
         initializeSheetBehaviors();
 
-
+        DirectionPost directionPost = new DirectionPost();
         //This is how we draw a path between 2 points.
-        String url = getDirectionsURL(tobb, somewhere, null, "driving");
-  //      FetchUrl FetchUrl = new FetchUrl(map);
-  //      FetchUrl.execute(url);
+        String url = directionPost.getDirectionsURL(tobb, somewhere, null, "driving");
+        FetchUrl FetchUrl = new FetchUrl(map);
+        FetchUrl.execute(url);
 
-    }
-
-    private String getDirectionsURL(LatLng origin, LatLng dest, LatLng[] waypoints, String mode) {
-
-        // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
-        // Sensor enabled
-        String sensor = "sensor=false";
-
-        String str_mode = "mode=" + mode;
-
-        String str_waypoints = "";
-
-        if(waypoints != null && waypoints.length > 0){
-            str_waypoints += "waypoints=";
-
-            for(int i=0 ; i<waypoints.length ; i++){
-                str_waypoints += waypoints[i].latitude + "," + waypoints[i].longitude + "|";
-            }
-            str_waypoints = str_waypoints.substring(0, str_waypoints.length()-1);
-        }
-
-        // Building the parameters to the web service
-        String parameters = str_mode + "&" + str_origin + "&" + str_dest + "&" + sensor + "&" + str_waypoints;
-
-        // Output format
-        String output = "json";
-
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
-
-        //url = "https://maps.googleapis.com/maps/api/directions/json?sensor=true&mode=walking&origin=37.757946%2C39.4048&destination=37.757954%2C38.426349&waypoints=37.746560%2C38.408328&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
-        return url;
     }
 
     private void initializeSheetBehaviors() {
@@ -358,6 +323,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     public void drawHighlighted(Route route){
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(route);
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
     }
 
 

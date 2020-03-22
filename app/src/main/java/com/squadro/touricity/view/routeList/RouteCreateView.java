@@ -119,7 +119,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         if (route == null)
             return null;
 
-        Stop stop = new Stop(null, 0, 0, "", "", null);
+        Stop stop = new Stop(null, 0, 0, "", new Location(), null);
         route.addEntry(stop);
 
         UpdateView();
@@ -288,7 +288,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     @Override
     public void onInsertLocation(Location location) {
-        Stop stop = new Stop(null, 0, 0, "", location.getLocation_id(), null);
+        Stop stop = new Stop(null, 0, 0, "", location, null);
 
         route.addEntry(stop);
 
@@ -347,6 +347,11 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             }
         }
         route.setEntries(entries);
+        UpdateView();
+    }
+
+    public void onInsertStop(Stop stop) {
+        route.addEntry(stop);
         UpdateView();
     }
 }

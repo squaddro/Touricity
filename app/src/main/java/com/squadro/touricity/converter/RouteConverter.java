@@ -60,7 +60,6 @@ public class RouteConverter implements IConverter {
 
         json.addProperty("route_id", route.getRoute_id());
         json.addProperty("creator", route.getCreator());
-        json.addProperty("city_id", route.getCity_id());
         json.addProperty("title", route.getTitle());
         json.addProperty("privacy", route.getPrivacy());
 
@@ -90,7 +89,11 @@ public class RouteConverter implements IConverter {
                 Stop stop = (Stop) entry;
 
                 obj.addProperty("stop_id", stop.getStop_id());
-                obj.addProperty("location_id", stop.getLocation_id());
+                JsonObject jsonObjectLoc = new JsonObject();
+                jsonObjectLoc.addProperty("location_id", stop.getLocation().getLocation_id());
+                jsonObjectLoc.addProperty("latitude", stop.getLocation().getLatitude());
+                jsonObjectLoc.addProperty("longitude", stop.getLocation().getLongitude());
+                obj.add("location", jsonObjectLoc);
             }
             entry_list.add(obj);
         }

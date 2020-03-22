@@ -1,5 +1,8 @@
 package com.squadro.touricity.view.map;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,8 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.routeList.SavedRouteView;
@@ -67,34 +69,50 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.setMaxZoomPreference(18);
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
-
-        LatLng tobb = new LatLng(39.921260, 32.798165);
-        googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
 
         initializeSheetbehavior(googleMap);
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
         savedRouteView = getActivity().findViewById(R.id.route_save);
-        savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
+        List<Route> routesFromFile = getRoutesFromFile(offlineDataFile);
+        savedRouteView.setRouteList(routesFromFile);
+        if(routesFromFile != null && routesFromFile.size() > 0){
+            drawHighlighted(routesFromFile.get(0));
+        }
+
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
+
+        if (!checkConnection()) {
+            map.setMapType(GoogleMap.MAP_TYPE_NONE);
+            TileOverlayOptions tileOverlay = new TileOverlayOptions();
+            tileOverlay.tileProvider(new CustomMapTileProvider());
+            tileOverlay.zIndex(0);
+            map.addTileOverlay(tileOverlay);
+        }
     }
 
     private List<Route> getRoutesFromFile(File file) {
         if (file.length() == 0) return null;
         else {
-            try{
+            try {
                 return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
-            }catch(Exception e){
-                return (ArrayList<Route>)(xStream.fromXML(file));
+            } catch (Exception e) {
+                return (ArrayList<Route>) (xStream.fromXML(file));
             }
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void writeRouteToFile(Route route) {
+        if (checkConnection()) {
+            DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
+            new Thread(() -> {
+                downloadMapTiles.downloadTileBounds(MapMaths.getRouteBoundings(route));
+            }).start();
+        }
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(offlineDataFile, true);
@@ -182,6 +200,8 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     public void drawHighlighted(Route route) {
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(route);
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
+        map.setMinZoomPreference(map.getCameraPosition().zoom);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -198,5 +218,13 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void saveRoute(Route route) {
         writeRouteToFile(route);
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        } else return false;
     }
 }

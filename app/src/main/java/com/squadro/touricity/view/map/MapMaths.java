@@ -4,6 +4,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
+import com.squadro.touricity.message.types.Path;
+import com.squadro.touricity.message.types.PathVertex;
+import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 
 public class MapMaths {
 
@@ -29,7 +33,7 @@ public class MapMaths {
         this.map = map;
     }
 
-    private LatLng closestPointBetween2D(LatLng p, LatLng a, LatLng b){
+    private LatLng closestPointBetween2D(LatLng p, LatLng a, LatLng b) {
         LatLng v = new LatLng(b.latitude - a.latitude, b.longitude - a.longitude);
         LatLng u = new LatLng(a.latitude - p.latitude, a.longitude - p.longitude);
         double vu = v.latitude * u.latitude + v.longitude * u.longitude;
@@ -37,7 +41,7 @@ public class MapMaths {
 
         double t = -vu / vv;
 
-        if (t >= 0 && t <= 1){
+        if (t >= 0 && t <= 1) {
             return vectorToSegment2D(t, new LatLng(0, 0), a, b);
         }
 
@@ -51,7 +55,7 @@ public class MapMaths {
     private LatLng vectorToSegment2D(double t, LatLng p, LatLng a, LatLng b) {
         return new LatLng(
                 (1 - t) * a.latitude + t * b.latitude - p.latitude,
-                (1 - t) * a.longitude + t * b.longitude- p.longitude
+                (1 - t) * a.longitude + t * b.longitude - p.longitude
         );
     }
 
@@ -66,7 +70,7 @@ public class MapMaths {
         int counter = 0;
         LatLng prevPoint = null;
 
-        for(LatLng latLng : polyline.getPoints()) {
+        for (LatLng latLng : polyline.getPoints()) {
             if (prevPoint != null) {
                 LatLng projected = closestPointBetween2D(point, latLng, prevPoint);
                 double distance = distance(projected, point);
@@ -120,5 +124,18 @@ public class MapMaths {
     public static double distance(LatLng a, LatLng b) {
         LatLng dir = new LatLng(a.latitude - b.latitude, a.longitude - b.longitude);
         return Math.sqrt(dir.latitude * dir.latitude + dir.longitude * dir.longitude);
+    }
+
+    public static LatLngBounds getRouteBoundings(Route route) {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        for (IEntry entry : route.getEntries()) {
+            if (entry instanceof Path) {
+                Path path = (Path) entry;
+                for (PathVertex vertex : path.getVertices()) {
+                    builder.include(vertex.toLatLong());
+                }
+            }
+        }
+        return MapMaths.boundsPadding(builder.build(),5,10,65,10 );
     }
 }
