@@ -191,7 +191,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Log.d("fmap", "highligt the entry " + entry.getComment());
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(routeCreateView.getRoute());
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
+        //map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
         disposeEditor();
     }
 
