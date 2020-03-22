@@ -349,4 +349,9 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         route.setEntries(entries);
         UpdateView();
     }
+
+    public void onInsertStop(Stop stop) {
+        route.addEntry(stop);
+        UpdateView();
+    }
 }
