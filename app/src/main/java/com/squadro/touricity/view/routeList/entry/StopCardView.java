@@ -14,7 +14,6 @@ import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.ILocationRequest;
-import com.squadro.touricity.requests.LocationRequests;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
@@ -69,12 +68,10 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     @Override
     public boolean onLongClick(View view) {
         if (this.getViewId().equals("explore")) {
-            String location_id = this.getEntry().getLocation_id();
             RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
 
             if (routeCreateView != null) {
-                LocationRequests locationRequests = new LocationRequests();
-                locationRequests.getLocationInfo(location_id, this);
+               routeCreateView.onInsertStop(stop);
             }
         }
         return false;

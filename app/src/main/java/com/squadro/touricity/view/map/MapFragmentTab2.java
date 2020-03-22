@@ -102,7 +102,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                routeCreateView.onInsertLocation(new Location(place.getId(), null, place.getLatLng().latitude, place.getLatLng().longitude));
+                routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
             }
 
             @Override
@@ -150,7 +150,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Button button = buttons.get(0);
         button.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
-            Location location = new Location("sample_id", "city", latLng.latitude, latLng.longitude);
+            Location location = new Location("sample_id", latLng.latitude, latLng.longitude);
             routeCreateView.onInsertLocation(location);
             mapLongClickListener.dissmissPopUp();
         });
@@ -191,7 +191,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Log.d("fmap", "highligt the entry " + entry.getComment());
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(routeCreateView.getRoute());
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
+        //map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
         disposeEditor();
     }
 

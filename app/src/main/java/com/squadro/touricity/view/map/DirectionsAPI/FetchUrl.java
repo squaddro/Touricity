@@ -1,4 +1,4 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.view.map.DirectionsAPI;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -23,10 +23,10 @@ public class FetchUrl extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... url) {
-// For storing data from web service
+        // For storing data from web service
         String data = "";
         try {
-// Fetching the data from web service
+        // Fetching the data from web service
             data = downloadUrl(url[0]);
             Log.d("Background Task data", data.toString());
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class FetchUrl extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         ParserTask parserTask = new ParserTask(mMap);
-// Invokes the thread for parsing the JSON data
+        // Invokes the thread for parsing the JSON data
         parserTask.execute(result);
     }
 
@@ -48,11 +48,11 @@ public class FetchUrl extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(strUrl);
-// Creating an http connection to communicate with url
+            // Creating an http connection to communicate with url
             urlConnection = (HttpURLConnection) url.openConnection();
-// Connecting to url
+            // Connecting to url
             urlConnection.connect();
-// Reading data from url
+            // Reading data from url
             iStream = urlConnection.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
             StringBuffer sb = new StringBuffer();
