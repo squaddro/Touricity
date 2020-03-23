@@ -109,15 +109,17 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
                 }
 
-                else if(routeCreateView.getRoute().getAbstractEntryList().size() == 1){
-                    Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(routeCreateView.getRoute().getAbstractEntryList().size()-1);
+                else if(routeCreateView.getRoute().getAbstractEntryList().size() >= 1){
+
+                    int lastStopIndex = routeCreateView.getRoute().getAbstractEntryList().size()-1;
+                    Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(lastStopIndex);
 
                     DirectionPost directionPost = new DirectionPost();
                     String url = directionPost.getDirectionsURL(prevStop.getLocation().getLatLng(),place.getLatLng(),null,"driving");
-                    PointListReturner plr = new PointListReturner(url, routeCreateView);
+                    PointListReturner plr = new PointListReturner(url, routeCreateView, lastStopIndex+1);
+                    routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
                 }
 
-                //routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
             }
 
             @Override
@@ -166,7 +168,21 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         button.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
             Location location = new Location("sample_id", latLng.latitude, latLng.longitude);
-            routeCreateView.onInsertLocation(location);
+
+            if(routeCreateView.getRoute().getAbstractEntryList().size() == 0){
+                routeCreateView.onInsertLocation(location);
+            }
+            else{
+
+                int lastStopIndex = routeCreateView.getRoute().getAbstractEntryList().size()-1;
+
+                Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(lastStopIndex);
+
+                DirectionPost directionPost = new DirectionPost();
+                String url = directionPost.getDirectionsURL(prevStop.getLocation().getLatLng(),location.getLatLng(),null,"driving");
+                PointListReturner plr = new PointListReturner(url, routeCreateView, lastStopIndex+1);
+                routeCreateView.onInsertLocation(location);
+            }
             mapLongClickListener.dissmissPopUp();
         });
     }

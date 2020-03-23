@@ -290,7 +290,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     public void onInsertLocation(Location location) {
         Stop stop = new Stop(null, 0, 0, "", location, null);
 
-        route.addEntry(stop);
+        route.addEntry(stop,route.getAbstractEntryList().size());
 
         UpdateRouteInfo();
     }

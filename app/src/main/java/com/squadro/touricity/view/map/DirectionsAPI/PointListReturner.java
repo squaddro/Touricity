@@ -20,12 +20,15 @@ public class PointListReturner implements IAsync, IAsync2{
 
     private RouteCreateView rcw = null;
 
+    private int pathIndex;
+
     private Path path = new Path(null,0,0,"",null, Path.PathType.DRIVING,null);
 
-    public PointListReturner(String url, RouteCreateView route){
+    public PointListReturner(String url, RouteCreateView route, int newPathIndex){
         FetchUrl fetchUrl = new FetchUrl(this);
         fetchUrl.execute(url);
         this.rcw = route;
+        this.pathIndex = newPathIndex;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class PointListReturner implements IAsync, IAsync2{
     public void onComplete2(List<LatLng> data) {
 
         this.path.setVertices(latlonListToPathVertexList(data));
-        rcw.getRoute().getAbstractEntryList().add(new Path(null,0, 0, "", null, Path.PathType.DRIVING, latlonListToPathVertexList(data)));
+        rcw.getRoute().getAbstractEntryList().add(pathIndex,new Path(null,0, 0, "", null, Path.PathType.DRIVING, latlonListToPathVertexList(data)));
     }
 
     public List<PathVertex> latlonListToPathVertexList(List<LatLng> latlonList){
