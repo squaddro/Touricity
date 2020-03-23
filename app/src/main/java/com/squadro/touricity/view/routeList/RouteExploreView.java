@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
+@RequiresApi(api = Build.VERSION_CODES.N)
 
 public class RouteExploreView extends LinearLayout implements ScrollView.OnScrollChangeListener{
 

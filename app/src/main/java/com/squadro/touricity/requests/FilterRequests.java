@@ -46,7 +46,7 @@ public class FilterRequests {
 
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
             @Override
-            @RequiresApi(api = Build.VERSION_CODES.M)
+            @RequiresApi(api = Build.VERSION_CODES.N)
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
                 ArrayList<Route> routes = new ArrayList<>();

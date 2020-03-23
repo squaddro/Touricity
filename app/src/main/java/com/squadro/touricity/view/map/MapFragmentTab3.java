@@ -65,7 +65,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         return rootView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -105,7 +105,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void writeRouteToFile(Route route) {
         if (checkConnection()) {
             DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
@@ -139,7 +139,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void writeRoutesToFile(List<Route> routes) {
         FileWriter fileWriter = null;
         try {
@@ -214,7 +214,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         writeRoutesToFile(collect);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void saveRoute(Route route) {
         writeRouteToFile(route);
