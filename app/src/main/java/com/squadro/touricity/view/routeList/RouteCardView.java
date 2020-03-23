@@ -16,8 +16,14 @@ import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.MyPlace;
+import com.squadro.touricity.view.map.event.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -39,16 +45,23 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     public RouteCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void loadRoute(Route route) {
 
         Context context = getContext();
         this.route = route;
+        List<MyPlace> placesList = MapFragmentTab2.responsePlaces;
         for (IEntry entry : route.getAbstractEntryList()) {
             if (entry instanceof Stop) {
                 Stop stop = (Stop) entry;
+                List<MyPlace> collect = placesList.stream().filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
+                if(collect.size() > 0){
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context);
+                    cardView = stopCardViewHandler.putViews();
+                }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
                 entryList.addView(cardView);

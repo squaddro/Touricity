@@ -29,7 +29,6 @@ import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.gson.Gson;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
@@ -61,6 +60,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private GoogleMap map;
     private PopupWindowParameters popupWindowParameters;
     public static List<MyPlace> responsePlaces;
+    public static PlacesClient placesClient;
 
     private IEditor editor;
 
@@ -102,16 +102,15 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             responsePlaces = new ArrayList<>();
         }
 
-        PlacesClient placesClient = Places.createClient(getContext());
+        placesClient = Places.createClient(getContext());
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autoCompleteFragment);
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
-                Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS,Place.Field.USER_RATINGS_TOTAL));
+                Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS));
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                Gson gson = new Gson();
                 List<PhotoMetadata> photoMetadatas = place.getPhotoMetadatas();
                 List<Bitmap> photos = new ArrayList<>();
                 if (photoMetadatas != null) {

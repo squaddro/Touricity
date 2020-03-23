@@ -13,9 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.squadro.touricity.R;
-import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Route;
-import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 
 import java.util.ArrayList;
@@ -50,7 +48,7 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         CleanView();
 
         Context context = getContext();
-
+        if(routeList.isEmpty()) return;
         for(int i = 0; i<routeList.size(); i++){
             Route route = routeList.get(i);
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);

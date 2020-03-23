@@ -108,7 +108,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void createRouteExploreView() {
         routeExploreView = getActivity().findViewById(R.id.route_explore);
-        routeExploreView.setRouteList(exampleRouteList());
+        routeExploreView.setRouteList(new ArrayList<>());
         routeExploreView.setIRouteDraw(this);
     }
 
