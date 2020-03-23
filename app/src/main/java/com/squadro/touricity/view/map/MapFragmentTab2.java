@@ -34,6 +34,8 @@ import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.RouteRequests;
+import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
@@ -102,6 +104,19 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+
+                if(routeCreateView.getRoute().getAbstractEntryList().size() == 0){
+                    routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
+                }
+
+                else{
+                    Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(routeCreateView.getRoute().getAbstractEntryList().size()-1);
+
+                    DirectionPost directionPost = new DirectionPost();
+                    String url = directionPost.getDirectionsURL(prevStop.getLocation().getLatLng(),place.getLatLng(),null,"driving");
+                    PointListReturner plr = new PointListReturner(url, routeCreateView);
+                }
+
                 routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
             }
 

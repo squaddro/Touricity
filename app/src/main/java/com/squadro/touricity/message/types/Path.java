@@ -1,5 +1,6 @@
 package com.squadro.touricity.message.types;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.message.types.interfaces.IPath;
 
 import java.util.List;
@@ -28,11 +29,11 @@ public class Path extends AbstractEntry implements IPath {
 
     private String path_id;
     private PathType path_type;
-    private List<PathVertex> vertices;
+    private List<LatLng> vertices;
     private String type = "path";
 
     public Path(String entry_id, int expense, int duration, String comment, String path_id,
-                PathType path_type, List<PathVertex> vertices) {
+                PathType path_type, List<LatLng> vertices) {
         super(entry_id, expense, duration, comment);
         this.path_id = path_id;
         this.path_type = path_type;
