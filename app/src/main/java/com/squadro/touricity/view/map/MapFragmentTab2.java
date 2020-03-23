@@ -109,7 +109,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
                 }
 
-                else{
+                else if(routeCreateView.getRoute().getAbstractEntryList().size() == 1){
                     Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(routeCreateView.getRoute().getAbstractEntryList().size()-1);
 
                     DirectionPost directionPost = new DirectionPost();
@@ -117,7 +117,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     PointListReturner plr = new PointListReturner(url, routeCreateView);
                 }
 
-                routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
+                //routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
             }
 
             @Override
