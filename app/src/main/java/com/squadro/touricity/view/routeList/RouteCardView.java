@@ -19,7 +19,7 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.MyPlace;
-import com.squadro.touricity.view.map.event.StopCardViewHandler;
+import com.squadro.touricity.view.map.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
                 if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"explore",stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId(this.viewId);
