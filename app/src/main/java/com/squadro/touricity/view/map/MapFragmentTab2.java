@@ -104,22 +104,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-
-                if(routeCreateView.getRoute().getAbstractEntryList().size() == 0){
-                    routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
-                }
-
-                else if(routeCreateView.getRoute().getAbstractEntryList().size() >= 1){
-
-                    int lastStopIndex = routeCreateView.getRoute().getAbstractEntryList().size()-1;
-                    Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(lastStopIndex);
-
-                    DirectionPost directionPost = new DirectionPost();
-                    String url = directionPost.getDirectionsURL(prevStop.getLocation().getLatLng(),place.getLatLng(),null,"driving");
-                    PointListReturner plr = new PointListReturner(url, routeCreateView, lastStopIndex+1);
-                    routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
-                }
-
+                routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
             }
 
             @Override
