@@ -1,98 +1,40 @@
-<com.squadro.touricity.view.routeList.entry.StopCardView
+<com.squadro.touricity.view.routeList.entry.StopCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stopcardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
     android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="#D6E6D6"
-    card_view:cardCornerRadius="20dp"
-    card_view:cardElevation="8dp"
-    android:layout_margin="10dp">
-
-    <LinearLayout
+    android:orientation="vertical"
+    card_view:cardElevation="8dp">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp"
-        >
-        <RelativeLayout
-            android:layout_width="match_parent"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:id="@+id/img_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/stop_view_button_layer">
-            <Button
-                android:id="@+id/stop_view_remove_button"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:text="x"/>
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/stop_view_move_up_button"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/stop_view_remove_button"
-                android:text="\u02C4" />
-            <Button
-                android:id="@+id/stop_view_move_down_button"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/stop_view_move_up_button"
-                android:text="\u02C5" />
-            <Button
-                android:id="@+id/stop_view_edit_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/stop_view_move_down_button"
-                android:text="edit" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp">
-            <TextView
-                android:id="@+id/card_view_comment_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Comment: "/>
+        </LinearLayout>
+    </HorizontalScrollView>
 
-            <TextView
-                android:id="@+id/card_view_comment_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/card_view_comment_label"
-                android:text="aşlkdfjaşdjfşalsdjf" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp">
-            <TextView
-                android:id="@+id/card_view_duration_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Duration: "/>
-
-            <TextView
-                android:id="@+id/card_view_duration_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/card_view_duration_label"
-                android:text="aşlkdfjaşdjfşalsdjf" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp">
-            <TextView
-                android:id="@+id/card_view_expense_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Expense: "/>
-
-            <TextView
-                android:id="@+id/card_view_expense_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/card_view_expense_label"
-                android:text="aşlkdfjaşdjfşalsdjf" />
-        </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/textAreas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/horizontalScrollView"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingTop="5dp">
     </LinearLayout>
+
+</RelativeLayout>
 
 </com.squadro.touricity.view.routeList.entry.StopCardView>

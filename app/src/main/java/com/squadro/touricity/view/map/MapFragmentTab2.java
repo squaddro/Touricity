@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.map;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,7 +23,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -47,6 +50,7 @@ import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater, IRouteResponse {
 
@@ -57,6 +61,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public FrameLayout frameLayout;
     private GoogleMap map;
     private PopupWindowParameters popupWindowParameters;
+    public static List<MyPlace> responsePlaces;
+    public static PlacesClient placesClient;
 
     private IEditor editor;
 
@@ -75,7 +81,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         return rootView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -91,20 +97,51 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializePlacesAutofill();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initializePlacesAutofill() {
         if (!Places.isInitialized()) {
             Places.initialize(this.getContext(), getResources().getString(R.string.api_key));
+            responsePlaces = new ArrayList<>();
         }
 
-        PlacesClient placesClient = Places.createClient(getContext());
+        placesClient = Places.createClient(getContext());
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autoCompleteFragment);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
+                Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS));
+
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                routeCreateView.onInsertLocation(new Location(place.getId(), place.getLatLng().latitude, place.getLatLng().longitude));
+                List<PhotoMetadata> photoMetadatas = place.getPhotoMetadatas();
+                List<Bitmap> photos = new ArrayList<>();
+                if (photoMetadatas != null) {
+                    AtomicInteger atomicInteger = new AtomicInteger(0);
+                    for (; atomicInteger.get() < photoMetadatas.size(); atomicInteger.incrementAndGet()) {
+                        PhotoMetadata metadata = photoMetadatas.get(atomicInteger.get());
+                        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(metadata)
+                                .setMaxWidth(1024) // Optional.
+                                .setMaxHeight(720) // Optional.
+                                .build();
+                        placesClient.fetchPhoto(photoRequest).addOnSuccessListener(fetchPhotoResponse -> {
+                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                            photos.add(bitmap);
+                            if (photos.size() == photoMetadatas.size()) {
+                                MyPlace myPlace = new MyPlace(place, photos);
+                                responsePlaces.add(myPlace);
+                                Location location = new Location(myPlace.getPlace_id(),myPlace.getLatLng().latitude,myPlace.getLatLng().longitude);
+                                Stop stop = new Stop(null,0,0,"",location,null);
+                                routeCreateView.onInsertStop(stop);
+                            }
+                        }).addOnFailureListener(Throwable::printStackTrace);
+                    }
+                }else{
+                    MyPlace myPlace = new MyPlace(place,null);
+                    responsePlaces.add(myPlace);
+                    Location location = new Location(myPlace.getPlace_id(),myPlace.getLatLng().latitude,myPlace.getLatLng().longitude);
+                    Stop stop = new Stop(null,0,0,"",location,null);
+                    routeCreateView.onInsertStop(stop);
+                }
             }
 
             @Override
@@ -112,16 +149,17 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
             }
         });
+
     }
 
     public static RouteCreateView getRouteCreateView() {
         return routeCreateView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void createRouteCreateView() {
         routeCreateView = getActivity().findViewById(R.id.route_create);
-        routeCreateView.setRoute(initialRoute());
+        routeCreateView.setRoute(new Route());
         routeCreateView.setRouteMapViewUpdater(this);
         Button saveButton = routeCreateView.findViewById(R.id.route_create_save);
         saveButton.setOnClickListener(v -> {
@@ -135,7 +173,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         return mapLongClickListener;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initializeSheetBehaviors() {
         bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
         int numberOfButtons = 1;
@@ -147,7 +185,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void createButtonListeners(List<Button> buttons) {
         Button button = buttons.get(0);
         button.setOnClickListener(v -> {
@@ -201,7 +239,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Log.d("fmap", "Update the route ");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
@@ -211,7 +249,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         disposeEditor();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void focus(AbstractEntry entry) {
         Log.d("fmap", "focus to the entry " + entry.getComment());
@@ -234,7 +272,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void disposeEditor() {
         if (editor != null) {
             editor.dispose();
@@ -332,7 +370,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         return route;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onRouteResponse(Route route) {
         SavedRouteView savedRouteView = getActivity().findViewById(R.id.route_save);
