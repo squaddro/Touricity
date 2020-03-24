@@ -26,4 +26,11 @@ public class RetrofitCreate {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
+
+    public Retrofit createRetrofitForGoogle(){
+        return new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com/maps/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
 }

@@ -20,12 +20,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -36,11 +39,13 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
-import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
-import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
+import com.squadro.touricity.view.map.placesAPI.INearByResponse;
+import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.IRouteResponse;
 import com.squadro.touricity.view.routeList.RouteCreateView;
@@ -51,8 +56,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater, IRouteResponse {
+public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater,
+        INearByResponse, IRouteResponse {
 
     private SupportMapFragment supportMapFragment;
     private MapLongClickListener mapLongClickListener = null;
@@ -95,6 +102,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializeSheetBehaviors();
 
         initializePlacesAutofill();
+   //     map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -129,17 +137,17 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             if (photos.size() == photoMetadatas.size()) {
                                 MyPlace myPlace = new MyPlace(place, photos);
                                 responsePlaces.add(myPlace);
-                                Location location = new Location(myPlace.getPlace_id(),myPlace.getLatLng().latitude,myPlace.getLatLng().longitude);
-                                Stop stop = new Stop(null,0,0,"",location,null);
+                                Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
+                                Stop stop = new Stop(null, 0, 0, "", location, null);
                                 routeCreateView.onInsertStop(stop);
                             }
                         }).addOnFailureListener(Throwable::printStackTrace);
                     }
-                }else{
-                    MyPlace myPlace = new MyPlace(place,null);
+                } else {
+                    MyPlace myPlace = new MyPlace(place, null);
                     responsePlaces.add(myPlace);
-                    Location location = new Location(myPlace.getPlace_id(),myPlace.getLatLng().latitude,myPlace.getLatLng().longitude);
-                    Stop stop = new Stop(null,0,0,"",location,null);
+                    Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
+                    Stop stop = new Stop(null, 0, 0, "", location, null);
                     routeCreateView.onInsertStop(stop);
                 }
             }
@@ -178,7 +186,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
         int numberOfButtons = 1;
         List<String> buttonNames = new ArrayList<>();
-        buttonNames.add("Add to route");
+        buttonNames.add("Find nearby places");
         popupWindowParameters = new PopupWindowParameters(numberOfButtons, buttonNames);
         mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(), popupWindowParameters);
         createButtonListeners(mapLongClickListener.getButtons());
@@ -192,20 +200,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             LatLng latLng = mapLongClickListener.getLatLng();
             Location location = new Location("sample_id", latLng.latitude, latLng.longitude);
 
-            if(routeCreateView.getRoute().getAbstractEntryList().size() == 0){
-                routeCreateView.onInsertLocation(location);
-            }
-            else{
-
-                int lastStopIndex = routeCreateView.getRoute().getAbstractEntryList().size()-1;
-
-                Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(lastStopIndex);
-
-                DirectionPost directionPost = new DirectionPost();
-                String url = directionPost.getDirectionsURL(prevStop.getLocation().getLatLng(),location.getLatLng(),null,"driving");
-                PointListReturner plr = new PointListReturner(url, routeCreateView, lastStopIndex+1);
-                routeCreateView.onInsertLocation(location);
-            }
+            int radius = 50;
+            NearByPlaceRequest nearByPlaceRequest = new NearByPlaceRequest();
+            nearByPlaceRequest.findNearbyPlaces(latLng, radius, this);
             mapLongClickListener.dissmissPopUp();
         });
     }
@@ -377,5 +374,50 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         savedRouteView.getIRouteSave().saveRoute(route);
         TabLayout tabLayout = getActivity().findViewById(R.id.tabLayout);
         tabLayout.getTabAt(2).select();
+    }
+
+    @Override
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void onPlacesResponse(List<String> placesIds) {
+        for(String placeId : placesIds){
+            List<MyPlace> collect = responsePlaces.stream().filter(myPlace -> myPlace.getPlace_id().equals(placeId))
+                    .collect(Collectors.toList());
+            if(collect.size() > 0) continue;
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
+                    Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS);
+            FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, fields);
+            MapFragmentTab2.placesClient.fetchPlace(request).addOnSuccessListener((placeResponse) -> {
+                Place place = placeResponse.getPlace();
+                List<PhotoMetadata> photoMetadata = place.getPhotoMetadatas();
+                List<Bitmap> photos = new ArrayList<>();
+                if (photoMetadata != null) {
+                    AtomicInteger atomicInteger = new AtomicInteger(0);
+                    for (; atomicInteger.get() < photoMetadata.size(); atomicInteger.incrementAndGet()) {
+                        PhotoMetadata metadata = photoMetadata.get(atomicInteger.get());
+                        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(metadata)
+                                .setMaxWidth(1024) // Optional.
+                                .setMaxHeight(720) // Optional.
+                                .build();
+                        MapFragmentTab2.placesClient.fetchPhoto(photoRequest).addOnSuccessListener(fetchPhotoResponse -> {
+                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                            photos.add(bitmap);
+                            if (photos.size() == photoMetadata.size()) {
+                                MyPlace myPlace = new MyPlace(place, photos);
+                                MapFragmentTab2.responsePlaces.add(myPlace);
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                markerOptions.position(myPlace.getLatLng());
+                                Marker marker = map.addMarker(markerOptions);
+                                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                            }
+                        }).addOnFailureListener(Throwable::printStackTrace);
+                    }
+                } else {
+                    MyPlace myPlace = new MyPlace(place, null);
+                    MapFragmentTab2.responsePlaces.add(myPlace);
+                }
+            }).addOnFailureListener((exception) -> {
+                exception.printStackTrace();
+            });
+        }
     }
 }

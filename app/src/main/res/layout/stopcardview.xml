@@ -3,10 +3,13 @@
     android:id="@+id/stopcardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     android:clickable="true"
     android:orientation="vertical"
-    card_view:cardElevation="8dp">
+    android:layout_margin="10dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="15dp"
+    card_view:cardElevation="10dp"
+    card_view:contentPadding="10dp">
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

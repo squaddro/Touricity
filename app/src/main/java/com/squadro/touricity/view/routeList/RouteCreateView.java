@@ -26,8 +26,8 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.MyPlace;
-import com.squadro.touricity.view.map.event.StopCardViewHandler;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
+import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 import com.squadro.touricity.view.routeList.event.IRouteInsertListener;
@@ -64,6 +64,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     }
 
     private void UpdateView() {
+
         CleanView();
         if(route == null) return;
         Context context = getContext();
@@ -75,7 +76,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                         .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"create",stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId("create");
