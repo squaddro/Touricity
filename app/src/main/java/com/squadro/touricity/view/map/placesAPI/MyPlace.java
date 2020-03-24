@@ -1,4 +1,4 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.view.map.placesAPI;
 
 import android.graphics.Bitmap;
 

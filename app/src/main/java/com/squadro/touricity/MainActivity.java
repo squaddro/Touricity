@@ -7,14 +7,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.squadro.touricity.cookie.CookieMethods;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
-import com.squadro.touricity.view.map.MapLongClickListener;
+import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.tabView.FragmentAdapter;
 
 import java.util.ArrayList;

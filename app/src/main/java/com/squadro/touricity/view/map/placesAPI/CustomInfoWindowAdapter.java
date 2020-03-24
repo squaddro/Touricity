@@ -1,4 +1,4 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.view.map.placesAPI;
 
 import android.content.Context;
 import android.os.Build;
@@ -9,6 +9,7 @@ import android.view.View;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.squadro.touricity.R;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 
 import java.util.List;

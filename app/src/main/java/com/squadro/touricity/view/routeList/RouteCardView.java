@@ -18,8 +18,8 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
-import com.squadro.touricity.view.map.MyPlace;
-import com.squadro.touricity.view.map.StopCardViewHandler;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
+import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 
 import java.util.List;
