@@ -36,7 +36,6 @@ import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
-import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.NearByPlaceRequest;
@@ -45,6 +44,7 @@ import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
 import com.squadro.touricity.view.map.placesAPI.INearByResponse;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
+import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.IRouteResponse;
@@ -70,6 +70,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private PopupWindowParameters popupWindowParameters;
     public static List<MyPlace> responsePlaces;
     public static PlacesClient placesClient;
+    public static List<MarkerInfo> markerInfoList;
 
     private IEditor editor;
 
@@ -97,10 +98,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         LatLng tobb = new LatLng(10, 10);
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
-
+        markerInfoList = new ArrayList<>();
         createRouteCreateView();
         initializeSheetBehaviors();
-
         initializePlacesAutofill();
    //     map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
     }
@@ -279,94 +279,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
-    public static Route initialRoute() {
-        Route route = new Route();
-        route.setCreator("4c0ac9c5-ecf7-bf57-ce21-175587e8d8b6");
-        route.setRoute_id(null);
-        route.setCity_id("c08ac5c2-5b9f-6a8f-35bf-448917e7d8f9");
-        route.setTitle("titleee");
-        route.setPrivacy(2);
-        route.addEntry(new Stop(
-                null,
-                10,
-                40,
-                "burada yaklaşık 40 dakika bekleyin",
-                new Location(31.3, 31.3),
-                null
-        ));
-        ArrayList path1 = new ArrayList<PathVertex>();
-        path1.add(new PathVertex(39.921260, 32.796165));
-        path1.add(new PathVertex(39.924260, 32.797165));
-        path1.add(new PathVertex(39.922260, 32.798165));
-        path1.add(new PathVertex(39.925260, 32.799165));
-
-        route.addEntry(new Path(
-                null,
-                10,
-                5,
-                "Bu yolu takip edin 5 dakika",
-                null,
-                Path.PathType.BUS,
-                path1
-        ));
-        route.addEntry(new Stop(
-                null,
-                20,
-                50,
-                "burada yaklaşık 50 dakika bekleyin",
-                new Location(32.3, 42.3),
-                null
-        ));
-        ArrayList path2 = new ArrayList<PathVertex>();
-        path2.add(new PathVertex(39.921260, 32.795165));
-        path2.add(new PathVertex(39.924260, 32.796165));
-        path2.add(new PathVertex(39.922260, 32.797165));
-        path2.add(new PathVertex(39.925260, 32.798165));
-
-        route.addEntry(new Path(
-                null,
-                10,
-                5,
-                "Bu yolu takip edin 10 dakika",
-                null,
-                Path.PathType.DRIVING,
-                path2
-        ));
-        route.addEntry(new Stop(
-                null,
-                60,
-                10,
-                "burada yaklaşık 10 dakika bekleyin",
-                new Location(21.3, 21.3),
-                null
-        ));
-        ArrayList path3 = new ArrayList<PathVertex>();
-        path3.add(new PathVertex(39.921260, 32.794165));
-        path3.add(new PathVertex(39.924260, 32.795165));
-        path3.add(new PathVertex(39.922260, 32.796165));
-        path3.add(new PathVertex(39.925260, 32.797165));
-
-        route.addEntry(new Path(
-                null,
-                10,
-                5,
-                "Bu yolu takip edin 15 dakika",
-                null,
-                Path.PathType.WALKING,
-                path3
-        ));
-        route.addEntry(new Stop(
-                null,
-                100,
-                140,
-                "burada yaklaşık 140 dakika bekleyin",
-                new Location(22.3, 22.3),
-                null
-        ));
-
-        return route;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onRouteResponse(Route route) {
@@ -408,16 +320,20 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                                 markerOptions.position(myPlace.getLatLng());
                                 Marker marker = map.addMarker(markerOptions);
                                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                markerInfoList.add(new MarkerInfo(marker,myPlace));
                             }
                         }).addOnFailureListener(Throwable::printStackTrace);
                     }
                 } else {
                     MyPlace myPlace = new MyPlace(place, null);
                     MapFragmentTab2.responsePlaces.add(myPlace);
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(myPlace.getLatLng());
+                    Marker marker = map.addMarker(markerOptions);
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                    markerInfoList.add(new MarkerInfo(marker,myPlace));
                 }
-            }).addOnFailureListener((exception) -> {
-                exception.printStackTrace();
-            });
+            }).addOnFailureListener(Throwable::printStackTrace);
         }
     }
 }
