@@ -6,6 +6,8 @@ import android.support.annotation.RequiresApi;
 import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
+import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 
 import java.util.ArrayList;
@@ -40,6 +42,9 @@ public class PointListReturner implements IAsync, IAsync2{
 
         this.path.setVertices(latlonListToPathVertexList(data));
         ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
+
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap());
+        pd.drawRoute(rcw.getRoute());
     }
 
     public List<PathVertex> latlonListToPathVertexList(List<LatLng> latlonList){

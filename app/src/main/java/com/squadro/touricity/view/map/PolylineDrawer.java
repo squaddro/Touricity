@@ -52,7 +52,7 @@ public class PolylineDrawer {
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {

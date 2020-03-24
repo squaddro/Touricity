@@ -58,6 +58,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater,
         INearByResponse, IRouteResponse {
 
@@ -66,7 +68,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static RouteCreateView routeCreateView;
     private BottomSheetBehavior bottomSheetBehavior;
     public FrameLayout frameLayout;
-    private GoogleMap map;
+    @Getter
+    private static GoogleMap map;
     private PopupWindowParameters popupWindowParameters;
     public static List<MyPlace> responsePlaces;
     public static PlacesClient placesClient;
@@ -241,7 +244,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
-        polylineDrawer.drawRoute(routeCreateView.getRoute());
+
+        if(entry instanceof Stop){
+            polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
+        }
+        
         //map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
         disposeEditor();
     }

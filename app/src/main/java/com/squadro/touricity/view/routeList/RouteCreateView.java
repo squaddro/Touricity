@@ -28,6 +28,7 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
 import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
@@ -87,6 +88,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entryList.addView(cardView);
             }
         }
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap());
+        pd.drawRoute(route);
     }
 
     public void CleanView() {
