@@ -26,8 +26,6 @@ public class PolylineDrawer {
     private PolylineOptions polylineOptions;
     private List<Polyline> polylines;
     private List<Marker> markers;
-    //private Stop editingStop = null;
-    //private Path editingPath = null;
 
     private IEntry entry;
 
@@ -65,13 +63,10 @@ public class PolylineDrawer {
                 }
             }
         }
-
         return map;
     }
 
     public GoogleMap drawRoute(Route route, Stop stop) {
-
-        //this.editingStop = stop;
 
         clearMap();
         List<IEntry> entryList = route.getAbstractEntryList();
@@ -153,31 +148,6 @@ public class PolylineDrawer {
                     }
                 }
             }
-        }
-        return map;
-    }
-
-
-    public GoogleMap drawStop(Stop stop) {
-        markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-        markerOptions.position(new LatLng((stop.getLocation().getLatitude()), stop.getLocation().getLongitude()));
-        Marker marker = map.addMarker(markerOptions);
-        marker.setZIndex(1);
-        markers.add(marker);
-        return map;
-    }
-
-    public GoogleMap drawPath(Path path) {
-
-        polylineOptions = new PolylineOptions();
-        List<PathVertex> vertices = path.getVertices();
-        for (int i = 0; i < vertices.size(); i++) {
-            polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-            polylineOptions.color(Color.BLUE);
-            Polyline polyline = map.addPolyline(polylineOptions);
-            polyline.setZIndex(1);
-            polylines.add(polyline);
         }
         return map;
     }

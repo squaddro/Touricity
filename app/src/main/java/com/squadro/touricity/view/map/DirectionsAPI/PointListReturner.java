@@ -6,9 +6,6 @@ import android.support.annotation.RequiresApi;
 import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
-import com.squadro.touricity.message.types.Route;
-import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 
 import java.util.ArrayList;
@@ -33,14 +30,8 @@ public class PointListReturner implements IAsync, IAsync2{
 
     @Override
     public void onComplete(String data) {
-
-        //System.out.println(data);
-
         ParserTask parser = new ParserTask(this);
         parser.execute(data);
-
-        //parser.getPointList();
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -48,7 +39,7 @@ public class PointListReturner implements IAsync, IAsync2{
     public void onComplete2(List<LatLng> data) {
 
         this.path.setVertices(latlonListToPathVertexList(data));
-        rcw.getRoute().getAbstractEntryList().add(pathIndex,new Path(null,0, 0, "", null, Path.PathType.DRIVING, latlonListToPathVertexList(data)));
+        ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
     }
 
     public List<PathVertex> latlonListToPathVertexList(List<LatLng> latlonList){
