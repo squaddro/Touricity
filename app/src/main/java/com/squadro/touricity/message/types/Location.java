@@ -1,5 +1,6 @@
 package com.squadro.touricity.message.types;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.message.types.interfaces.ILocation;
 
 import lombok.Getter;
@@ -29,5 +30,9 @@ public class Location implements ILocation {
         location_id = null;
         this.latitude = lat;
         this.longitude = lon;
+    }
+
+    public LatLng getLatLng(){
+        return new LatLng(this.latitude, this.longitude);
     }
 }

@@ -15,14 +15,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
+
 
 public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
-    private GoogleMap mMap = null;
+    @Getter
+    private List<LatLng> pointList;
+    //public IAsync delegate = null;
 
-    public ParserTask(GoogleMap mMap){
-        this.mMap = mMap;
+    public IAsync2 async2;
+
+    public ParserTask(IAsync2 async2){
+        this.async2 = async2;
+        this.pointList = new ArrayList<>();
     }
+
 
     // Parsing the data in non-ui thread
     @Override
@@ -71,7 +79,9 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
         }
         // Drawing polyline in the Google Map for the i-th route
         if(lineOptions != null) {
-            mMap.addPolyline(lineOptions);
+            //mMap.addPolyline(lineOptions);
+            this.pointList = lineOptions.getPoints();
+            async2.onComplete2(this.pointList);
         }
         else {
             Log.d("onPostExecute","without Polylines drawn");
