@@ -23,7 +23,7 @@ public class RouteRequests {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void updateRoute(Route route, IRouteResponse iRouteResponse) {
         RouteConverter routeConverter = new RouteConverter();
 

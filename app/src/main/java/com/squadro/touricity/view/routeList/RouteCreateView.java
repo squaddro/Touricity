@@ -14,10 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.squadro.touricity.R;
@@ -28,7 +26,8 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.routeList.entry.PathCardView;
+import com.squadro.touricity.view.map.MyPlace;
+import com.squadro.touricity.view.map.event.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 import com.squadro.touricity.view.routeList.event.IRouteInsertListener;
@@ -37,11 +36,12 @@ import com.squadro.touricity.view.routeList.event.IRouteUpdateEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class RouteCreateView extends LinearLayout implements IEntryButtonEventsListener, IRouteInsertListener, IRouteUpdateEventListener, ScrollView.OnScrollChangeListener {
 
     @Getter
@@ -65,22 +65,21 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     private void UpdateView() {
         CleanView();
-
+        if(route == null) return;
         Context context = getContext();
-
+        List<MyPlace> placesList = MapFragmentTab2.responsePlaces;
         for (IEntry entry : route.getAbstractEntryList()) {
             if (entry instanceof Stop) {
                 Stop stop = (Stop) entry;
+                List<MyPlace> collect = placesList.stream().filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
+                if(collect.size() > 0){
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context);
+                    cardView = stopCardViewHandler.putViews();
+                }
                 cardView.setViewId("create");
                 cardView.update(stop);
-                cardView.setEntryEventListener(this);
-                entryList.addView(cardView);
-            } else if (entry instanceof Path) {
-                Path path = (Path) entry;
-                PathCardView cardView = (PathCardView) LayoutInflater.from(context).inflate(R.layout.path_card_view, null);
-                cardView.setViewId("create");
-                cardView.update(path);
                 cardView.setEntryEventListener(this);
                 entryList.addView(cardView);
             }
@@ -106,7 +105,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         scrollView = findViewById(R.id.route_create_scroll);
 
         scrollView.setOnScrollChangeListener(this);
-        findViewById(R.id.route_create_add_path).setOnClickListener(view -> createPath());
     }
 
     private void scrollToEntry(AbstractEntry entry) {
@@ -136,8 +134,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         route.addEntry(path);
 
         UpdateView();
-        scrollToEntry(path);
-
         return path;
     }
 
@@ -163,76 +159,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     @Override
     public void onEditEntry(AbstractEntry entry) {
-        Log.d("fcreate", "Edit " + entry.getComment());
-        if (routeMapViewUpdater != null)
-            routeMapViewUpdater.focus(entry);
 
-
-        MapFragmentTab2 routeMapViewUpdater = (MapFragmentTab2) this.routeMapViewUpdater;
-        Activity activity = routeMapViewUpdater.getActivity();
-        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
-                CoordinatorLayout.LayoutParams.MATCH_PARENT);
-
-        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).removeViewAt(2);
-
-        if (entry instanceof Stop) {
-            editStopView(entry, routeMapViewUpdater, activity, layoutParams);
-        } else if (entry instanceof Path) {
-            editPathView(entry, routeMapViewUpdater, activity, layoutParams);
-        }
-    }
-
-    private void editPathView(AbstractEntry entry, MapFragmentTab2 routeMapViewUpdater, Activity activity, CoordinatorLayout.LayoutParams layoutParams) {
-        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.path_edit_view, null);
-        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate, layoutParams);
-        Button button = inflate.findViewById(R.id.path_edit_save);
-
-        Button cancelButton = inflate.findViewById(R.id.path_edit_cancel);
-
-        cancelButton.setOnClickListener(v -> {
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-            routeMapViewUpdater.disposeEditor();
-            return;
-        });
-        button.setOnClickListener(v1 -> {
-            Editable commentText = ((EditText) inflate.findViewById(R.id.path_edit_comment_text)).getText();
-            if (!commentText.toString().isEmpty()) {
-                entry.setComment(commentText.toString());
-            } else {
-                entry.setComment("No comment has been entered..");
-            }
-
-            Editable durationText = ((EditText) inflate.findViewById(R.id.path_edit_duration_text)).getText();
-            if (!durationText.toString().isEmpty()) {
-                entry.setDuration(Integer.parseInt(durationText.toString()));
-            } else {
-                entry.setDuration(0);
-            }
-
-            Editable expenseText = ((EditText) inflate.findViewById(R.id.path_edit_expense_text)).getText();
-            if (!expenseText.toString().isEmpty()) {
-                entry.setExpense(Integer.parseInt(expenseText.toString()));
-            } else {
-                entry.setExpense(0);
-            }
-
-            RelativeLayout relativeLayout = inflate.findViewById(R.id.transportationCheckboxes);
-            for (int i = 0; i < relativeLayout.getChildCount(); i++) {
-                View childAt = relativeLayout.getChildAt(i);
-                if (childAt instanceof CheckBox) {
-                    CheckBox checkBox = (CheckBox) childAt;
-                    if (checkBox.isChecked()) {
-                        ((Path) entry).setPath_type(Path.PathType.values()[i - 1]);
-                        break;
-                    }
-                }
-            }
-            onPathUpdate((Path) entry);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-
-        });
     }
 
     private void editStopView(AbstractEntry entry, MapFragmentTab2 routeMapViewUpdater, Activity activity, CoordinatorLayout.LayoutParams layoutParams) {

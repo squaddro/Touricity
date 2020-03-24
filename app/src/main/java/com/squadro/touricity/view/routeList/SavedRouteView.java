@@ -22,7 +22,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
+@RequiresApi(api = Build.VERSION_CODES.N)
 
 public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollChangeListener, View.OnLongClickListener {
 

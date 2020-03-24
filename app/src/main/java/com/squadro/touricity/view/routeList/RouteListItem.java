@@ -1,7 +1,6 @@
 package com.squadro.touricity.view.routeList;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -49,11 +48,6 @@ public abstract class RouteListItem<T extends AbstractEntry> extends CardView im
 
     public void setEntryEventListener(IEntryButtonEventsListener listener) {
         entryEventListener = listener;
-
-        findViewById(getRemoveButtonId()).setOnClickListener(view -> entryEventListener.onRemoveEntry(getEntry()));
-        findViewById(getMoveUpButtonId()).setOnClickListener(view -> entryEventListener.onMoveEntry(getEntry(), IEntryButtonEventsListener.EDirection.UP));
-        findViewById(getMoveDownButtonId()).setOnClickListener(view -> entryEventListener.onMoveEntry(getEntry(), IEntryButtonEventsListener.EDirection.DOWN));
-        findViewById(getEditButtonId()).setOnClickListener(view -> entryEventListener.onEditEntry(getEntry()));
     }
 
     abstract public T getEntry();
@@ -61,8 +55,5 @@ public abstract class RouteListItem<T extends AbstractEntry> extends CardView im
     abstract protected void initialize();
     abstract public void update(T entry);
 
-    abstract protected @IdRes int getRemoveButtonId();
-    abstract protected @IdRes int getMoveUpButtonId();
-    abstract protected @IdRes int getMoveDownButtonId();
-    abstract protected @IdRes int getEditButtonId();
+
 }

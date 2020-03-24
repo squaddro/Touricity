@@ -67,7 +67,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         return rootView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -105,10 +105,10 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void createRouteExploreView() {
         routeExploreView = getActivity().findViewById(R.id.route_explore);
-        routeExploreView.setRouteList(exampleRouteList());
+        routeExploreView.setRouteList(new ArrayList<>());
         routeExploreView.setIRouteDraw(this);
     }
 

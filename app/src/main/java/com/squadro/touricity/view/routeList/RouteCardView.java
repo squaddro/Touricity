@@ -11,17 +11,19 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.squadro.touricity.R;
-import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
-import com.squadro.touricity.view.routeList.entry.PathCardView;
+import com.squadro.touricity.view.map.MyPlace;
+import com.squadro.touricity.view.map.event.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -29,9 +31,6 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
 
     @Getter
     private Route route;
-    private TextView textRouteId;
-    private TextView textCreator;
-    private TextView textEntries;
     private LinearLayout entryList;
     private String viewId;
 
@@ -46,48 +45,31 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     public RouteCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void loadRoute(Route route) {
 
         Context context = getContext();
         this.route = route;
-
-        textRouteId.setText(route.getRoute_id());
-        textCreator.setText(route.getCreator());
-        textEntries.setText("");
+        List<MyPlace> placesList = MapFragmentTab2.responsePlaces;
         for (IEntry entry : route.getAbstractEntryList()) {
             if (entry instanceof Stop) {
                 Stop stop = (Stop) entry;
-                textEntries.append(stop.getStop_id() + " ");
+                List<MyPlace> collect = placesList.stream().filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
+                if(collect.size() > 0){
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context);
+                    cardView = stopCardViewHandler.putViews();
+                }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
-                RelativeLayout bLayer = cardView.findViewById(R.id.stop_view_button_layer);
-                bLayer.setVisibility(INVISIBLE);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
-                bLayer.setLayoutParams(params);
-                entryList.addView(cardView);
-            } else if (entry instanceof Path) {
-                Path path = (Path) entry;
-                textEntries.append(path.getPath_id() + " ");
-                PathCardView cardView = (PathCardView) LayoutInflater.from(context).inflate(R.layout.path_card_view, null);
-                cardView.setRoute(route);
-                cardView.setViewId(this.viewId);
-                cardView.update(path);
-                RelativeLayout bLayer = cardView.findViewById(R.id.path_view_button_layer);
-                bLayer.setVisibility(INVISIBLE);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
-                bLayer.setLayoutParams(params);
                 entryList.addView(cardView);
             }
         }
     }
 
     protected void initialize() {
-        textRouteId = findViewById(R.id.card_view_route_id_content);
-        textCreator = findViewById(R.id.card_view_creator_content);
-        textEntries = findViewById(R.id.card_view_route_entries_content);
         entryList = findViewById(R.id.route_entries_list);
     }
 
