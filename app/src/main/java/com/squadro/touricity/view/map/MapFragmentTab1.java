@@ -32,6 +32,7 @@ import com.squadro.touricity.view.filter.MinRatingBar;
 import com.squadro.touricity.view.filter.TransportationCheckBox;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
 import com.squadro.touricity.view.map.DirectionsAPI.FetchUrl;
+import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.routeList.RouteExploreView;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.search.SearchBar;
@@ -81,12 +82,6 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         createFilterView();
         createRouteExploreView();
         initializeSheetBehaviors();
-
-        DirectionPost directionPost = new DirectionPost();
-        //This is how we draw a path between 2 points.
-        String url = directionPost.getDirectionsURL(tobb, somewhere, null, "driving");
-        FetchUrl FetchUrl = new FetchUrl(map);
-        FetchUrl.execute(url);
 
     }
 
