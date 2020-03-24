@@ -95,6 +95,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializeSheetBehaviors();
 
         initializePlacesAutofill();
+        map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -196,7 +197,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                 routeCreateView.onInsertLocation(location);
             }
             else{
-
                 int lastStopIndex = routeCreateView.getRoute().getAbstractEntryList().size()-1;
 
                 Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(lastStopIndex);
