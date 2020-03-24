@@ -1,5 +1,6 @@
 package com.squadro.touricity.message.types;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.message.types.interfaces.IPath;
 
 import java.util.List;

@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,13 +12,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FetchUrl extends AsyncTask<String, Void, String> {
+import lombok.Getter;
 
-    private GoogleMap mMap = null;
+public class FetchUrl extends AsyncTask<String, Void, String>{
 
-    public FetchUrl(GoogleMap mMap){
-        this.mMap = mMap;
+    //private GoogleMap mMap = null;
+    private List<LatLng> pointList = null;
+
+    public IAsync async;
+
+    public FetchUrl(IAsync async){
+        this.async = async;
     }
 
 
@@ -32,14 +40,21 @@ public class FetchUrl extends AsyncTask<String, Void, String> {
         } catch (Exception e) {
             Log.d("Background Task", e.toString());
         }
+
+        async.onComplete(data);
         return data;
     }
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        ParserTask parserTask = new ParserTask(mMap);
+
+        //ParserTask parserTask = new ParserTask();
         // Invokes the thread for parsing the JSON data
-        parserTask.execute(result);
+
+        //parserTask.delegate = this;
+        //parserTask.execute(result);
+
+
     }
 
     private String downloadUrl(String strUrl) throws IOException {
@@ -70,5 +85,13 @@ public class FetchUrl extends AsyncTask<String, Void, String> {
             urlConnection.disconnect();
         }
         return data;
+    }
+
+
+    public List<LatLng> getPointList() {
+
+            System.out.println("a");
+
+        return pointList;
     }
 }

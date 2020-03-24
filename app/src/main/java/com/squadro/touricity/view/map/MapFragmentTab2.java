@@ -37,6 +37,8 @@ import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.RouteRequests;
+import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
@@ -189,7 +191,21 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         button.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
             Location location = new Location("sample_id", latLng.latitude, latLng.longitude);
-            routeCreateView.onInsertLocation(location);
+
+            if(routeCreateView.getRoute().getAbstractEntryList().size() == 0){
+                routeCreateView.onInsertLocation(location);
+            }
+            else{
+
+                int lastStopIndex = routeCreateView.getRoute().getAbstractEntryList().size()-1;
+
+                Stop prevStop = (Stop) routeCreateView.getRoute().getAbstractEntryList().get(lastStopIndex);
+
+                DirectionPost directionPost = new DirectionPost();
+                String url = directionPost.getDirectionsURL(prevStop.getLocation().getLatLng(),location.getLatLng(),null,"driving");
+                PointListReturner plr = new PointListReturner(url, routeCreateView, lastStopIndex+1);
+                routeCreateView.onInsertLocation(location);
+            }
             mapLongClickListener.dissmissPopUp();
         });
     }
