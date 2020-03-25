@@ -69,16 +69,26 @@ public class StopCardViewHandler {
             buttons.setLayoutParams(params);
 
             Button down = new Button(context);
-            down.setId(View.generateViewId());
+            down.setClickable(true);
+            down.setId(R.id.down_arrow_stop);
             down.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
             down.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_24px);
 
             Button up = new Button(context);
-
+            up.setId(R.id.up_arrow_stop);
+            up.setClickable(true);
             RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(150,150);
-            buttonParam.addRule(RelativeLayout.RIGHT_OF,down.getId());
+            buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.down_arrow_stop);
             up.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_24px);
             up.setLayoutParams(buttonParam);
+
+            Button delete = new Button(context);
+            delete.setId(R.id.delete_stop);
+            delete.setClickable(true);
+            buttonParam = new RelativeLayout.LayoutParams(150,150);
+            buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.up_arrow_stop);
+            delete.setBackgroundResource(R.drawable.ic_remove_24px);
+            delete.setLayoutParams(buttonParam);
 
             HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -88,6 +98,7 @@ public class StopCardViewHandler {
 
             buttons.addView(down);
             buttons.addView(up);
+            buttons.addView(delete);
             RelativeLayout relativeLayout = stopCardView.findViewById(R.id.stop_card_relative);
             relativeLayout.addView(buttons,0);
         }else if(viewId.equals("explore")){
