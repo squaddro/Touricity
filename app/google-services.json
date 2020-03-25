@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "175790339788",
+    "firebase_url": "https://touricity-4af3e.firebaseio.com",
+    "project_id": "touricity-4af3e",
+    "storage_bucket": "touricity-4af3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175790339788:android:a845d30a1748b9b48eb469",
+        "android_client_info": {
+          "package_name": "com.squadro.touricity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175790339788-4duq1mclci31hi3m45tmuocgvkf79gsv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.squadro.touricity",
+            "certificate_hash": "8974457669cacace6e2c433491a79d0c9e32e889"
+          }
+        },
+        {
+          "client_id": "175790339788-t9mjla98b67aehbojds7grkfae96ihnm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDCc8IphVtTvosmONyOu3GS_e8mznSPvM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175790339788-t9mjla98b67aehbojds7grkfae96ihnm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
