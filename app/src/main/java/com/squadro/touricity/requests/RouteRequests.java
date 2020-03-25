@@ -27,6 +27,9 @@ public class RouteRequests {
     public void updateRoute(Route route, IRouteResponse iRouteResponse) {
         RouteConverter routeConverter = new RouteConverter();
 
+        route.setCreator("94ca3876-9bd1-41ec-ad1d-36dadaf3b024");
+        route.setCity_id("111111111111111111111111111111111111");
+        route.setPrivacy(2);
         RetrofitCreate retrofitCreate = new RetrofitCreate();
         Retrofit retrofit = retrofitCreate.createRetrofit();
         RestAPI restAPI = retrofit.create(RestAPI.class);

@@ -67,10 +67,17 @@ public class FilterRequests {
                     routes.add((Route) routeConverter.jsonToObject(element.getAsJsonObject()));
                 }
                 AtomicInteger count = new AtomicInteger(0);
+                AtomicInteger stopCount = new AtomicInteger(0);
+                for(Route route : routes){
+                    for(IEntry entry : route.getEntries()){
+                        if(entry instanceof Stop) stopCount.incrementAndGet();
+                    }
+                }
                 for (Route route : routes) {
                     count.incrementAndGet();
                     for (IEntry entry : route.getEntries()) {
                         if (entry instanceof Stop) {
+                            stopCount.decrementAndGet();
                             Stop stop = (Stop) entry;
                             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
                                     Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS);
@@ -93,16 +100,16 @@ public class FilterRequests {
                                             if (photos.size() == photoMetadatas.size()) {
                                                 MyPlace myPlace = new MyPlace(place, photos);
                                                 MapFragmentTab2.responsePlaces.add(myPlace);
-                                                if(count.get() == routes.size()){
-                                                    routeExploreView.setRouteList(routes);
-                                                }
+                                            }
+                                            if(stopCount.get() == 0){
+                                                routeExploreView.setRouteList(routes);
                                             }
                                         }).addOnFailureListener(Throwable::printStackTrace);
                                     }
                                 } else {
                                     MyPlace myPlace = new MyPlace(place, null);
                                     MapFragmentTab2.responsePlaces.add(myPlace);
-                                    if(count.get() == routes.size()){
+                                    if(stopCount.get() == 0){
                                         routeExploreView.setRouteList(routes);
                                     }
                                 }
