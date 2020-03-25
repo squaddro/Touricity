@@ -42,6 +42,7 @@ import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
+import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.INearByResponse;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
@@ -102,7 +103,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         createRouteCreateView();
         initializeSheetBehaviors();
         initializePlacesAutofill();
-   //     map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
+        map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
