@@ -1,20 +1,15 @@
 package com.squadro.touricity.view.routeList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.text.Editable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -161,46 +156,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     @Override
     public void onEditEntry(AbstractEntry entry) {
 
-    }
-
-    private void editStopView(AbstractEntry entry, MapFragmentTab2 routeMapViewUpdater, Activity activity, CoordinatorLayout.LayoutParams layoutParams) {
-        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
-        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate, layoutParams);
-        Button saveButton = inflate.findViewById(R.id.stop_edit_save);
-        Button cancelButton = inflate.findViewById(R.id.stop_edit_cancel);
-
-        cancelButton.setOnClickListener(v -> {
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-            return;
-        });
-        saveButton.setOnClickListener(v1 -> {
-            Editable commentText = ((EditText) inflate.findViewById(R.id.stop_edit_comment_text)).getText();
-            if (!commentText.toString().isEmpty()) {
-                entry.setComment(commentText.toString());
-            } else {
-                entry.setComment("No comment has been entered..");
-            }
-
-            Editable durationText = ((EditText) inflate.findViewById(R.id.stop_edit_duration_text)).getText();
-            if (!durationText.toString().isEmpty()) {
-                entry.setDuration(Integer.parseInt(durationText.toString()));
-            } else {
-                entry.setDuration(0);
-            }
-
-            Editable expenseText = ((EditText) inflate.findViewById(R.id.stop_edit_expense_text)).getText();
-            if (!expenseText.toString().isEmpty()) {
-                entry.setExpense(Integer.parseInt(expenseText.toString()));
-            } else {
-                entry.setExpense(0);
-            }
-
-            onStopUpdate((Stop) entry);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-
-        });
     }
 
     @Override

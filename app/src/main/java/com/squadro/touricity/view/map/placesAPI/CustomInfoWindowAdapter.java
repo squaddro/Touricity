@@ -3,6 +3,7 @@ package com.squadro.touricity.view.map.placesAPI;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -10,17 +11,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.squadro.touricity.R;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.routeList.entry.StopCardView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final Context context;
-    private StopCardView stopCardView;
+    private CardView cardView;
 
     public CustomInfoWindowAdapter(Context context) {
-        stopCardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
         this.context = context;
     }
 
@@ -28,20 +28,28 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View getInfoWindow(Marker marker) {
 
-return null;
+        return null;
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View getInfoContents(Marker marker) {
-        List<MyPlace> responsePlaces = MapFragmentTab2.responsePlaces;
+        List<MarkerInfo> markerInfos = MapFragmentTab2.markerInfoList;
+        List<MarkerInfo> collect = markerInfos.stream()
+                .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
+                .collect(Collectors.toList());
 
-        if (responsePlaces != null && responsePlaces.size() != 0) {
-            StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(stopCardView
-                    , MapFragmentTab2.responsePlaces.get(0), context, "create", null);
-            stopCardViewHandler.putViews();
+        if (collect.size() > 0) {
+            if(collect.get(0).getIsNearby()){
+                cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.marker_info_nearby, null);
+                MarkerInfoViewHandler markerInfoViewHandler = new MarkerInfoViewHandler(cardView, collect.get(0).getMyPlace(), context);
+                markerInfoViewHandler.putViewsForNearby();
+            }else{
+                cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.marker_info_view, null);
+                MarkerInfoViewHandler markerInfoViewHandler = new MarkerInfoViewHandler(cardView, collect.get(0).getMyPlace(), context);
+                markerInfoViewHandler.putViews();
+            }
         }
-    //    stopCardView.setLayoutParams(new LinearLayout.LayoutParams(600,600));
-        return stopCardView;
+        return cardView;
     }
 }

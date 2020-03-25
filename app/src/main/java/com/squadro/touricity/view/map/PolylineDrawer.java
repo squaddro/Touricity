@@ -1,6 +1,8 @@
 package com.squadro.touricity.view.map;
 
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -14,10 +16,13 @@ import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PolylineDrawer {
 
@@ -39,6 +44,7 @@ public class PolylineDrawer {
         polylineOptions = new PolylineOptions();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route) {
 
         clearMap();
@@ -54,6 +60,13 @@ public class PolylineDrawer {
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
+                List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                        .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
+                if(collect.size() > 0){
+                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                }
+
             } else if (entry instanceof Path) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
@@ -68,7 +81,7 @@ public class PolylineDrawer {
 
         return map;
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Stop stop) {
 
         //this.editingStop = stop;
@@ -91,6 +104,12 @@ public class PolylineDrawer {
                     Marker marker = map.addMarker(markerOptions);
                     marker.setZIndex(1);
                     markers.add(marker);
+                    List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                            .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
+                            .collect(Collectors.toList());
+                    if(collect.size() > 0){
+                        MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                    }
                 } else {
                     markerOptions = new MarkerOptions();
                     markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
@@ -113,7 +132,7 @@ public class PolylineDrawer {
 
         return map;
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Path path) {
 
         clearMap();
@@ -130,6 +149,12 @@ public class PolylineDrawer {
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
+                List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                        .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
+                if(collect.size() > 0){
+                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                }
             } else if (entry instanceof Path) {
 
                 polylineOptions = new PolylineOptions();
