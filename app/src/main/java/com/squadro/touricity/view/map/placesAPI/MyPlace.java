@@ -1,4 +1,4 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.view.map.placesAPI;
 
 import android.graphics.Bitmap;
 
@@ -26,8 +26,7 @@ public class MyPlace {
     private Double rating;
 
     public MyPlace(String address, String place_id, LatLng latLng, String name,
-                   List<Bitmap> photos, String phoneNumber, int priceLevel,
-                   double rating, boolean isOpen) {
+                   List<Bitmap> photos, String phoneNumber, double rating) {
         this.address = address;
         this.place_id = place_id;
         this.latLng = latLng;

@@ -1,9 +1,8 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.view.map.offline;
 
 import android.content.Context;
 
 import java.io.File;
-import java.io.IOException;
 
 public class CreateOfflineDataDirectory {
 

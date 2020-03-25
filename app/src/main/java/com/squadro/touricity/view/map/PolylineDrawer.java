@@ -1,6 +1,8 @@
 package com.squadro.touricity.view.map;
 
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -14,10 +16,13 @@ import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PolylineDrawer {
 
@@ -26,8 +31,6 @@ public class PolylineDrawer {
     private PolylineOptions polylineOptions;
     private List<Polyline> polylines;
     private List<Marker> markers;
-    //private Stop editingStop = null;
-    //private Path editingPath = null;
 
     private IEntry entry;
 
@@ -39,6 +42,7 @@ public class PolylineDrawer {
         polylineOptions = new PolylineOptions();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route) {
 
         clearMap();
@@ -54,7 +58,14 @@ public class PolylineDrawer {
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
-            } else if (entry instanceof Path) {
+                List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                        .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
+                if(collect.size() > 0){
+                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                }
+
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
@@ -68,11 +79,9 @@ public class PolylineDrawer {
 
         return map;
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Stop stop) {
-
-        //this.editingStop = stop;
-
+        
         clearMap();
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
@@ -81,7 +90,6 @@ public class PolylineDrawer {
             entry = (IEntry) iterator.next();
 
             if (entry instanceof Stop) {
-
                 if (((Stop) entry).getLocation().getLatitude() == stop.getLocation().getLatitude() &&
                         ((Stop) entry).getLocation().getLongitude() == stop.getLocation().getLongitude()) {
 
@@ -91,6 +99,12 @@ public class PolylineDrawer {
                     Marker marker = map.addMarker(markerOptions);
                     marker.setZIndex(1);
                     markers.add(marker);
+                    List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                            .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
+                            .collect(Collectors.toList());
+                    if(collect.size() > 0){
+                        MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                    }
                 } else {
                     markerOptions = new MarkerOptions();
                     markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
@@ -99,7 +113,7 @@ public class PolylineDrawer {
                     markers.add(marker);
                 }
 
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
@@ -110,10 +124,9 @@ public class PolylineDrawer {
                 }
             }
         }
-
         return map;
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Path path) {
 
         clearMap();
@@ -130,7 +143,13 @@ public class PolylineDrawer {
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
-            } else if (entry instanceof Path) {
+                List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                        .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
+                if(collect.size() > 0){
+                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                }
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
 
                 polylineOptions = new PolylineOptions();
                 if (entry.equals(path)) {
@@ -153,31 +172,6 @@ public class PolylineDrawer {
                     }
                 }
             }
-        }
-        return map;
-    }
-
-
-    public GoogleMap drawStop(Stop stop) {
-        markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-        markerOptions.position(new LatLng((stop.getLocation().getLatitude()), stop.getLocation().getLongitude()));
-        Marker marker = map.addMarker(markerOptions);
-        marker.setZIndex(1);
-        markers.add(marker);
-        return map;
-    }
-
-    public GoogleMap drawPath(Path path) {
-
-        polylineOptions = new PolylineOptions();
-        List<PathVertex> vertices = path.getVertices();
-        for (int i = 0; i < vertices.size(); i++) {
-            polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-            polylineOptions.color(Color.BLUE);
-            Polyline polyline = map.addPolyline(polylineOptions);
-            polyline.setZIndex(1);
-            polylines.add(polyline);
         }
         return map;
     }

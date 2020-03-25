@@ -1,20 +1,15 @@
 package com.squadro.touricity.view.routeList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.text.Editable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -25,9 +20,12 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.MyPlace;
-import com.squadro.touricity.view.map.event.StopCardViewHandler;
+import com.squadro.touricity.view.map.PolylineDrawer;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
+import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 import com.squadro.touricity.view.routeList.event.IRouteInsertListener;
@@ -64,6 +62,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     }
 
     private void UpdateView() {
+
         CleanView();
         if(route == null) return;
         Context context = getContext();
@@ -75,7 +74,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                         .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"create",stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId("create");
@@ -84,6 +83,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entryList.addView(cardView);
             }
         }
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap());
+        pd.drawRoute(route);
     }
 
     public void CleanView() {
@@ -162,46 +163,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     }
 
-    private void editStopView(AbstractEntry entry, MapFragmentTab2 routeMapViewUpdater, Activity activity, CoordinatorLayout.LayoutParams layoutParams) {
-        View inflate = LayoutInflater.from(routeMapViewUpdater.getContext()).inflate(R.layout.stop_edit_view, null);
-        ((CoordinatorLayout) activity.findViewById(R.id.tab2_map_view)).addView(inflate, layoutParams);
-        Button saveButton = inflate.findViewById(R.id.stop_edit_save);
-        Button cancelButton = inflate.findViewById(R.id.stop_edit_cancel);
-
-        cancelButton.setOnClickListener(v -> {
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-            return;
-        });
-        saveButton.setOnClickListener(v1 -> {
-            Editable commentText = ((EditText) inflate.findViewById(R.id.stop_edit_comment_text)).getText();
-            if (!commentText.toString().isEmpty()) {
-                entry.setComment(commentText.toString());
-            } else {
-                entry.setComment("No comment has been entered..");
-            }
-
-            Editable durationText = ((EditText) inflate.findViewById(R.id.stop_edit_duration_text)).getText();
-            if (!durationText.toString().isEmpty()) {
-                entry.setDuration(Integer.parseInt(durationText.toString()));
-            } else {
-                entry.setDuration(0);
-            }
-
-            Editable expenseText = ((EditText) inflate.findViewById(R.id.stop_edit_expense_text)).getText();
-            if (!expenseText.toString().isEmpty()) {
-                entry.setExpense(Integer.parseInt(expenseText.toString()));
-            } else {
-                entry.setExpense(0);
-            }
-
-            onStopUpdate((Stop) entry);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).removeViewAt(2);
-            ((CoordinatorLayout) routeMapViewUpdater.getActivity().findViewById(R.id.tab2_map_view)).addView(routeMapViewUpdater.routeCreateView);
-
-        });
-    }
-
     @Override
     public void onMoveEntry(AbstractEntry entry, EDirection direction) {
         Log.d("fcreate", "Move " + direction + " " + entry.getComment());
@@ -278,7 +239,26 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     }
 
     public void onInsertStop(Stop stop) {
-        route.addEntry(stop);
-        UpdateView();
+        List<IEntry> entries = route.getAbstractEntryList();
+
+        if(entries.size() == 0){
+            route.addEntry(stop);
+            UpdateView();
+        }
+        else{
+            int lastIndex = entries.size()-1;
+            Stop prevStop = (Stop) entries.get(lastIndex);
+
+            DirectionPost dp = new DirectionPost();
+            String url = dp.getDirectionsURL(prevStop.getLocation().getLatLng(), stop.getLocation().getLatLng(), null, "driving");
+
+            route.addEntry(new Path(null, 0, 0, "", null, Path.PathType.DRIVING, null));
+
+            PointListReturner plr = new PointListReturner(url,this,lastIndex+1);
+
+            route.addEntry(stop);
+            UpdateView();
+        }
+
     }
 }

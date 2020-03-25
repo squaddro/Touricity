@@ -21,6 +21,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
+import com.squadro.touricity.view.map.offline.CustomMapTileProvider;
+import com.squadro.touricity.view.map.offline.DownloadMapTiles;
+import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
@@ -161,12 +165,6 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
     private void initializeSheetbehavior(GoogleMap googleMap) {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_save));
-        /* Open this if you want to open popup when map is long clicked
-                 List<String> buttonNames = new ArrayList<>();
-                 buttonNames.add("Add to route");
-                 PopupWindowParameters popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
-                 mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
-                */
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
     }
 
@@ -197,6 +195,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawHighlighted(Route route) {
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(route);

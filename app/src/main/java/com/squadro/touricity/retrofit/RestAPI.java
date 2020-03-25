@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface RestAPI {
 
@@ -22,4 +24,7 @@ public interface RestAPI {
 
     @POST("filter")
     Call<JsonObject> filter(@Body JsonObject body);
+
+    @GET("api/place/nearbysearch/json?&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE")
+    Call<JsonObject> getNearbyPlaces(@Query("location") String location, @Query("radius") int radius);
 }
