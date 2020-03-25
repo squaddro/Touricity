@@ -24,9 +24,7 @@ import com.squadro.touricity.view.filter.DurationSeekBar;
 import com.squadro.touricity.view.filter.FilterHandler;
 import com.squadro.touricity.view.filter.MinRatingBar;
 import com.squadro.touricity.view.filter.TransportationCheckBox;
-import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
-import com.squadro.touricity.view.map.DirectionsAPI.FetchUrl;
-import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
+import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.routeList.RouteExploreView;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
@@ -72,6 +70,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         createFilterView();
         createRouteExploreView();
         initializeSheetBehaviors();
+        map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
     }
 
     private void initializeSheetBehaviors() {
