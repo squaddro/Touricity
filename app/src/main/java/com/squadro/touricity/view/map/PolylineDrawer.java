@@ -64,7 +64,7 @@ public class PolylineDrawer {
                         .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                         .collect(Collectors.toList());
                 if(collect.size() > 0){
-                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0)));
+                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
                 }
 
             } else if (entry instanceof Path) {
@@ -108,7 +108,7 @@ public class PolylineDrawer {
                             .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                             .collect(Collectors.toList());
                     if(collect.size() > 0){
-                        MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0)));
+                        MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
                     }
                 } else {
                     markerOptions = new MarkerOptions();
@@ -153,7 +153,7 @@ public class PolylineDrawer {
                         .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                         .collect(Collectors.toList());
                 if(collect.size() > 0){
-                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0)));
+                    MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
                 }
             } else if (entry instanceof Path) {
 

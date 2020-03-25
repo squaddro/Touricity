@@ -27,23 +27,29 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View getInfoWindow(Marker marker) {
-        cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.marker_info_view, null);
-        List<MarkerInfo> markerInfos = MapFragmentTab2.markerInfoList;
-        List<MyPlace> collect = markerInfos.stream()
-                .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
-                .map(MarkerInfo::getMyPlace)
-                .collect(Collectors.toList());
 
-        if (collect.size() > 0) {
-            MarkerInfoViewHandler markerInfoViewHandler = new MarkerInfoViewHandler(cardView, collect.get(0), context);
-            markerInfoViewHandler.putViews();
-        }
-        return cardView;
+        return null;
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View getInfoContents(Marker marker) {
-        return null;
+        List<MarkerInfo> markerInfos = MapFragmentTab2.markerInfoList;
+        List<MarkerInfo> collect = markerInfos.stream()
+                .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
+                .collect(Collectors.toList());
+
+        if (collect.size() > 0) {
+            if(collect.get(0).getIsNearby()){
+                cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.marker_info_nearby, null);
+                MarkerInfoViewHandler markerInfoViewHandler = new MarkerInfoViewHandler(cardView, collect.get(0).getMyPlace(), context);
+                markerInfoViewHandler.putViewsForNearby();
+            }else{
+                cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.marker_info_view, null);
+                MarkerInfoViewHandler markerInfoViewHandler = new MarkerInfoViewHandler(cardView, collect.get(0).getMyPlace(), context);
+                markerInfoViewHandler.putViews();
+            }
+        }
+        return cardView;
     }
 }

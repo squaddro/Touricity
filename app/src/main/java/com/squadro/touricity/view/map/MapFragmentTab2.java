@@ -72,6 +72,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static List<MyPlace> responsePlaces;
     public static PlacesClient placesClient;
     public static List<MarkerInfo> markerInfoList;
+    public static List<Marker> markersOfNearby;
 
     private IEditor editor;
 
@@ -100,10 +101,31 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
         markerInfoList = new ArrayList<>();
+        markersOfNearby = new ArrayList<>();
         createRouteCreateView();
         initializeSheetBehaviors();
         initializePlacesAutofill();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
+        initializeInfoWindowListener();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void initializeInfoWindowListener() {
+        map.setOnInfoWindowLongClickListener(marker -> {
+            List<MarkerInfo> collect = markerInfoList.stream()
+                    .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
+                    .collect(Collectors.toList());
+            if(collect.size() > 0){
+                if(!collect.get(0).getIsNearby()) return;
+                MyPlace myPlace = collect.get(0).getMyPlace();
+                Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
+                Stop stop = new Stop(null, 0, 0, "", location, null);
+                MapFragmentTab2.getRouteCreateView().onInsertStop(stop);
+                for(Marker m : MapFragmentTab2.markersOfNearby){
+                    m.remove();
+                }
+                MapFragmentTab2.markersOfNearby.clear();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -321,7 +343,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                                 markerOptions.position(myPlace.getLatLng());
                                 Marker marker = map.addMarker(markerOptions);
                                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                                markerInfoList.add(new MarkerInfo(marker,myPlace));
+                                markerInfoList.add(new MarkerInfo(marker,myPlace,true));
+                                markersOfNearby.add(marker);
                             }
                         }).addOnFailureListener(Throwable::printStackTrace);
                     }
@@ -332,7 +355,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     markerOptions.position(myPlace.getLatLng());
                     Marker marker = map.addMarker(markerOptions);
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                    markerInfoList.add(new MarkerInfo(marker,myPlace));
+                    markerInfoList.add(new MarkerInfo(marker,myPlace,true));
+                    markersOfNearby.add(marker);
                 }
             }).addOnFailureListener(Throwable::printStackTrace);
         }
