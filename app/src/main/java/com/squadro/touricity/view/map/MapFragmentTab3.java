@@ -165,12 +165,6 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
     private void initializeSheetbehavior(GoogleMap googleMap) {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_save));
-        /* Open this if you want to open popup when map is long clicked
-                 List<String> buttonNames = new ArrayList<>();
-                 buttonNames.add("Add to route");
-                 PopupWindowParameters popupWindowParameters = new PopupWindowParameters(numberOfButtons,buttonNames);
-                 mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(),popupWindowParameters);
-                */
         initBottomSheetCallback(bottomSheetBehavior, mapLongClickListener);
     }
 
@@ -201,6 +195,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawHighlighted(Route route) {
         PolylineDrawer polylineDrawer = new PolylineDrawer(map);
         polylineDrawer.drawRoute(route);
