@@ -60,9 +60,11 @@ public class PolylineDrawer {
                 markers.add(marker);
                 List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
                         .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
-                if(collect.size() > 0){
                         .collect(Collectors.toList());
+                if(collect.size() > 0){
                     MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
+                }
+
             } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
@@ -74,11 +76,12 @@ public class PolylineDrawer {
                 }
             }
         }
+
         return map;
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Stop stop) {
-
+        
         clearMap();
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
@@ -87,7 +90,6 @@ public class PolylineDrawer {
             entry = (IEntry) iterator.next();
 
             if (entry instanceof Stop) {
-
                 if (((Stop) entry).getLocation().getLatitude() == stop.getLocation().getLatitude() &&
                         ((Stop) entry).getLocation().getLongitude() == stop.getLocation().getLongitude()) {
 
@@ -111,7 +113,7 @@ public class PolylineDrawer {
                     markers.add(marker);
                 }
 
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
@@ -122,7 +124,6 @@ public class PolylineDrawer {
                 }
             }
         }
-
         return map;
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -148,7 +149,7 @@ public class PolylineDrawer {
                 if(collect.size() > 0){
                     MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
                 }
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
 
                 polylineOptions = new PolylineOptions();
                 if (entry.equals(path)) {
