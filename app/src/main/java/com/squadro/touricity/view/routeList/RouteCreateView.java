@@ -20,7 +20,10 @@ import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
@@ -80,6 +83,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entryList.addView(cardView);
             }
         }
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap());
+        pd.drawRoute(route);
     }
 
     public void CleanView() {
@@ -234,7 +239,26 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     }
 
     public void onInsertStop(Stop stop) {
-        route.addEntry(stop);
-        UpdateView();
+        List<IEntry> entries = route.getAbstractEntryList();
+
+        if(entries.size() == 0){
+            route.addEntry(stop);
+            UpdateView();
+        }
+        else{
+            int lastIndex = entries.size()-1;
+            Stop prevStop = (Stop) entries.get(lastIndex);
+
+            DirectionPost dp = new DirectionPost();
+            String url = dp.getDirectionsURL(prevStop.getLocation().getLatLng(), stop.getLocation().getLatLng(), null, "driving");
+
+            route.addEntry(new Path(null, 0, 0, "", null, Path.PathType.DRIVING, null));
+
+            PointListReturner plr = new PointListReturner(url,this,lastIndex+1);
+
+            route.addEntry(stop);
+            UpdateView();
+        }
+
     }
 }

@@ -31,8 +31,6 @@ public class PolylineDrawer {
     private PolylineOptions polylineOptions;
     private List<Polyline> polylines;
     private List<Marker> markers;
-    //private Stop editingStop = null;
-    //private Path editingPath = null;
 
     private IEntry entry;
 
@@ -67,7 +65,7 @@ public class PolylineDrawer {
                     MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
                 }
 
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
@@ -83,9 +81,7 @@ public class PolylineDrawer {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Stop stop) {
-
-        //this.editingStop = stop;
-
+        
         clearMap();
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
@@ -94,7 +90,6 @@ public class PolylineDrawer {
             entry = (IEntry) iterator.next();
 
             if (entry instanceof Stop) {
-
                 if (((Stop) entry).getLocation().getLatitude() == stop.getLocation().getLatitude() &&
                         ((Stop) entry).getLocation().getLongitude() == stop.getLocation().getLongitude()) {
 
@@ -118,7 +113,7 @@ public class PolylineDrawer {
                     markers.add(marker);
                 }
 
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 polylineOptions = new PolylineOptions();
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
@@ -129,7 +124,6 @@ public class PolylineDrawer {
                 }
             }
         }
-
         return map;
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -155,7 +149,7 @@ public class PolylineDrawer {
                 if(collect.size() > 0){
                     MapFragmentTab2.markerInfoList.add(new MarkerInfo(marker,collect.get(0),false));
                 }
-            } else if (entry instanceof Path) {
+            } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
 
                 polylineOptions = new PolylineOptions();
                 if (entry.equals(path)) {
@@ -178,31 +172,6 @@ public class PolylineDrawer {
                     }
                 }
             }
-        }
-        return map;
-    }
-
-
-    public GoogleMap drawStop(Stop stop) {
-        markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-        markerOptions.position(new LatLng((stop.getLocation().getLatitude()), stop.getLocation().getLongitude()));
-        Marker marker = map.addMarker(markerOptions);
-        marker.setZIndex(1);
-        markers.add(marker);
-        return map;
-    }
-
-    public GoogleMap drawPath(Path path) {
-
-        polylineOptions = new PolylineOptions();
-        List<PathVertex> vertices = path.getVertices();
-        for (int i = 0; i < vertices.size(); i++) {
-            polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-            polylineOptions.color(Color.BLUE);
-            Polyline polyline = map.addPolyline(polylineOptions);
-            polyline.setZIndex(1);
-            polylines.add(polyline);
         }
         return map;
     }
