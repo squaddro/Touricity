@@ -6,10 +6,14 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.text.InputType;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squadro.touricity.R;
@@ -55,6 +59,44 @@ public class StopCardViewHandler {
         LinearLayout durationAndCost = new LinearLayout(context);
         durationAndCost.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         durationAndCost.setOrientation(HORIZONTAL);
+
+        if(viewId.equals("create")){
+            RelativeLayout buttons = new RelativeLayout(context);
+            buttons.setId(View.generateViewId());
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            buttons.setLayoutParams(params);
+
+            Button down = new Button(context);
+            down.setId(View.generateViewId());
+            down.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
+            down.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_24px);
+
+            Button up = new Button(context);
+
+            RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(150,150);
+            buttonParam.addRule(RelativeLayout.RIGHT_OF,down.getId());
+            up.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_24px);
+            up.setLayoutParams(buttonParam);
+
+            HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.BELOW,buttons.getId());
+            horizontalScrollView.setLayoutParams(layoutParams);
+
+            buttons.addView(down);
+            buttons.addView(up);
+            RelativeLayout relativeLayout = stopCardView.findViewById(R.id.stop_card_relative);
+            relativeLayout.addView(buttons,0);
+        }else if(viewId.equals("explore")){
+            HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            horizontalScrollView.setLayoutParams(layoutParams);
+        }
 
         LinearLayout textAreasLayout = stopCardView.findViewById(R.id.textAreas);
         if (myPlace.getPhotos() != null && !myPlace.getPhotos().isEmpty()) {
