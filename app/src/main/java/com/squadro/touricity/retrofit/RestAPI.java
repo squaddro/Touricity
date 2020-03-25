@@ -25,6 +25,12 @@ public interface RestAPI {
     @POST("filter")
     Call<JsonObject> filter(@Body JsonObject body);
 
+    @POST("signin")
+    Call<JsonObject> signin(@Body JsonObject body);
+
+    @POST("signup")
+    Call<JsonObject> signup(@Body JsonObject body);
+
     @GET("api/place/nearbysearch/json?&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE")
     Call<JsonObject> getNearbyPlaces(@Query("location") String location, @Query("radius") int radius);
 }
