@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/route_create"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
+    android:layout_height="wrap_content"
     android:background="#EBA8BA"
     android:orientation="vertical"
     app:behavior_hideable="false"
@@ -46,11 +46,10 @@
             </Button>
         </RelativeLayout>
 
-
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/route_create_scroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="250dp">
 
             <LinearLayout
                 android:id="@+id/route_create_list"

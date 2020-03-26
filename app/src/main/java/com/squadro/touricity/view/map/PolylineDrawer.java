@@ -134,15 +134,7 @@ public class PolylineDrawer {
     public GoogleMap drawRoute(Route route, Path path) {
 
         if(viewId.equals("saved")) clearMap();
-     //   else map.clear();
-        else{
-            if (polylines.size() > 0) {
-                for (Polyline polyline : polylines) {
-                    polyline.remove();
-                }
-                polylines.clear();
-            }
-        }
+        else map.clear();
 
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
