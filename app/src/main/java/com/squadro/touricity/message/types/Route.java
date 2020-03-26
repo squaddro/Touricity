@@ -62,6 +62,14 @@ public class Route implements IRoute {
 
     public void deleteEntry(AbstractEntry abstractEntry) {
         this.abstractEntryList.remove(abstractEntry);
+        int index = abstractEntry.getIndex();
+        if (index + 2 < abstractEntryList.size()) {
+            for (IEntry iEntry : abstractEntryList) {
+                if (iEntry.getIndex() > index) {
+                    iEntry.setIndex(iEntry.getIndex() - 2);
+                }
+            }
+        }
         this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
     }
 

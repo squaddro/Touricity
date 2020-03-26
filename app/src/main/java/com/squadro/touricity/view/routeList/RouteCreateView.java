@@ -207,7 +207,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     @Override
     public void onInsertRoute(Route otherRoute) {
-
         UpdateRouteInfo();
     }
 
