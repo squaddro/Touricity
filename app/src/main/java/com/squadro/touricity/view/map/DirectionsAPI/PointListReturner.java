@@ -36,15 +36,15 @@ public class PointListReturner implements IAsync, IAsync2{
         parser.execute(data);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onComplete2(List<LatLng> data) {
 
         this.path.setVertices(latlonListToPathVertexList(data));
         ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
 
-        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap());
-        pd.drawRoute(rcw.getRoute());
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(),"create");
+        pd.drawRoute(rcw.getRoute(),path);
     }
 
     public List<PathVertex> latlonListToPathVertexList(List<LatLng> latlonList){

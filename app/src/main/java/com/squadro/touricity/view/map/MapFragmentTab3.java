@@ -197,7 +197,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawHighlighted(Route route) {
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"saved");
         polylineDrawer.drawRoute(route);
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
         map.setMinZoomPreference(map.getCameraPosition().zoom);

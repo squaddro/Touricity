@@ -67,17 +67,18 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View view) {
         if(this.getViewId().equals("explore")){
 
-            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap());
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap(),viewId);
             polylineDrawer.drawRoute(this.route, stop);
         }
 
         else if(this.getViewId().equals("saved")){
 
-            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap());
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap(),viewId);
             polylineDrawer.drawRoute(this.route, stop);
         }
     }

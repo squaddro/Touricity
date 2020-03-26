@@ -64,7 +64,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     private void UpdateView() {
 
         CleanView();
-        if(route == null) return;
+        if (route == null) return;
         Context context = getContext();
         List<MyPlace> placesList = MapFragmentTab2.responsePlaces;
         for (IEntry entry : route.getAbstractEntryList()) {
@@ -73,8 +73,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 List<MyPlace> collect = placesList.stream().filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
                         .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
-                if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"create",stop);
+                if (collect.size() > 0) {
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "create", stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId("create");
@@ -83,7 +83,8 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entryList.addView(cardView);
             }
         }
-        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap());
+        MapFragmentTab2.markerInfoList.clear();
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(), "create");
         pd.drawRoute(route);
     }
 
@@ -144,7 +145,25 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
         route.deleteEntry(entry);
 
+        updateRoute();
         UpdateRouteInfo();
+    }
+
+    private void updateRoute() {
+        IEntry[] entries = route.getEntries();
+        int length = entries.length;
+        Route swap = new Route();
+        swap.setPrivacy(route.getPrivacy());
+        swap.setCity_id(route.getCity_id());
+        swap.setCreator(route.getCreator());
+        swap.setRoute_id(route.getRoute_id());
+        swap.setTitle(route.getTitle());
+        route = swap;
+        for (int i = 0; i < length; i++) {
+            if (entries[i] instanceof Stop) {
+                onInsertStop((Stop)entries[i]);
+            }
+        }
     }
 
     @Override
@@ -167,10 +186,13 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     public void onMoveEntry(AbstractEntry entry, EDirection direction) {
         Log.d("fcreate", "Move " + direction + " " + entry.getComment());
         List<IEntry> entries = route.getAbstractEntryList();
-        int index = Math.min(entries.size() - 1, Math.max(0, entries.indexOf(entry) + (direction == EDirection.DOWN ? 1 : -1)));
+        int newPos = entry.getIndex() + (direction == EDirection.DOWN ? 2 : -2);
+        if((entry.getIndex() == 0 && direction == EDirection.UP) ||
+                (entry.getIndex() == entries.size() - 1 && direction == EDirection.DOWN)) return;
 
-        route.changeEntryPosition(entry, index);
+        route.changeEntryPosition(entry,entry.getIndex(),newPos);
 
+        updateRoute();
         UpdateRouteInfo();
     }
 
@@ -178,7 +200,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     public void onInsertLocation(Location location) {
         Stop stop = new Stop(null, 0, 0, "", location, null);
 
-        route.addEntry(stop,route.getAbstractEntryList().size());
+        route.addEntry(stop, route.getAbstractEntryList().size());
 
         UpdateRouteInfo();
     }
@@ -241,21 +263,21 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
     public void onInsertStop(Stop stop) {
         List<IEntry> entries = route.getAbstractEntryList();
 
-        if(entries.size() == 0){
+        if (entries.size() == 0) {
             route.addEntry(stop);
+            stop.setIndex(0);
             UpdateView();
-        }
-        else{
-            int lastIndex = entries.size()-1;
+        } else {
+            int lastIndex = entries.size() - 1;
             Stop prevStop = (Stop) entries.get(lastIndex);
-
+            prevStop.setIndex(lastIndex);
             DirectionPost dp = new DirectionPost();
             String url = dp.getDirectionsURL(prevStop.getLocation().getLatLng(), stop.getLocation().getLatLng(), null, "driving");
 
             route.addEntry(new Path(null, 0, 0, "", null, Path.PathType.DRIVING, null));
 
-            PointListReturner plr = new PointListReturner(url,this,lastIndex+1);
-
+            PointListReturner plr = new PointListReturner(url, this, lastIndex + 1);
+            stop.setIndex(lastIndex+2);
             route.addEntry(stop);
             UpdateView();
         }

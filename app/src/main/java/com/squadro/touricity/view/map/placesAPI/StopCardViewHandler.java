@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
+import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
@@ -73,6 +75,7 @@ public class StopCardViewHandler {
             down.setId(R.id.down_arrow_stop);
             down.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
             down.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_24px);
+            down.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onMoveEntry(stop, IEntryButtonEventsListener.EDirection.DOWN));
 
             Button up = new Button(context);
             up.setId(R.id.up_arrow_stop);
@@ -82,6 +85,8 @@ public class StopCardViewHandler {
             up.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_24px);
             up.setLayoutParams(buttonParam);
 
+            up.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onMoveEntry(stop, IEntryButtonEventsListener.EDirection.UP));
+
             Button delete = new Button(context);
             delete.setId(R.id.delete_stop);
             delete.setClickable(true);
@@ -89,6 +94,7 @@ public class StopCardViewHandler {
             buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.up_arrow_stop);
             delete.setBackgroundResource(R.drawable.ic_remove_24px);
             delete.setLayoutParams(buttonParam);
+            delete.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onRemoveEntry(stop));
 
             HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,

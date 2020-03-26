@@ -266,7 +266,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"create");
 
         if(entry instanceof Stop){
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
@@ -281,7 +281,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public void focus(AbstractEntry entry) {
         Log.d("fmap", "focus to the entry " + entry.getComment());
 
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"create");
 
         if (entry instanceof Stop)
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
@@ -350,7 +350,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                                 markerOptions.position(myPlace.getLatLng());
                                 Marker marker = map.addMarker(markerOptions);
                                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                                markerInfoList.add(new MarkerInfo(marker,myPlace,true));
+                                updateMarkerInfo(new MarkerInfo(marker,myPlace,true));
                                 markersOfNearby.add(marker);
                             }
                         }).addOnFailureListener(Throwable::printStackTrace);
@@ -362,10 +362,18 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     markerOptions.position(myPlace.getLatLng());
                     Marker marker = map.addMarker(markerOptions);
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                    markerInfoList.add(new MarkerInfo(marker,myPlace,true));
+                    updateMarkerInfo(new MarkerInfo(marker,myPlace,true));
                     markersOfNearby.add(marker);
                 }
             }).addOnFailureListener(Throwable::printStackTrace);
         }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void updateMarkerInfo(MarkerInfo markerInfo){
+        List<MarkerInfo> collect = markerInfoList.stream()
+                .filter(markerInfo1 -> markerInfo1.getMyPlace().getPlace_id().equals(markerInfo.getMyPlace().getPlace_id()))
+                .collect(Collectors.toList());
+        if(collect.size() == 0 ) markerInfoList.add(markerInfo);
+        else collect.get(0).setMarker(markerInfo.getMarker());
     }
 }
