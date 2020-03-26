@@ -6,15 +6,21 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.text.InputType;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
+import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
@@ -55,6 +61,59 @@ public class StopCardViewHandler {
         LinearLayout durationAndCost = new LinearLayout(context);
         durationAndCost.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         durationAndCost.setOrientation(HORIZONTAL);
+
+        if(viewId.equals("create")){
+            RelativeLayout buttons = new RelativeLayout(context);
+            buttons.setId(View.generateViewId());
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            buttons.setLayoutParams(params);
+
+            Button down = new Button(context);
+            down.setClickable(true);
+            down.setId(R.id.down_arrow_stop);
+            down.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
+            down.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_24px);
+            down.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onMoveEntry(stop, IEntryButtonEventsListener.EDirection.DOWN));
+
+            Button up = new Button(context);
+            up.setId(R.id.up_arrow_stop);
+            up.setClickable(true);
+            RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(150,150);
+            buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.down_arrow_stop);
+            up.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_24px);
+            up.setLayoutParams(buttonParam);
+
+            up.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onMoveEntry(stop, IEntryButtonEventsListener.EDirection.UP));
+
+            Button delete = new Button(context);
+            delete.setId(R.id.delete_stop);
+            delete.setClickable(true);
+            buttonParam = new RelativeLayout.LayoutParams(150,150);
+            buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.up_arrow_stop);
+            delete.setBackgroundResource(R.drawable.ic_remove_24px);
+            delete.setLayoutParams(buttonParam);
+            delete.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onRemoveEntry(stop));
+
+            HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.BELOW,buttons.getId());
+            horizontalScrollView.setLayoutParams(layoutParams);
+
+            buttons.addView(down);
+            buttons.addView(up);
+            buttons.addView(delete);
+            RelativeLayout relativeLayout = stopCardView.findViewById(R.id.stop_card_relative);
+            relativeLayout.addView(buttons,0);
+        }else if(viewId.equals("explore")){
+            HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            horizontalScrollView.setLayoutParams(layoutParams);
+        }
 
         LinearLayout textAreasLayout = stopCardView.findViewById(R.id.textAreas);
         if (myPlace.getPhotos() != null && !myPlace.getPhotos().isEmpty()) {

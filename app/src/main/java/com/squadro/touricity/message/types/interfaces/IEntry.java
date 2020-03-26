@@ -10,4 +10,5 @@ public interface IEntry extends IDataType {
     void setDuration(int duration);
     void setExpense(int expense);
     void setComment(String comment);
+    void setIndex(int index);
 }

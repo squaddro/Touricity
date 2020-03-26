@@ -157,7 +157,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawHighlighted(Route route){
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map);
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"explore");
         polylineDrawer.drawRoute(route);
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
     }

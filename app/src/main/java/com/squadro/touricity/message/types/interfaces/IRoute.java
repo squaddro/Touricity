@@ -9,5 +9,5 @@ public interface IRoute  extends IDataType {
     void deleteEntry(AbstractEntry abstractEntry);
     void deleteEntry(int index);
     boolean deleteEntry(String entry_id);
-    boolean changeEntryPosition(AbstractEntry abstractEntry, int newPos);
+    boolean changeEntryPosition(AbstractEntry abstractEntry,int oldPos, int newPos);
 }

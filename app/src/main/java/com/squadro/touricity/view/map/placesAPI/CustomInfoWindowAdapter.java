@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final Context context;
-    private CardView cardView;
 
     public CustomInfoWindowAdapter(Context context) {
         this.context = context;
@@ -38,7 +37,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         List<MarkerInfo> collect = markerInfos.stream()
                 .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
                 .collect(Collectors.toList());
-
+            CardView cardView = null;
         if (collect.size() > 0) {
             if(collect.get(0).getIsNearby()){
                 cardView = (CardView) LayoutInflater.from(context).inflate(R.layout.marker_info_nearby, null);

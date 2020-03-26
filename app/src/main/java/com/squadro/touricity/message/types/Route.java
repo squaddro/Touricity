@@ -42,32 +42,38 @@ public class Route implements IRoute {
         this.privacy = privacy;
     }
 
-    public void addEntry(AbstractEntry abstractEntry){
+    public void addEntry(AbstractEntry abstractEntry) {
 
         this.abstractEntryList.add(abstractEntry);
         this.entries = abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
     }
 
-    public void addEntry(AbstractEntry abstractEntry, int index){
-        if(index<0)
+    public void addEntry(AbstractEntry abstractEntry, int index) {
+        if (index < 0)
             abstractEntryList.add(0, abstractEntry);
 
-        else if(index >= abstractEntryList.size()){
+        else if (index >= abstractEntryList.size()) {
             abstractEntryList.add(abstractEntry);
-        }
-
-        else{
+        } else {
             this.abstractEntryList.add(index, abstractEntry);
         }
         this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
     }
 
-    public void deleteEntry(AbstractEntry abstractEntry){
+    public void deleteEntry(AbstractEntry abstractEntry) {
         this.abstractEntryList.remove(abstractEntry);
+        int index = abstractEntry.getIndex();
+        if (index + 2 < abstractEntryList.size()) {
+            for (IEntry iEntry : abstractEntryList) {
+                if (iEntry.getIndex() > index) {
+                    iEntry.setIndex(iEntry.getIndex() - 2);
+                }
+            }
+        }
         this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
     }
 
-    public void deleteEntry(int index){
+    public void deleteEntry(int index) {
 
         this.abstractEntryList.remove(index);
         this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
@@ -79,13 +85,13 @@ public class Route implements IRoute {
      * @param entry_id
      * @return true when success, false when entry_id is not found.
      */
-    public boolean deleteEntry(String entry_id){
+    public boolean deleteEntry(String entry_id) {
 
         Iterator<IEntry> iter = abstractEntryList.iterator();
 
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             IEntry temp = iter.next();
-            if(temp.getEntry_id().equals(entry_id)){
+            if (temp.getEntry_id().equals(entry_id)) {
                 abstractEntryList.remove(temp);
                 this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
                 return true;
@@ -96,31 +102,21 @@ public class Route implements IRoute {
 
     /**
      * @param abstractEntry is the abstractEntry that will be replaced.
-     * @param newPos is the new position of given abstractEntry.
+     * @param newPos        is the new position of given abstractEntry.
      * @return true when success, false when abstractEntry is not found in list (list is unchanged)
      */
 
-    public boolean changeEntryPosition(AbstractEntry abstractEntry, int newPos){
+    public boolean changeEntryPosition(AbstractEntry abstractEntry, int oldPos, int newPos) {
 
-        if(!abstractEntryList.contains(abstractEntry)){
+        if (!abstractEntryList.contains(abstractEntry)) {
             return false;
-        }
-        else{
-            if(newPos < 0){
-                abstractEntryList.remove(abstractEntry);
-                abstractEntryList.add(0, abstractEntry);
-                this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
-            }
-            else if(newPos >= abstractEntryList.size()){
-                abstractEntryList.remove(abstractEntry);
-                abstractEntryList.add(abstractEntry);
-                this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
-            }
-            else{
-                abstractEntryList.remove(abstractEntry);
-                abstractEntryList.add(newPos, abstractEntry);
-                this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
-            }
+        } else {
+            IEntry entry = abstractEntryList.get(newPos);
+            abstractEntryList.set(newPos, abstractEntry);
+            abstractEntryList.set(oldPos, entry);
+            abstractEntryList.get(newPos).setIndex(newPos);
+            abstractEntryList.get(oldPos).setIndex(oldPos);
+            this.entries = (IEntry[]) abstractEntryList.toArray(new IEntry[abstractEntryList.size()]);
             return true;
         }
     }

@@ -3,41 +3,43 @@
     android:id="@+id/stopcardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
     android:clickable="true"
     android:orientation="vertical"
-    android:layout_margin="10dp"
-    card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="15dp"
     card_view:cardElevation="10dp"
+    card_view:cardUseCompatPadding="true"
     card_view:contentPadding="10dp">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
+
+    <RelativeLayout
+        android:id="@+id/stop_card_relative"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_height="wrap_content">
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/img_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <LinearLayout
-            android:id="@+id/img_layout"
-            android:layout_width="wrap_content"
+            android:id="@+id/textAreas"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:layout_below="@id/horizontalScrollView"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
         </LinearLayout>
-    </HorizontalScrollView>
 
-    <LinearLayout
-        android:id="@+id/textAreas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/horizontalScrollView"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:paddingTop="5dp">
-    </LinearLayout>
-
-</RelativeLayout>
+    </RelativeLayout>
 
 </com.squadro.touricity.view.routeList.entry.StopCardView>
