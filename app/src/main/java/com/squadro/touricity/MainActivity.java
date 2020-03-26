@@ -1,110 +1,74 @@
 package com.squadro.touricity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.squadro.touricity.cookie.CookieMethods;
-import com.squadro.touricity.view.map.MapFragmentTab1;
-import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.MapFragmentTab3;
-import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
-import com.squadro.touricity.view.tabView.FragmentAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.squadro.touricity.fcm.MyFirebaseMessagingService;
+import com.squadro.touricity.message.types.Credential;
+import com.squadro.touricity.requests.UserRequests;
 
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
-    private List<Fragment> fragments;
-    MapFragmentTab1 fragment;
-    MapFragmentTab2 fragment2;
-    MapFragmentTab3 fragment3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
-        context = getApplicationContext();
-        setContentView(R.layout.activity_main);
+        context=getApplicationContext();
+        setContentView(R.layout.register_view);
+        Button btn_login = findViewById(R.id.btn_login);
+        final EditText userName = (EditText) findViewById(R.id.input_username);
 
-        ViewPager viewPager = getViewPager();
+        btn_login.setOnClickListener(v -> {
+            Credential userInfo = getCredentialInfo(v,userName);
+            UserRequests userRequests = new UserRequests(this,MainActivity.this);
+            userRequests.signin(userInfo);
+        });
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.setupWithViewPager(viewPager);
+        Button btn_register = findViewById(R.id.btn_register);
+        final EditText userNameRegister = (EditText) findViewById(R.id.register_username);
+        btn_register.setOnClickListener(v -> {
+            Credential userInfo = getCredentialInfo(v,userNameRegister);
+            UserRequests userRequests = new UserRequests(this,MainActivity.this);
+            userRequests.signup(userInfo);
+        });
 
-        setTabNames(tabLayout);
+        TextView signUp = (TextView) findViewById(R.id.link_signup);
+        signUp.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                findViewById(R.id.signin_layout).setVisibility(View.INVISIBLE);
+                findViewById(R.id.register_layout).setVisibility(View.VISIBLE);
+            }
+        });
+
+        TextView login = (TextView) findViewById(R.id.link_login);
+        login.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                findViewById(R.id.signin_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.register_layout).setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
-    private void setTabNames(TabLayout tabLayout) {
-        tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
-        tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
-        tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
-    }
-
-    private ViewPager getViewPager() {
-        fragments = new ArrayList<>();
-        initializeFragments();
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setOffscreenPageLimit(fragments.size());
-        FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), context, fragments);
-        viewPager.setAdapter(fragmentAdapter);
-        return viewPager;
-    }
-
-    private void initializeFragments() {
-        fragment = new MapFragmentTab1();
-        fragments.add(fragment);
-
-        fragment2 = new MapFragmentTab2();
-        fragments.add(fragment2);
-
-        fragment3 = new MapFragmentTab3();
-        fragments.add(fragment3);
+    public Credential getCredentialInfo(View v, EditText text){
+        String user_name = null;
+        String token = null;
+        user_name = text.getText().toString();
+        token = MyFirebaseMessagingService.getToken(this);
+        Credential userInfo = new Credential(user_name, token);
+        return userInfo;
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            double x = ev.getX();
-            double y = ev.getY();
-
-            if (fragment != null) {
-                MapLongClickListener mapLongClickListener = fragment.getMapLongClickListener();
-                if (mapLongClickListener != null) {
-                    mapLongClickListener.setX(x);
-                    mapLongClickListener.setY(y);
-                    mapLongClickListener.dissmissPopUp();
-                }
-            }
-            if (fragment2 != null) {
-                MapLongClickListener mapLongClickListener = fragment2.getMapLongClickListener();
-                if (mapLongClickListener != null) {
-                    mapLongClickListener.setX(x);
-                    mapLongClickListener.setY(y);
-                    mapLongClickListener.dissmissPopUp();
-                }
-            }
-            if (fragment3 != null) {
-                MapLongClickListener mapLongClickListener = fragment3.getMapLongClickListener();
-                if (mapLongClickListener != null) {
-                    mapLongClickListener.setX(x);
-                    mapLongClickListener.setY(y);
-                    mapLongClickListener.dissmissPopUp();
-                }
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
-    protected void onResume() {
+    protected void onResume(){
         super.onResume();
         CookieMethods.cleanCookies();
     }
+
 }
