@@ -13,16 +13,21 @@ import com.thoughtworks.xstream.XStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem> {
 
     private final File file;
     private SavedRouteView savedRouteView;
     private XStream xStream = null;
+    private boolean isDelete;
+    private Route routeToBeDeleted;
 
-    public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file) {
+    public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file,boolean isDelete,Route routeToBeDeleted) {
         this.savedRouteView = savedRouteView;
         this.file = file;
+        this.isDelete = isDelete;
+        this.routeToBeDeleted = routeToBeDeleted;
         xStream = new XStream();
     }
 
@@ -37,7 +42,15 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(SavedRoutesItem savedRoutesItem) {
-        savedRouteView.setRouteList(savedRoutesItem.getRoutes(),savedRoutesItem.getMyPlaces());
+        if(isDelete){
+            List<Route> collect = savedRoutesItem.getRoutes().stream()
+                    .filter(route1 -> !route1.getRoute_id().equals(routeToBeDeleted.getRoute_id()))
+                    .collect(Collectors.toList());
+            DeleteOfflineDataAsync deleteOfflineDataAsync = new DeleteOfflineDataAsync(file,savedRouteView);
+            deleteOfflineDataAsync.execute(new SavedRoutesItem(collect,savedRoutesItem.getMyPlaces()));
+        }else{
+            savedRouteView.setRouteList(savedRoutesItem.getRoutes(),savedRoutesItem.getMyPlaces());
+        }
     }
 
     private List<Route> getRoutesFromFile(File file) {
