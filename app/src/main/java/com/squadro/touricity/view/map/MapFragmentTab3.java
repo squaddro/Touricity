@@ -1,6 +1,8 @@
 package com.squadro.touricity.view.map;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -9,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +24,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
 import com.squadro.touricity.view.map.offline.CustomMapTileProvider;
 import com.squadro.touricity.view.map.offline.DownloadMapTiles;
+import com.squadro.touricity.view.map.offline.LoadOfflineDataAsync;
+import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
+import com.squadro.touricity.view.routeList.MyPlaceSave;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
 import com.thoughtworks.xstream.XStream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -77,14 +87,12 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
 
         initializeSheetbehavior(googleMap);
+        map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
         savedRouteView = getActivity().findViewById(R.id.route_save);
-        List<Route> routesFromFile = getRoutesFromFile(offlineDataFile);
-        savedRouteView.setRouteList(routesFromFile);
-        if(routesFromFile != null && routesFromFile.size() > 0){
-            drawHighlighted(routesFromFile.get(0));
-        }
+        LoadOfflineDataAsync loadOfflineDataAsync = new LoadOfflineDataAsync(savedRouteView,offlineDataFile);
+        loadOfflineDataAsync.execute();
 
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
@@ -109,6 +117,18 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
+    private List<MyPlaceSave> getPlacesFromFile(File file) {
+        if (file.length() == 0) return null;
+        else {
+            try {
+                return ((SavedRoutesItem) xStream.fromXML(file)).getMyPlaces();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return (ArrayList<MyPlaceSave>) (xStream.fromXML(file));
+            }
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void writeRouteToFile(Route route) {
         if (checkConnection()) {
@@ -126,11 +146,62 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         if (offlineDataFile.length() == 0) {
             List<Route> routes = new ArrayList<>();
             routes.add(route);
-            xStream.toXML(new SavedRoutesItem(routes), fileWriter);
-            savedRouteView.setRouteList(routes);
+            List<MyPlace> places = new ArrayList<>();
+            for (IEntry entry : route.getAbstractEntryList()) {
+                if (entry instanceof Stop) {
+                    Stop stop = (Stop) entry;
+                    places.addAll(MapFragmentTab2.responsePlaces.stream()
+                            .filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                            .collect(Collectors.toList()));
+                }
+            }
+
+            List<MyPlaceSave> savePlaces = new ArrayList<>();
+            for (MyPlace myPlace : places) {
+                List<byte[]> bytes = new ArrayList<>();
+                for (Bitmap bitmap : myPlace.getPhotos()) {
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+                    bytes.add(byteArray);
+                }
+                savePlaces.add(new MyPlaceSave(myPlace, bytes));
+            }
+            xStream.toXML(new SavedRoutesItem(routes, savePlaces), fileWriter);
+            savedRouteView.setRouteList(routes, savePlaces);
         } else {
             List<Route> routes = getRoutesFromFile(offlineDataFile);
-            routes.add(route);
+            List<MyPlaceSave> myPlaces = getPlacesFromFile(offlineDataFile);
+
+            if (routes != null) {
+                routes.add(route);
+            }
+
+            List<MyPlace> places = new ArrayList<>();
+            for (IEntry entry : route.getAbstractEntryList()) {
+                if (entry instanceof Stop) {
+                    Stop stop = (Stop) entry;
+                    places.addAll(MapFragmentTab2.responsePlaces.stream()
+                            .filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                            .collect(Collectors.toList()));
+                }
+            }
+
+            List<MyPlaceSave> savePlaces = new ArrayList<>();
+            for (MyPlace myPlace : places) {
+                List<byte[]> bytes = new ArrayList<>();
+                for (Bitmap bitmap : myPlace.getPhotos()) {
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+                    bytes.add(byteArray);
+                }
+                savePlaces.add(new MyPlaceSave(myPlace, bytes));
+            }
+            if (myPlaces != null) {
+                myPlaces.addAll(savePlaces);
+            }
+
             offlineDataFile.delete();
             try {
                 offlineDataFile.createNewFile();
@@ -138,8 +209,8 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            xStream.toXML(new SavedRoutesItem(routes), fileWriter);
-            savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
+            xStream.toXML(new SavedRoutesItem(routes, myPlaces), fileWriter);
+            savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile), getPlacesFromFile(offlineDataFile));
         }
     }
 
@@ -151,7 +222,28 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        List<MyPlace> places = new ArrayList<>();
+        for (Route route : routes) {
+            for (IEntry entry : route.getAbstractEntryList()) {
+                if (entry instanceof Stop) {
+                    Stop stop = (Stop) entry;
+                    places.addAll(MapFragmentTab2.responsePlaces.stream()
+                            .filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                            .collect(Collectors.toList()));
+                }
+            }
+        }
+        List<MyPlaceSave> savePlaces = new ArrayList<>();
+        for (MyPlace myPlace : places) {
+            List<byte[]> bytes = new ArrayList<>();
+            for (Bitmap bitmap : myPlace.getPhotos()) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                bytes.add(byteArray);
+            }
+            savePlaces.add(new MyPlaceSave(myPlace, bytes));
+        }
         offlineDataFile.delete();
         try {
             offlineDataFile.createNewFile();
@@ -159,8 +251,8 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         } catch (IOException e) {
             e.printStackTrace();
         }
-        xStream.toXML(new SavedRoutesItem(routes), fileWriter);
-        savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile));
+        xStream.toXML(new SavedRoutesItem(routes, savePlaces), fileWriter);
+        savedRouteView.setRouteList(getRoutesFromFile(offlineDataFile), getPlacesFromFile(offlineDataFile));
     }
 
     private void initializeSheetbehavior(GoogleMap googleMap) {
@@ -197,7 +289,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawHighlighted(Route route) {
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"saved");
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "saved");
         polylineDrawer.drawRoute(route);
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
         map.setMinZoomPreference(map.getCameraPosition().zoom);
@@ -216,7 +308,18 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void saveRoute(Route route) {
-        writeRouteToFile(route);
+        final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "", "Please wait...");
+        new Thread() {
+            public void run() {
+                try {
+                    writeRouteToFile(route);
+                    progressDialog.dismiss();
+                } catch (Exception e) {
+                    Log.e("tag", e.getMessage());
+                }
+                // dismiss the progress dialog
+            }
+        }.start();
     }
 
     private boolean checkConnection() {

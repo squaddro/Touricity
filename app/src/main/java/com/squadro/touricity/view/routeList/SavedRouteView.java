@@ -37,15 +37,18 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     private IRouteSave iRouteSave;
 
     private Route prevHighlighted;
-    LinearLayout routes;
-    NestedScrollView scrollView;
+    private LinearLayout routes;
+    private NestedScrollView scrollView;
+
+    private List<MyPlaceSave> places;
 
     public SavedRouteView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setRouteList(List<Route> routeList) {
+    public void setRouteList(List<Route> routeList, List<MyPlaceSave> places) {
         this.routeList = routeList;
+        this.places = places;
         UpdateView();
     }
 
@@ -54,12 +57,12 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
 
         Context context = getContext();
 
-        if(routeList == null || routeList.isEmpty()) return;
-        for(int i = 0; i<routeList.size(); i++){
+        if (routeList == null || routeList.isEmpty() || places == null || places.isEmpty()) return;
+        for (int i = 0; i < routeList.size(); i++) {
             Route route = routeList.get(i);
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
             cardView.setViewId("saved");
-            cardView.loadRoute(route);
+            cardView.loadRoute(route,places);
             routes.addView(cardView);
         }
     }
@@ -83,11 +86,11 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     public void onScrollChange(View view, int i, int i1, int i2, int i3) {
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
-        for(int j=0; j<routes.getChildCount(); j++) {
+        for (int j = 0; j < routes.getChildCount(); j++) {
             RouteCardView routeView = (RouteCardView) routes.getChildAt(j);
             Route route = routeView.getRoute();
-            if(routeView.getLocalVisibleRect(rect)){
-                if(route != null && (prevHighlighted != route)){
+            if (routeView.getLocalVisibleRect(rect)) {
+                if (route != null && (prevHighlighted != route)) {
                     iRouteDraw.drawHighlighted(route);
                 }
                 prevHighlighted = route;

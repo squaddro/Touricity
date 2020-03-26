@@ -2,12 +2,15 @@ package com.squadro.touricity.view.routeList;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -22,6 +25,7 @@ import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +64,40 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 cardView.setRoute(route);
                 if(collect.size() > 0){
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"explore",stop);
+                    cardView = stopCardViewHandler.putViews();
+                }
+                cardView.setViewId(this.viewId);
+                cardView.update(stop);
+                entryList.addView(cardView);
+            }
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void loadRoute(Route route,List<MyPlaceSave> myPlaces) {
+
+        Context context = getContext();
+        this.route = route;
+        for (IEntry entry : route.getAbstractEntryList()) {
+            if (entry instanceof Stop) {
+                Stop stop = (Stop) entry;
+
+                List<MyPlace> places = new ArrayList<>();
+
+                for(MyPlaceSave myPlaceSave : myPlaces){
+                    List<Bitmap> bitmapList = new ArrayList<>();
+                    for(byte [] bytes : myPlaceSave.getPhotos()){
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        bitmapList.add(decodedByte);
+                    }
+                    places.add(new MyPlace(myPlaceSave,bitmapList));
+                }
+
+                List<MyPlace> collect = places.stream().filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
+                        .collect(Collectors.toList());
+                StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
+                cardView.setRoute(route);
+                if(collect.size() > 0){
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"saved",stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId(this.viewId);

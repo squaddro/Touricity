@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
+import com.squadro.touricity.view.routeList.MyPlaceSave;
 
 import java.util.List;
 
@@ -39,6 +40,16 @@ public class MyPlace {
     public MyPlace(Place place,List<Bitmap> photos) {
         this.address = place.getAddress();
         this.place_id = place.getId();
+        this.latLng = place.getLatLng();
+        this.name = place.getName();
+        this.photos = photos;
+        this.phoneNumber = place.getPhoneNumber();
+        this.rating = place.getRating();
+    }
+
+    public MyPlace(MyPlaceSave place, List<Bitmap> photos) {
+        this.address = place.getAddress();
+        this.place_id = place.getPlace_id();
         this.latLng = place.getLatLng();
         this.name = place.getName();
         this.photos = photos;
