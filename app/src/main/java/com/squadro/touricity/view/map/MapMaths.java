@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
 public class MapMaths {
@@ -134,8 +135,11 @@ public class MapMaths {
                 for (PathVertex vertex : path.getVertices()) {
                     builder.include(vertex.toLatLong());
                 }
+            } else if (entry instanceof Stop) {
+                Stop stop = (Stop) entry;
+                builder.include(stop.getLocation().getLatLng());
             }
         }
-        return MapMaths.boundsPadding(builder.build(),5,10,65,10 );
+        return MapMaths.boundsPadding(builder.build(), 5, 10, 65, 10);
     }
 }

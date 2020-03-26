@@ -107,7 +107,7 @@ public class StopCardViewHandler {
             buttons.addView(delete);
             RelativeLayout relativeLayout = stopCardView.findViewById(R.id.stop_card_relative);
             relativeLayout.addView(buttons,0);
-        }else if(viewId.equals("explore")){
+        }else if(viewId.equals("explore")||viewId.equals("saved")){
             HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);

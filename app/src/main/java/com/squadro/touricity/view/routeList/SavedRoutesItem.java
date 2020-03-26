@@ -9,8 +9,11 @@ import lombok.Getter;
 public class SavedRoutesItem {
     @Getter
     private List<Route> routes;
+    @Getter
+    private List<MyPlaceSave> myPlaces;
 
-    public SavedRoutesItem(List<Route> routes) {
+    public SavedRoutesItem(List<Route> routes, List<MyPlaceSave> myPlaces) {
         this.routes = routes;
+        this.myPlaces = myPlaces;
     }
 }
