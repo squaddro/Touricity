@@ -44,6 +44,14 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         UpdateView();
     }
 
+    public void addRoute(Route route){
+        routeList.add(route);
+        RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
+        cardView.setViewId("explore");
+        cardView.loadRoute(route);
+        routes.addView(cardView);
+        routes.invalidate();
+    }
     private void UpdateView() {
         CleanView();
 
