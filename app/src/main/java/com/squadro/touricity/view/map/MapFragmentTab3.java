@@ -28,9 +28,9 @@ import com.squadro.touricity.view.map.offline.LoadOfflineDataAsync;
 import com.squadro.touricity.view.map.offline.WriteOfflineDataAsync;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
-import com.squadro.touricity.view.routeList.MyPlaceSave;
+import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.SavedRouteView;
-import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
 import com.thoughtworks.xstream.XStream;
@@ -53,6 +53,9 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Getter
     private static SavedRouteView savedRouteView;
     private XStream xStream;
+    public static List<MyPlace> responsePlaces = new ArrayList<>();
+    public static List<MarkerInfo> markerInfoList  = new ArrayList<>();
+    private static ConnectivityManager connectivityManager;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +90,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
-
+        connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (!checkConnection()) {
             map.setMapType(GoogleMap.MAP_TYPE_NONE);
             TileOverlayOptions tileOverlay = new TileOverlayOptions();
@@ -152,34 +155,10 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         Toast.makeText(getContext(),"Routes saved successfully",Toast.LENGTH_LONG);
     }
 
-    private boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean checkConnection() {
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             return true;
         } else return false;
-    }
-
-    private List<Route> getRoutesFromFile(File file) {
-        if (file.length() == 0) return null;
-        else {
-            try {
-                return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
-            } catch (Exception e) {
-                return (ArrayList<Route>) (xStream.fromXML(file));
-            }
-        }
-    }
-
-    private List<MyPlaceSave> getPlacesFromFile(File file) {
-        if (file.length() == 0) return null;
-        else {
-            try {
-                return ((SavedRoutesItem) xStream.fromXML(file)).getMyPlaces();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return (ArrayList<MyPlaceSave>) (xStream.fromXML(file));
-            }
-        }
     }
 }

@@ -1,10 +1,14 @@
 package com.squadro.touricity.view.map.offline;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
@@ -35,6 +39,14 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem>
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected SavedRoutesItem doInBackground(Void ... voids) {
         List<MyPlaceSave> placesFromFile = getPlacesFromFile(file);
+        for(MyPlaceSave myPlaceSave : placesFromFile){
+            List<Bitmap> bitmapList = new ArrayList<>();
+            for(byte [] bytes : myPlaceSave.getPhotos()){
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                bitmapList.add(decodedByte);
+            }
+            MapFragmentTab3.responsePlaces.add(new MyPlace(myPlaceSave,bitmapList));
+        }
         List<Route> routesFromFile = getRoutesFromFile(file);
         return new SavedRoutesItem(routesFromFile,placesFromFile);
     }

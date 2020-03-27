@@ -49,6 +49,9 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     public void setRouteList(List<Route> routeList, List<MyPlaceSave> places) {
         this.routeList = routeList;
         this.places = places;
+        if(routeList != null && routeList.size() > 0){
+            iRouteDraw.drawHighlighted(routeList.get(0));
+        }
         UpdateView();
     }
 

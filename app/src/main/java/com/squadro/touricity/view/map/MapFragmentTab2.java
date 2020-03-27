@@ -77,6 +77,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static List<MarkerInfo> markerInfoList;
     public static List<Marker> markersOfNearby;
 
+
     private IEditor editor;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -111,19 +112,20 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeInfoWindowListener();
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initializeInfoWindowListener() {
         map.setOnInfoWindowLongClickListener(marker -> {
             List<MarkerInfo> collect = markerInfoList.stream()
                     .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
                     .collect(Collectors.toList());
-            if(collect.size() > 0){
-                if(!collect.get(0).getIsNearby()) return;
+            if (collect.size() > 0) {
+                if (!collect.get(0).getIsNearby()) return;
                 MyPlace myPlace = collect.get(0).getMyPlace();
                 Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
                 Stop stop = new Stop(null, 0, 0, "", location, null);
                 MapFragmentTab2.getRouteCreateView().onInsertStop(stop);
-                for(Marker m : MapFragmentTab2.markersOfNearby){
+                for (Marker m : MapFragmentTab2.markersOfNearby) {
                     m.remove();
                 }
                 MapFragmentTab2.markersOfNearby.clear();
@@ -266,12 +268,12 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"create");
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "create");
 
-        if(entry instanceof Stop){
+        if (entry instanceof Stop) {
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
         }
-        
+
         //map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
         disposeEditor();
     }
@@ -281,7 +283,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public void focus(AbstractEntry entry) {
         Log.d("fmap", "focus to the entry " + entry.getComment());
 
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"create");
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "create");
 
         if (entry instanceof Stop)
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
@@ -321,10 +323,10 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void onPlacesResponse(List<String> placesIds) {
-        for(String placeId : placesIds){
+        for (String placeId : placesIds) {
             List<MyPlace> collect = responsePlaces.stream().filter(myPlace -> myPlace.getPlace_id().equals(placeId))
                     .collect(Collectors.toList());
-            if(collect.size() > 0) continue;
+            if (collect.size() > 0) continue;
             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
                     Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS);
             FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, fields);
@@ -350,7 +352,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                                 markerOptions.position(myPlace.getLatLng());
                                 Marker marker = map.addMarker(markerOptions);
                                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                                updateMarkerInfo(new MarkerInfo(marker,myPlace,true));
+                                updateMarkerInfo(new MarkerInfo(marker, myPlace, true));
                                 markersOfNearby.add(marker);
                             }
                         }).addOnFailureListener(Throwable::printStackTrace);
@@ -362,18 +364,31 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     markerOptions.position(myPlace.getLatLng());
                     Marker marker = map.addMarker(markerOptions);
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                    updateMarkerInfo(new MarkerInfo(marker,myPlace,true));
+                    updateMarkerInfo(new MarkerInfo(marker, myPlace, true));
                     markersOfNearby.add(marker);
                 }
             }).addOnFailureListener(Throwable::printStackTrace);
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void updateMarkerInfo(MarkerInfo markerInfo){
-        List<MarkerInfo> collect = markerInfoList.stream()
-                .filter(markerInfo1 -> markerInfo1.getMyPlace().getPlace_id().equals(markerInfo.getMyPlace().getPlace_id()))
-                .collect(Collectors.toList());
-        if(collect.size() == 0 ) markerInfoList.add(markerInfo);
-        else collect.get(0).setMarker(markerInfo.getMarker());
+    public static void updateMarkerInfo(MarkerInfo markerInfo) {
+
+        if (MapFragmentTab3.checkConnection()) {
+            List<MarkerInfo> collect = markerInfoList.stream()
+                    .filter(markerInfo1 -> markerInfo1.getMyPlace().getPlace_id().equals(markerInfo.getMyPlace().getPlace_id()))
+                    .collect(Collectors.toList());
+            if (collect.size() == 0) markerInfoList.add(markerInfo);
+            else collect.get(0).setMarker(markerInfo.getMarker());
+        }else{
+            List<MarkerInfo> collect = MapFragmentTab3.markerInfoList.stream()
+                    .filter(markerInfo1 -> markerInfo1.getMyPlace().getPlace_id().equals(markerInfo.getMyPlace().getPlace_id()))
+                    .collect(Collectors.toList());
+            if (collect.size() == 0) MapFragmentTab3.markerInfoList.add(markerInfo);
+            else collect.get(0).setMarker(markerInfo.getMarker());
+        }
+
     }
+
+
 }

@@ -30,12 +30,18 @@ public class PolylineDrawer {
     private GoogleMap map;
     private static List<Polyline> polylines = new ArrayList<>();
     private static List<Marker> markers = new ArrayList<>();
+    private List<MyPlace> responsePlaces;
 
     private IEntry entry;
 
     public PolylineDrawer(GoogleMap map,String viewId) {
         this.map = map;
         this.viewId = viewId;
+        if(MapFragmentTab3.checkConnection()){
+            responsePlaces = MapFragmentTab2.responsePlaces;
+        }else{
+            responsePlaces = MapFragmentTab3.responsePlaces;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -55,7 +61,8 @@ public class PolylineDrawer {
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
-                List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+
+                List<MyPlace> collect = responsePlaces.stream()
                         .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                         .collect(Collectors.toList());
                 if(collect.size() > 0){
@@ -97,7 +104,7 @@ public class PolylineDrawer {
                     Marker marker = map.addMarker(markerOptions);
                     marker.setZIndex(1);
                     markers.add(marker);
-                    List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                    List<MyPlace> collect = responsePlaces.stream()
                             .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                             .collect(Collectors.toList());
                     if(collect.size() > 0){
@@ -109,7 +116,7 @@ public class PolylineDrawer {
                     Marker marker = map.addMarker(markerOptions);
                     marker.setZIndex(1);
                     markers.add(marker);
-                    List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                    List<MyPlace> collect = responsePlaces.stream()
                             .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                             .collect(Collectors.toList());
                     if(collect.size() > 0){
