@@ -1,6 +1,8 @@
 package com.squadro.touricity;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -42,9 +44,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setTabNames(TabLayout tabLayout) {
-        tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
-        tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
-        tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
+        if(checkConnection()){
+            tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
+            tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
+            tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
+        }else{
+            tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab3_name));
+        }
     }
 
     private ViewPager getViewPager() {
@@ -58,14 +64,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeFragments() {
-        fragment = new MapFragmentTab1();
-        fragments.add(fragment);
+        if(checkConnection()){
+            fragment = new MapFragmentTab1();
+            fragments.add(fragment);
 
-        fragment2 = new MapFragmentTab2();
-        fragments.add(fragment2);
+            fragment2 = new MapFragmentTab2();
+            fragments.add(fragment2);
 
-        fragment3 = new MapFragmentTab3();
-        fragments.add(fragment3);
+            fragment3 = new MapFragmentTab3();
+            fragments.add(fragment3);
+        }
+        else{
+            fragment3 = new MapFragmentTab3();
+            fragments.add(fragment3);
+        }
+
+
     }
 
     @Override
@@ -106,5 +120,13 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         CookieMethods.cleanCookies();
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        } else return false;
     }
 }

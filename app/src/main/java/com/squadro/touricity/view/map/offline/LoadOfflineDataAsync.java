@@ -1,10 +1,16 @@
 package com.squadro.touricity.view.map.offline;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
@@ -18,23 +24,43 @@ import java.util.stream.Collectors;
 public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem> {
 
     private final File file;
+    private Context context;
     private SavedRouteView savedRouteView;
     private XStream xStream = null;
     private boolean isDelete;
     private Route routeToBeDeleted;
+    private ProgressDialog progressDialog;
 
-    public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file,boolean isDelete,Route routeToBeDeleted) {
+    public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file, boolean isDelete, Route routeToBeDeleted, Context context) {
         this.savedRouteView = savedRouteView;
         this.file = file;
         this.isDelete = isDelete;
         this.routeToBeDeleted = routeToBeDeleted;
+        this.context = context;
         xStream = new XStream();
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if(!isDelete){
+            progressDialog = ProgressDialog.show(context,"INFO","Please wait while the offline data loading...");
+        }
+        super.onPreExecute();
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected SavedRoutesItem doInBackground(Void ... voids) {
+
         List<MyPlaceSave> placesFromFile = getPlacesFromFile(file);
+        for(MyPlaceSave myPlaceSave : placesFromFile){
+            List<Bitmap> bitmapList = new ArrayList<>();
+            for(byte [] bytes : myPlaceSave.getPhotos()){
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                bitmapList.add(decodedByte);
+            }
+            MapFragmentTab3.responsePlaces.add(new MyPlace(myPlaceSave,bitmapList));
+        }
         List<Route> routesFromFile = getRoutesFromFile(file);
         return new SavedRoutesItem(routesFromFile,placesFromFile);
     }
@@ -51,6 +77,7 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem>
         }else{
             savedRouteView.setRouteList(savedRoutesItem.getRoutes(),savedRoutesItem.getMyPlaces());
         }
+        progressDialog.dismiss();
     }
 
     private List<Route> getRoutesFromFile(File file) {

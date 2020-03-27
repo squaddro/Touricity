@@ -1,10 +1,7 @@
 package com.squadro.touricity.view.map.offline;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -13,6 +10,7 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
@@ -41,7 +39,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route,Void,SavedRoutesItem>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected SavedRoutesItem doInBackground(Route... routesArr) {
-        if (checkConnection()) {
+        if (MapFragmentTab3.checkConnection()) {
             DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
             new Thread(() -> {
                 downloadMapTiles.downloadTileBounds(MapMaths.getRouteBoundings(routesArr[0]));
@@ -128,14 +126,6 @@ public class WriteOfflineDataAsync extends AsyncTask<Route,Void,SavedRoutesItem>
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(SavedRoutesItem savedRoutesItem) {
         savedRouteView.setRouteList(savedRoutesItem.getRoutes(), savedRoutesItem.getMyPlaces());
-    }
-
-    private boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            return true;
-        } else return false;
     }
 
     private List<Route> getRoutesFromFile(File file) {

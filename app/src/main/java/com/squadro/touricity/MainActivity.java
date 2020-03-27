@@ -2,6 +2,8 @@ package com.squadro.touricity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,25 +19,36 @@ import com.squadro.touricity.requests.UserRequests;
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
         super.onCreate(savedInstanceState);
-        context=getApplicationContext();
+        context = getApplicationContext();
+
+        if (!checkConnection()) {
+            startActivity(new Intent(MainActivity.context, HomeActivity.class));
+            finish();
+        }
+
         setContentView(R.layout.register_view);
         Button btn_login = findViewById(R.id.btn_login);
         final EditText userName = (EditText) findViewById(R.id.input_username);
 
         btn_login.setOnClickListener(v -> {
-            Credential userInfo = getCredentialInfo(v,userName);
-            UserRequests userRequests = new UserRequests(this,MainActivity.this);
+            Credential userInfo = getCredentialInfo(v, userName);
+            UserRequests userRequests = new UserRequests(this, MainActivity.this);
             userRequests.signin(userInfo);
         });
 
         Button btn_register = findViewById(R.id.btn_register);
         final EditText userNameRegister = (EditText) findViewById(R.id.register_username);
         btn_register.setOnClickListener(v -> {
-            Credential userInfo = getCredentialInfo(v,userNameRegister);
-            UserRequests userRequests = new UserRequests(this,MainActivity.this);
+            Credential userInfo = getCredentialInfo(v, userNameRegister);
+            UserRequests userRequests = new UserRequests(this, MainActivity.this);
             userRequests.signup(userInfo);
         });
 
@@ -56,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public Credential getCredentialInfo(View v, EditText text){
+    public Credential getCredentialInfo(View v, EditText text) {
         String user_name = null;
         String token = null;
         user_name = text.getText().toString();
@@ -66,9 +79,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         CookieMethods.cleanCookies();
     }
 
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        } else return false;
+    }
 }
