@@ -65,7 +65,6 @@ public class FilterRequests {
                         }
                     }
                 }
-
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {

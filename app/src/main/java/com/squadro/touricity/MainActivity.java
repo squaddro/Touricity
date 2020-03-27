@@ -1,7 +1,6 @@
 package com.squadro.touricity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -19,12 +18,16 @@ public class MainActivity extends AppCompatActivity {
     public static Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
         super.onCreate(savedInstanceState);
         context=getApplicationContext();
         setContentView(R.layout.register_view);
         Button btn_login = findViewById(R.id.btn_login);
         final EditText userName = (EditText) findViewById(R.id.input_username);
-
+        
         btn_login.setOnClickListener(v -> {
             Credential userInfo = getCredentialInfo(v,userName);
             UserRequests userRequests = new UserRequests(this,MainActivity.this);
