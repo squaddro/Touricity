@@ -73,7 +73,7 @@ public class DirectionPost {
 
         String str_mode = "mode=" + mode;
 
-        String str_waypoints = "waypoints=optimize=true|";
+        String str_waypoints = "waypoints=optimize:true|";
 
         int i = 1;
         while (i < stopList.size()-1){
