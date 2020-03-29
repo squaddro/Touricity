@@ -35,6 +35,21 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/route_view_route_id_label"
                 android:text="aşlkdfjaşdjfşalsdjf" />
+
+            <RatingBar
+                android:id="@+id/routeRatingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="15dp"
+                android:layout_toRightOf="@+id/card_view_route_id_content"
+                android:isIndicator="true"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:numStars="5"
+                android:stepSize="0.1" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -80,6 +95,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             android:visibility="invisible"></LinearLayout>
+        <include layout="@layout/like_comment_view"/>
     </LinearLayout>
 
 </com.squadro.touricity.view.routeList.RouteCardView>
