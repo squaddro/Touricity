@@ -40,6 +40,8 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
+import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.WaypointOrder;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
@@ -202,6 +204,17 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             RouteRequests routeRequests = new RouteRequests();
             routeRequests.updateRoute(routeCreateView.getRoute(), this);
             routeCreateView.CleanView();
+        });
+
+        Button optimizeButton = routeCreateView.findViewById(R.id.route_create_optimize);
+        optimizeButton.setOnClickListener(view -> {
+
+            if(routeCreateView.getRoute().getAbstractEntryList().size() >= 7){
+                DirectionPost dp = new DirectionPost();
+                String url = dp.getOptimizedDirectionsURL(routeCreateView.getRoute(),"driving");
+                WaypointOrder wp = new WaypointOrder(url, routeCreateView);
+            }
+
         });
     }
 
