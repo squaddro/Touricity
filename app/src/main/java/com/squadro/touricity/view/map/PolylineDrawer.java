@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
@@ -37,7 +38,7 @@ public class PolylineDrawer {
     public PolylineDrawer(GoogleMap map,String viewId) {
         this.map = map;
         this.viewId = viewId;
-        if(MapFragmentTab3.checkConnection()){
+        if(MainActivity.checkConnection()){
             responsePlaces = MapFragmentTab2.responsePlaces;
         }else{
             responsePlaces = MapFragmentTab3.responsePlaces;

@@ -6,11 +6,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
@@ -39,7 +39,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route,Void,SavedRoutesItem>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected SavedRoutesItem doInBackground(Route... routesArr) {
-        if (MapFragmentTab3.checkConnection()) {
+        if (MainActivity.checkConnection()) {
             DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
             new Thread(() -> {
                 downloadMapTiles.downloadTileBounds(MapMaths.getRouteBoundings(routesArr[0]));
