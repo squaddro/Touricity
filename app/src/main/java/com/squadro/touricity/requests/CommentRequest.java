@@ -11,6 +11,7 @@ import com.google.gson.JsonParser;
 import com.squadro.touricity.HomeActivity;
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.CommentRegister;
 import com.squadro.touricity.message.types.Credential;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
@@ -26,15 +27,7 @@ import retrofit2.Retrofit;
 
 public class CommentRequest {
 
-    private final Context context;
-    private final Activity activity;
-
-    public CommentRequest(Context context, Activity activity) {
-        this.context = context;
-        this.activity = activity;
-    }
-
-    public void postComment(com.squadro.touricity.message.types.data.CommentRegister commentRegister) throws JSONException {
+    public void postComment(CommentRegister commentRegister) throws JSONException {
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
         Retrofit retrofit = retrofitCreate.createRetrofit();
@@ -68,7 +61,6 @@ public class CommentRequest {
 
                         }
                     else if(statusCode.equals("115")){
-                        Toast.makeText(activity,"Error! Comment failed.",Toast.LENGTH_LONG).show();
                     }
                 }
             }

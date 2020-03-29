@@ -1,4 +1,4 @@
-package com.squadro.touricity.message.types.data;
+package com.squadro.touricity.message.types;
 
 import com.squadro.touricity.message.types.Comment;
 

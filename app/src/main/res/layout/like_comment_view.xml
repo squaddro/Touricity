@@ -27,7 +27,7 @@
             android:layout_marginLeft="15dp" />
 
         <EditText
-            android:id="@+id/CommentDesc"
+            android:id="@+id/PostCommentDesc"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:ems="10"

@@ -19,6 +19,7 @@ import com.squadro.touricity.requests.UserRequests;
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
+    public static Credential credential;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         btn_login.setOnClickListener(v -> {
             Credential userInfo = getCredentialInfo(v, userName);
+            credential = userInfo;
             UserRequests userRequests = new UserRequests(this, MainActivity.this);
             userRequests.signin(userInfo);
         });

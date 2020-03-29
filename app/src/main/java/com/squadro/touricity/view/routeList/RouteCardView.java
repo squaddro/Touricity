@@ -13,17 +13,25 @@ import android.util.AttributeSet;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Comment;
+import com.squadro.touricity.message.types.CommentRegister;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.requests.CommentRequest;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +127,24 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         setOnClickListener(this);
         setOnLongClickListener(this);
         setLongClickable(true);
+        Button pushCommentButton = findViewById(R.id.button_send_comment);
+        pushCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Comment comment = new Comment();
+                EditText commentDesc = (EditText)findViewById(R.id.PostCommentDesc);
+                comment.setCommentDesc(commentDesc.getText().toString());
+                CommentRegister commentRegister = new CommentRegister(MainActivity.credential.getUser_name(), comment, route.getRoute_id());
+                CommentRequest commentRequest = new CommentRequest();
+                try {
+                    commentRequest.postComment(commentRegister);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
     }
 
     @Override
