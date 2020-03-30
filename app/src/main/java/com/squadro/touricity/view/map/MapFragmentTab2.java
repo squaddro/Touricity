@@ -32,6 +32,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
@@ -374,7 +375,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void updateMarkerInfo(MarkerInfo markerInfo) {
 
-        if (MapFragmentTab3.checkConnection()) {
+        if (MainActivity.checkConnection()) {
             List<MarkerInfo> collect = markerInfoList.stream()
                     .filter(markerInfo1 -> markerInfo1.getMyPlace().getPlace_id().equals(markerInfo.getMyPlace().getPlace_id()))
                     .collect(Collectors.toList());
@@ -387,8 +388,5 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             if (collect.size() == 0) MapFragmentTab3.markerInfoList.add(markerInfo);
             else collect.get(0).setMarker(markerInfo.getMarker());
         }
-
     }
-
-
 }

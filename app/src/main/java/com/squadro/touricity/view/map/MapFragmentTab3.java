@@ -2,7 +2,6 @@ package com.squadro.touricity.view.map;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
@@ -91,7 +91,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
         connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (!checkConnection()) {
+        if (!MainActivity.checkConnection()) {
             map.setMapType(GoogleMap.MAP_TYPE_NONE);
             TileOverlayOptions tileOverlay = new TileOverlayOptions();
             tileOverlay.tileProvider(new CustomMapTileProvider());
@@ -153,12 +153,5 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         WriteOfflineDataAsync writeOfflineDataAsync = new WriteOfflineDataAsync(getActivity(),offlineDataFile,savedRouteView);
         writeOfflineDataAsync.execute(route);
         Toast.makeText(getContext(),"Routes saved successfully",Toast.LENGTH_LONG);
-    }
-
-    public static boolean checkConnection() {
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            return true;
-        } else return false;
     }
 }

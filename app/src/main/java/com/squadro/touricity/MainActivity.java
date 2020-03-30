@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static Context context;
     public static Credential credential;
+    private static ConnectivityManager connectivityManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
-
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (!checkConnection()) {
             startActivity(new Intent(MainActivity.context, HomeActivity.class));
             finish();
@@ -86,10 +88,9 @@ public class MainActivity extends AppCompatActivity {
         CookieMethods.cleanCookies();
     }
 
-    private boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+    public static boolean checkConnection() {
+        if (connectivityManager != null && (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)) {
             return true;
         } else return false;
     }
