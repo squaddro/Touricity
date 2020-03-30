@@ -8,9 +8,10 @@ public class LikeRegister {
 
     public LikeRegister(){}
 
-    public LikeRegister(String username, Like like){
+    public LikeRegister(String username, Like like, String routeId){
         this.username = username;
         this.like = like;
+        this.routeId = routeId;
     }
 
     public Like getLike() {

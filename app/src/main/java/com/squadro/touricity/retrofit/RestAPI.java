@@ -36,4 +36,7 @@ public interface RestAPI {
 
     @POST("create/comment")
     Call<JsonObject> postComment(@Body JsonObject body);
+
+    @POST("create/like")
+    Call<JsonObject> postLike(@Body JsonObject body);
 }

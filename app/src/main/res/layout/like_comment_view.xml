@@ -11,10 +11,11 @@
     tools:showIn="@layout/route_card_view">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <RatingBar
             android:id="@+id/routeLikeBar"
             style="?android:attr/ratingBarStyleSmall"
@@ -22,9 +23,18 @@
             android:layout_height="wrap_content"
             android:isIndicator="false"
             android:numStars="5"
-            android:stepSize="0.1"
+            android:stepSize="1"
+            android:layout_alignParentLeft="true"
             android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp" />
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"/>
+
+        <ImageButton
+            android:id="@+id/button_send_like"
+            android:layout_width="16dp"
+            android:layout_height="14dp"
+            android:layout_toRightOf="@+id/routeLikeBar"
+            app:srcCompat="@android:drawable/ic_input_add" />
 
         <EditText
             android:id="@+id/PostCommentDesc"
@@ -34,7 +44,7 @@
             android:gravity="start|top"
             android:inputType="textMultiLine"
             android:background="@drawable/rounded_corner"
-
+            android:layout_below="@+id/routeLikeBar"
             android:text="Add a comment" />
 
         <Button
@@ -42,12 +52,14 @@
             android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_below="@+id/PostCommentDesc"
             android:text="Comment" />
 
         <LinearLayout
             android:id="@+id/comment_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button_send_comment"
             android:orientation="vertical"></LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

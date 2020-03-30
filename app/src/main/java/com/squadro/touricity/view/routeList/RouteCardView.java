@@ -15,16 +15,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Comment;
 import com.squadro.touricity.message.types.CommentRegister;
+import com.squadro.touricity.message.types.Like;
+import com.squadro.touricity.message.types.LikeRegister;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.requests.CommentRequest;
+import com.squadro.touricity.requests.LikeRequest;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
@@ -142,9 +147,24 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     e.printStackTrace();
                 }
             }
-
         });
 
+        ImageButton pushLikeButton = findViewById(R.id.button_send_like);
+        pushLikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Like like = new Like();
+                RatingBar ratingBar = (RatingBar) findViewById(R.id.routeLikeBar);
+                like.setScore(ratingBar.getNumStars());
+                LikeRegister likeRegister = new LikeRegister(MainActivity.credential.getUser_name(), like, route.getRoute_id());
+                LikeRequest likeRequest = new LikeRequest();
+                try {
+                    likeRequest.postLike(likeRegister);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
