@@ -155,7 +155,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             public void onClick(final View v) {
                 Like like = new Like();
                 RatingBar ratingBar = (RatingBar) findViewById(R.id.routeLikeBar);
-                like.setScore(ratingBar.getNumStars());
+                like.setScore((int)ratingBar.getRating());
                 LikeRegister likeRegister = new LikeRegister(MainActivity.credential.getUser_name(), like, route.getRoute_id());
                 LikeRequest likeRequest = new LikeRequest();
                 try {
