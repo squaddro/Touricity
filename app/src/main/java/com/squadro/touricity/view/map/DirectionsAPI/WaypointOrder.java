@@ -40,7 +40,7 @@ public class WaypointOrder implements IAsync {
 
         Route tmpRoute = rcw.getRoute();
         List<Stop> stopList = new ArrayList<>(order.size());
-        List<Stop> orderedStopList = new ArrayList<>(order.size());
+        List<Stop> orderedStopList = new ArrayList<>(20);
 
         for (IEntry entry:tmpRoute.getAbstractEntryList()) {
             if(entry instanceof Stop){
@@ -48,13 +48,24 @@ public class WaypointOrder implements IAsync {
             }
         }
 
-        while(rcw.getRoute().getAbstractEntryList().size() > 0){
+      /*  while(rcw.getRoute().getAbstractEntryList().size() > 0){
             rcw.onRemoveEntry((AbstractEntry) rcw.getRoute().getAbstractEntryList().get(0));
         }
 
+//////////////////////////////////
+       */
+        rcw.getRoute().getAbstractEntryList().clear();
+        //rcw.updateRoute();
+        //rcw.UpdateRouteInfo();
+
+        orderedStopList.add((Stop) tmpRoute.getEntries()[0]);
+
+
         for(int i=0; i<order.size(); i++){
-            orderedStopList.add(order.get(i), stopList.get(i));
+            orderedStopList.add(order.get(i)+1, stopList.get(i+1));
         }
+
+        orderedStopList.add((Stop) tmpRoute.getEntries()[tmpRoute.getEntries().length-1]);
 
         for (Stop stop:orderedStopList) {
             rcw.onInsertStop(stop);

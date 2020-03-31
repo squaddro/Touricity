@@ -92,7 +92,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         entryList.removeAllViews();
     }
 
-    private void UpdateRouteInfo() {
+    public void UpdateRouteInfo() {
         UpdateView();
 
         if (routeMapViewUpdater != null)
@@ -149,7 +149,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         UpdateRouteInfo();
     }
 
-    private void updateRoute() {
+    public void updateRoute() {
         IEntry[] entries = route.getEntries();
         int length = entries.length;
         Route swap = new Route();
