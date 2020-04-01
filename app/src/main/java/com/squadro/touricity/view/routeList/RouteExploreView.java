@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 
 import com.squadro.touricity.R;
@@ -44,13 +45,15 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         UpdateView();
     }
 
-    public void addRoute(Route route){
+    public void addRoute(Route route, double score){
         routeList.add(route);
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
         cardView.setViewId("explore");
         cardView.loadRoute(route);
         routes.addView(cardView);
         routes.invalidate();
+        RatingBar ratingBar = cardView.findViewById(R.id.routeRatingBar);
+        ratingBar.setRating((float) score);
     }
     private void UpdateView() {
         CleanView();
