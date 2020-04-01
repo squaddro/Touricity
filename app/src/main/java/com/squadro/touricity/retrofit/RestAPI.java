@@ -33,4 +33,13 @@ public interface RestAPI {
 
     @GET("api/place/nearbysearch/json?&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE")
     Call<JsonObject> getNearbyPlaces(@Query("location") String location, @Query("radius") int radius);
+
+    @POST("create/comment")
+    Call<JsonObject> postComment(@Body JsonObject body);
+
+    @POST("create/like")
+    Call<JsonObject> postLike(@Body JsonObject body);
+
+    @POST("get/comment")
+    Call<JsonObject> getComment(@Body JsonObject body);
 }

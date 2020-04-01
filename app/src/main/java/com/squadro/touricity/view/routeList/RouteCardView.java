@@ -1,6 +1,7 @@
 package com.squadro.touricity.view.routeList;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,17 +14,32 @@ import android.util.AttributeSet;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Comment;
+import com.squadro.touricity.message.types.CommentRegister;
+import com.squadro.touricity.message.types.Like;
+import com.squadro.touricity.message.types.LikeRegister;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.requests.CommentRequest;
+import com.squadro.touricity.requests.LikeRequest;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +52,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     @Getter
     private Route route;
     private LinearLayout entryList;
+    LinearLayout likeCommentView;
     private String viewId;
-
     public String getViewId() {
         return viewId;
     }
@@ -109,6 +125,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
 
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
+        likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
     }
 
     @Override
@@ -119,6 +136,89 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         setOnClickListener(this);
         setOnLongClickListener(this);
         setLongClickable(true);
+        getLikeComment();
+    }
+
+    private void getLikeComment() {
+        Context context = getContext();
+        Button pushCommentButton = findViewById(R.id.button_send_comment);
+        pushCommentButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Comment comment = new Comment();
+                EditText commentDesc = (EditText)findViewById(R.id.PostCommentDesc);
+                comment.setCommentDesc(commentDesc.getText().toString());
+                CommentRegister commentRegister = new CommentRegister(MainActivity.credential.getUser_name(), comment, route.getRoute_id());
+                CommentRequest commentRequest = new CommentRequest(context,likeCommentView);
+                try {
+                    commentRequest.postComment(commentRegister);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ImageButton pushLikeButton = findViewById(R.id.button_send_like);
+        pushLikeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Like like = new Like();
+                RatingBar ratingBar = (RatingBar) findViewById(R.id.routeLikeBar);
+                like.setScore((int)ratingBar.getRating());
+                LikeRegister likeRegister = new LikeRegister(MainActivity.credential.getUser_name(), like, route.getRoute_id());
+                LikeRequest likeRequest = new LikeRequest(getContext());
+                try {
+                    likeRequest.postLike(likeRegister);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        TextView showComments = findViewById(R.id.link_comments);
+        showComments.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommentRequest commentRequest = new CommentRequest(context, likeCommentView);
+                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
+                layout.removeAllViews();
+                ImageButton buttonUp = (ImageButton) likeCommentView.findViewById(R.id.imageButtonUp);
+                buttonUp.setVisibility(VISIBLE);
+                try {
+                    commentRequest.getComment(route.getRoute_id());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ImageButton buttonUp = findViewById(R.id.imageButtonUp);
+        buttonUp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+                lp.height = 0;
+                layout.setLayoutParams(lp);
+                ImageButton buttonDown = findViewById(R.id.imageButtonDown);
+                buttonDown.setVisibility(VISIBLE);
+                buttonUp.setVisibility(INVISIBLE);
+            }
+        });
+
+        ImageButton buttonDown = findViewById(R.id.imageButtonDown);
+        buttonDown.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;;
+                layout.setLayoutParams(lp);
+                ImageButton buttonUp = findViewById(R.id.imageButtonUp);
+                buttonUp.setVisibility(VISIBLE);
+                buttonDown.setVisibility(INVISIBLE);
+            }
+        });
     }
 
     @Override
