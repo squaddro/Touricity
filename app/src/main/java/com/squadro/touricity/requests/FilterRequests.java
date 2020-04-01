@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.squadro.touricity.converter.RouteConverter;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.RouteLike;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.retrofit.RestAPI;
@@ -51,16 +52,21 @@ public class FilterRequests {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
-                ArrayList<Route> routes = new ArrayList<>();
+
+                ArrayList<RouteLike> routes = new ArrayList<>();
                 RouteConverter routeConverter = new RouteConverter();
                 for (JsonElement element : routeList) {
-                    routes.add((Route) routeConverter.jsonToObject(element.getAsJsonObject()));
+                    RouteLike routeLike = new RouteLike();
+                    routeLike.setScore(element.getAsJsonObject().get("likeScore").getAsDouble());
+                    JsonObject routeObject = (JsonObject) element.getAsJsonObject().get("route");
+                    routeLike.setRoute((Route) routeConverter.jsonToObject(routeObject));
+                    routes.add(routeLike);
                 }
-                for (Route route : routes) {
-                    for (IEntry entry : route.getEntries()) {
+                for (RouteLike routeLike : routes) {
+                    for (IEntry entry : routeLike.getRoute().getEntries()) {
                         if (entry instanceof Stop) {
                             Stop stop = (Stop) entry;
-                            GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(route,routeExploreView);
+                            GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(routeLike.getRoute(),routeExploreView,routeLike.getScore());
                             getPlacesInfoAsync.execute(stop);
                         }
                     }

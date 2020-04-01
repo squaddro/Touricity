@@ -9,6 +9,7 @@ import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.view.map.MapFragmentTab2;
@@ -24,10 +25,12 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
 
     private Route route;
     private RouteExploreView routeExploreView;
+    private double score;
 
-    public GetPlacesInfoAsync(Route route, RouteExploreView routeExploreView) {
+    public GetPlacesInfoAsync(Route route, RouteExploreView routeExploreView, double score) {
         this.route = route;
         this.routeExploreView = routeExploreView;
+        this.score = score;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
                         if (photos.size() == photoMetadatas.size()) {
                             MyPlace myPlace = new MyPlace(place, photos);
                             MapFragmentTab2.responsePlaces.add(myPlace);
-                            routeExploreView.addRoute(route);
+                            routeExploreView.addRoute(route,score);
                         }
 
                     }).addOnFailureListener(Throwable::printStackTrace);
@@ -64,7 +67,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
             } else {
                 MyPlace myPlace = new MyPlace(place, null);
                 MapFragmentTab2.responsePlaces.add(myPlace);
-                routeExploreView.addRoute(route);
+                routeExploreView.addRoute(route,score);
             }
         }).addOnFailureListener(Throwable::printStackTrace);
         return null;
