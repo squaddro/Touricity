@@ -3,4 +3,5 @@
     <item name="down_arrow_stop" type="id"/>
     <item name="up_arrow_stop" type="id"/>
     <item name="delete_stop" type="id"/>
+    <item name="street_view_button" type="id"/>
 </resources>

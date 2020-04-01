@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.map;
 
+import android.app.AlertDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,9 @@ import android.widget.FrameLayout;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
+import com.google.android.gms.maps.StreetViewPanorama;
+import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
@@ -34,7 +38,8 @@ import java.util.ArrayList;
 
 import lombok.Getter;
 
-public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRouteDraw {
+public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRouteDraw,
+        OnStreetViewPanoramaReadyCallback {
 
     private SupportMapFragment supportMapFragment;
     private RouteExploreView routeExploreView;
@@ -45,13 +50,17 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     private static GoogleMap map;
     private FrameLayout frameLayout;
 
+    public static StreetViewPanorama streetViewPanorama;
+    public static StreetViewPanoramaFragment streetViewPanoramaFragment;
+    public static View rootView;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab1_map_view, container, false);
+        rootView = inflater.inflate(R.layout.tab1_map_view, container, false);
         if (supportMapFragment == null) {
             supportMapFragment = SupportMapFragment.newInstance();
             supportMapFragment.getMapAsync(this);
@@ -66,11 +75,19 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab1_map);
-        
+
         createFilterView();
         createRouteExploreView();
         initializeSheetBehaviors();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
+        initializeStreetView();
+    }
+
+    private void initializeStreetView() {
+        streetViewPanoramaFragment =
+                (StreetViewPanoramaFragment) getActivity().getFragmentManager()
+                        .findFragmentById(R.id.streetViewMap1);
+        streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
     }
 
     private void initializeSheetBehaviors() {
@@ -156,11 +173,28 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void drawHighlighted(Route route){
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map,"explore");
+    public void drawHighlighted(Route route) {
+        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "explore");
         polylineDrawer.drawRoute(route);
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
     }
 
+    @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama) {
+        MapFragmentTab1.streetViewPanorama = streetViewPanorama;
+        streetViewPanorama.setOnStreetViewPanoramaChangeListener(streetViewPanoramaChangeListener);
+    }
 
+    private StreetViewPanorama.OnStreetViewPanoramaChangeListener streetViewPanoramaChangeListener = streetViewPanoramaLocation -> {
+        if (streetViewPanoramaLocation == null || streetViewPanoramaLocation.links == null) {
+            MapFragmentTab1.rootView.findViewById(R.id.streetCardViewMap1).setVisibility(View.INVISIBLE);
+            new AlertDialog.Builder(getContext())
+                    .setTitle("INFO")
+                    .setMessage("This location has no street view")
+                    .setNeutralButton("OK", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        }
+    };
 }
