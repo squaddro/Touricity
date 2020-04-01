@@ -1,6 +1,8 @@
 package com.squadro.touricity.view.map.DirectionsAPI;
 
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 
 import com.squadro.touricity.message.types.AbstractEntry;
@@ -10,6 +12,7 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -39,7 +42,7 @@ public class WaypointOrder implements IAsync {
     public void routeOrder(RouteCreateView rcw, List<Integer> order) {
 
         Route tmpRoute = rcw.getRoute();
-        List<Stop> stopList = new ArrayList<>(order.size());
+        List<Stop> stopList = new ArrayList<>();
         List<Stop> orderedStopList = new ArrayList<>(20);
 
         for (IEntry entry:tmpRoute.getAbstractEntryList()) {
@@ -47,6 +50,14 @@ public class WaypointOrder implements IAsync {
                 stopList.add((Stop) entry);
             }
         }
+
+        stopList.get(0).setIndex(0);
+
+        for(int i = 1; i<stopList.size()-1; i++){
+            stopList.get(i).setIndex(order.get(i-1));
+        }
+
+        stopList.get(stopList.size()-1).setIndex(stopList.size()-1);
 
       /*  while(rcw.getRoute().getAbstractEntryList().size() > 0){
             rcw.onRemoveEntry((AbstractEntry) rcw.getRoute().getAbstractEntryList().get(0));
@@ -58,18 +69,29 @@ public class WaypointOrder implements IAsync {
         //rcw.updateRoute();
         //rcw.UpdateRouteInfo();
 
-        orderedStopList.add((Stop) tmpRoute.getEntries()[0]);
+        //orderedStopList.add((Stop) tmpRoute.getEntries()[0]);
 
 
-        for(int i=0; i<order.size(); i++){
-            orderedStopList.add(order.get(i)+1, stopList.get(i+1));
+
+        //for(int i=0; i<order.size(); i++){
+          //  orderedStopList.set(order.get(i)+1, stopList.get(i+1));
+            StopComparator comp = new StopComparator();
+            stopList.sort(comp);
+        //}
+
+        //orderedStopList.add((Stop) tmpRoute.getEntries()[tmpRoute.getEntries().length-1]);
+
+        for (Stop stop:stopList) {
+            rcw.onInsertStop2(stop);
         }
 
-        orderedStopList.add((Stop) tmpRoute.getEntries()[tmpRoute.getEntries().length-1]);
+        //rcw.UpdateView();
 
-        for (Stop stop:orderedStopList) {
-            rcw.onInsertStop(stop);
-        }
-
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                rcw.UpdateView();
+            }
+        });
     }
 }

@@ -61,7 +61,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         UpdateView();
     }
 
-    private void UpdateView() {
+    public void UpdateView() {
 
         CleanView();
         if (route == null) return;
@@ -279,6 +279,30 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             stop.setIndex(lastIndex+2);
             route.addEntry(stop);
             UpdateView();
+        }
+
+    }
+
+    public void onInsertStop2(Stop stop) {
+        List<IEntry> entries = route.getAbstractEntryList();
+
+        if (entries.size() == 0) {
+            route.addEntry(stop);
+            stop.setIndex(0);
+            //UpdateView();
+        } else {
+            int lastIndex = entries.size() - 1;
+            Stop prevStop = (Stop) entries.get(lastIndex);
+            prevStop.setIndex(lastIndex);
+            DirectionPost dp = new DirectionPost();
+            String url = dp.getDirectionsURL(prevStop.getLocation().getLatLng(), stop.getLocation().getLatLng(), null, "driving");
+
+            route.addEntry(new Path(null, 0, 0, "", null, Path.PathType.DRIVING, null));
+
+            PointListReturner plr = new PointListReturner(url, this, lastIndex + 1);
+            stop.setIndex(lastIndex+2);
+            route.addEntry(stop);
+            //UpdateView();
         }
 
     }
