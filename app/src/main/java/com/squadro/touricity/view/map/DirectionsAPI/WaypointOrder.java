@@ -5,14 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.RequiresApi;
 
-import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -43,14 +41,12 @@ public class WaypointOrder implements IAsync {
 
         Route tmpRoute = rcw.getRoute();
         List<Stop> stopList = new ArrayList<>();
-        List<Stop> orderedStopList = new ArrayList<>(20);
 
         for (IEntry entry:tmpRoute.getAbstractEntryList()) {
             if(entry instanceof Stop){
                 stopList.add((Stop) entry);
             }
         }
-
         stopList.get(0).setIndex(0);
 
         for(int i = 1; i<stopList.size()-1; i++){
@@ -59,38 +55,17 @@ public class WaypointOrder implements IAsync {
 
         stopList.get(stopList.size()-1).setIndex(stopList.size()-1);
 
-      /*  while(rcw.getRoute().getAbstractEntryList().size() > 0){
-            rcw.onRemoveEntry((AbstractEntry) rcw.getRoute().getAbstractEntryList().get(0));
-        }
-
-//////////////////////////////////
-       */
         rcw.getRoute().getAbstractEntryList().clear();
-        //rcw.updateRoute();
-        //rcw.UpdateRouteInfo();
 
-        //orderedStopList.add((Stop) tmpRoute.getEntries()[0]);
-
-
-
-        //for(int i=0; i<order.size(); i++){
-          //  orderedStopList.set(order.get(i)+1, stopList.get(i+1));
-            StopComparator comp = new StopComparator();
-            stopList.sort(comp);
-        //}
-
-        //orderedStopList.add((Stop) tmpRoute.getEntries()[tmpRoute.getEntries().length-1]);
-
-        for (Stop stop:stopList) {
-            rcw.onInsertStop2(stop);
-        }
-
-        //rcw.UpdateView();
+        StopComparator comp = new StopComparator();
+        stopList.sort(comp);
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                rcw.UpdateView();
+                for (Stop stop:stopList) {
+                    rcw.onInsertStop(stop);
+                }
             }
         });
     }
