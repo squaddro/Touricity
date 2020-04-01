@@ -45,7 +45,8 @@
             android:ems="10"
             android:gravity="start|top"
             android:hint="Add a comment here"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:textColor="#130404" />
 
         <Button
             android:id="@+id/button_send_comment"
@@ -55,11 +56,43 @@
             android:layout_below="@+id/PostCommentDesc"
             android:text="Comment" />
 
-        <LinearLayout
-            android:id="@+id/comment_list"
+        <TextView
+            android:id="@+id/link_comments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/button_send_comment"
-            android:orientation="vertical"></LinearLayout>
+            android:text="Show Comments"
+            android:textColor="#0B490C"
+            android:textSize="16dip" />
+
+        <LinearLayout
+            android:id="@+id/comment_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/link_comments"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButtonDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/comment_list"
+            android:layout_alignEnd="@+id/comment_list"
+            android:gravity="center|bottom"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/arrow_down_float" />
+
+        <ImageButton
+            android:id="@+id/imageButtonUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/comment_list"
+            android:layout_alignEnd="@+id/comment_list"
+            android:gravity="center|bottom"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/arrow_up_float" />
+
+
     </RelativeLayout>
 </LinearLayout>

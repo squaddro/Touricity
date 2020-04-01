@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squadro.touricity.MainActivity;
@@ -124,6 +125,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
 
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
+        likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
     }
 
     @Override
@@ -144,7 +146,6 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             @Override
             public void onClick(final View v) {
                 Comment comment = new Comment();
-                likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
                 EditText commentDesc = (EditText)findViewById(R.id.PostCommentDesc);
                 comment.setCommentDesc(commentDesc.getText().toString());
                 CommentRegister commentRegister = new CommentRegister(MainActivity.credential.getUser_name(), comment, route.getRoute_id());
@@ -165,12 +166,57 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 RatingBar ratingBar = (RatingBar) findViewById(R.id.routeLikeBar);
                 like.setScore((int)ratingBar.getRating());
                 LikeRegister likeRegister = new LikeRegister(MainActivity.credential.getUser_name(), like, route.getRoute_id());
-                LikeRequest likeRequest = new LikeRequest();
+                LikeRequest likeRequest = new LikeRequest(getContext());
                 try {
                     likeRequest.postLike(likeRegister);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        TextView showComments = findViewById(R.id.link_comments);
+        showComments.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommentRequest commentRequest = new CommentRequest(context, likeCommentView);
+                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
+                layout.removeAllViews();
+                ImageButton buttonUp = (ImageButton) likeCommentView.findViewById(R.id.imageButtonUp);
+                buttonUp.setVisibility(VISIBLE);
+                try {
+                    commentRequest.getComment(route.getRoute_id());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ImageButton buttonUp = findViewById(R.id.imageButtonUp);
+        buttonUp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+                lp.height = 0;
+                layout.setLayoutParams(lp);
+                ImageButton buttonDown = findViewById(R.id.imageButtonDown);
+                buttonDown.setVisibility(VISIBLE);
+                buttonUp.setVisibility(INVISIBLE);
+            }
+        });
+
+        ImageButton buttonDown = findViewById(R.id.imageButtonDown);
+        buttonDown.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;;
+                layout.setLayoutParams(lp);
+                ImageButton buttonUp = findViewById(R.id.imageButtonUp);
+                buttonUp.setVisibility(VISIBLE);
+                buttonDown.setVisibility(INVISIBLE);
             }
         });
     }

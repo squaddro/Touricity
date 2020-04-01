@@ -1,5 +1,9 @@
 package com.squadro.touricity.requests;
 
+import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.squadro.touricity.message.types.CommentRegister;
@@ -17,6 +21,11 @@ import retrofit2.Retrofit;
 
 public class LikeRequest {
 
+    private final Context context;
+
+    public LikeRequest(Context context) {
+        this.context = context;
+    }
     public void postLike(LikeRegister likeRegister) throws JSONException {
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
@@ -45,7 +54,7 @@ public class LikeRequest {
                 if (body != null) {
                     String statusCode = body.get("code").getAsString();
                     if(statusCode.equals("116")){
-
+                        Toast.makeText((Activity)context,"Liked!",Toast.LENGTH_LONG).show();
                     }
                     else if(statusCode.equals("117")){
                     }
