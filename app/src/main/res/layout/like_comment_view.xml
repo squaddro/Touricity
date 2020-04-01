@@ -39,13 +39,13 @@
         <EditText
             android:id="@+id/PostCommentDesc"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/routeLikeBar"
+            android:background="@drawable/rounded_corner"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine"
-            android:background="@drawable/rounded_corner"
-            android:layout_below="@+id/routeLikeBar"
-            android:text="Add a comment" />
+            android:hint="Add a comment here"
+            android:inputType="textMultiLine" />
 
         <Button
             android:id="@+id/button_send_comment"

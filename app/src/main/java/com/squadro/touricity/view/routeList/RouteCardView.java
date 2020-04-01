@@ -1,6 +1,7 @@
 package com.squadro.touricity.view.routeList;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
@@ -49,8 +51,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     @Getter
     private Route route;
     private LinearLayout entryList;
+    LinearLayout likeCommentView;
     private String viewId;
-
     public String getViewId() {
         return viewId;
     }
@@ -132,15 +134,21 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         setOnClickListener(this);
         setOnLongClickListener(this);
         setLongClickable(true);
+        getLikeComment();
+    }
+
+    private void getLikeComment() {
+        Context context = getContext();
         Button pushCommentButton = findViewById(R.id.button_send_comment);
-        pushCommentButton.setOnClickListener(new View.OnClickListener() {
+        pushCommentButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Comment comment = new Comment();
+                likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
                 EditText commentDesc = (EditText)findViewById(R.id.PostCommentDesc);
                 comment.setCommentDesc(commentDesc.getText().toString());
                 CommentRegister commentRegister = new CommentRegister(MainActivity.credential.getUser_name(), comment, route.getRoute_id());
-                CommentRequest commentRequest = new CommentRequest();
+                CommentRequest commentRequest = new CommentRequest(context,likeCommentView);
                 try {
                     commentRequest.postComment(commentRegister);
                 } catch (JSONException e) {
@@ -150,7 +158,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         });
 
         ImageButton pushLikeButton = findViewById(R.id.button_send_like);
-        pushLikeButton.setOnClickListener(new View.OnClickListener() {
+        pushLikeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Like like = new Like();

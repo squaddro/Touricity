@@ -1,22 +1,15 @@
 package com.squadro.touricity.requests;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.view.View;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.squadro.touricity.HomeActivity;
-import com.squadro.touricity.MainActivity;
-import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.CommentRegister;
-import com.squadro.touricity.message.types.Credential;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
+import com.squadro.touricity.view.routeList.CommentItem;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +19,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class CommentRequest {
+
+    private final Context context;
+    private final LinearLayout likeCommentView;
+
+    public CommentRequest(Context context, LinearLayout likeCommentView) {
+        this.context = context;
+        this.likeCommentView = likeCommentView;
+    }
 
     public void postComment(CommentRegister commentRegister) throws JSONException {
 
@@ -55,7 +56,9 @@ public class CommentRequest {
                 if (body != null) {
                     String statusCode = body.get("code").getAsString();
                     if(statusCode.equals("114")){
-
+                        CommentItem commentItem = new CommentItem(context);
+                        commentItem.setCommentItemElements(commentRegister.getUsername(), commentRegister.getComment().getCommentDesc());
+                        likeCommentView.addView(commentItem.getView());
                     }
                     else if(statusCode.equals("115")){
                     }
