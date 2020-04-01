@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.map;
 
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,11 +20,15 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
+import com.google.android.gms.maps.StreetViewPanorama;
+import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -63,7 +68,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater,
-        INearByResponse, IRouteResponse {
+        INearByResponse, IRouteResponse, OnStreetViewPanoramaReadyCallback {
 
     private SupportMapFragment supportMapFragment;
     private MapLongClickListener mapLongClickListener = null;
@@ -80,6 +85,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
 
     private IEditor editor;
+    public static StreetViewPanorama streetViewPanorama;
+    public static StreetViewPanoramaFragment streetViewPanoramaFragment;
+    public static View rootView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +95,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab2_map_view, container, false);
+        rootView = inflater.inflate(R.layout.tab2_map_view, container, false);
         if (supportMapFragment == null) {
             supportMapFragment = SupportMapFragment.newInstance();
             supportMapFragment.getMapAsync(this);
@@ -112,6 +120,10 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializePlacesAutofill();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeInfoWindowListener();
+        streetViewPanoramaFragment =
+                (StreetViewPanoramaFragment) getActivity().getFragmentManager()
+                        .findFragmentById(R.id.streetViewMap);
+        streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -381,7 +393,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     .collect(Collectors.toList());
             if (collect.size() == 0) markerInfoList.add(markerInfo);
             else collect.get(0).setMarker(markerInfo.getMarker());
-        }else{
+        } else {
             List<MarkerInfo> collect = MapFragmentTab3.markerInfoList.stream()
                     .filter(markerInfo1 -> markerInfo1.getMyPlace().getPlace_id().equals(markerInfo.getMyPlace().getPlace_id()))
                     .collect(Collectors.toList());
@@ -389,4 +401,26 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             else collect.get(0).setMarker(markerInfo.getMarker());
         }
     }
+
+    @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama) {
+        MapFragmentTab2.streetViewPanorama = streetViewPanorama;
+        streetViewPanorama.setOnStreetViewPanoramaChangeListener(streetViewPanoramaChangeListener);
+    }
+
+    private StreetViewPanorama.OnStreetViewPanoramaChangeListener streetViewPanoramaChangeListener = new StreetViewPanorama.OnStreetViewPanoramaChangeListener() {
+        @Override
+        public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation) {
+            if (streetViewPanoramaLocation == null || streetViewPanoramaLocation.links == null) {
+                MapFragmentTab2.rootView.findViewById(R.id.streetCardView).setVisibility(View.INVISIBLE);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("INFO")
+                        .setMessage("This location has no street view")
+                        .setNeutralButton("OK", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+            }
+        }
+    };
 }
