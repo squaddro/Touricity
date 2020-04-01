@@ -1,4 +1,4 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.view.map.DirectionsAPI;
 
 import com.google.android.gms.maps.model.LatLng;
 

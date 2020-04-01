@@ -44,6 +44,15 @@
                 android:layout_height="50dp"
                 android:background="@drawable/ic_save_24px">
             </Button>
+
+            <Button
+                android:id="@+id/route_create_optimize"
+                android:layout_toRightOf="@+id/route_create_save"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_low_priority_black_24dp">
+            </Button>
+
         </RelativeLayout>
 
         <android.support.v4.widget.NestedScrollView
