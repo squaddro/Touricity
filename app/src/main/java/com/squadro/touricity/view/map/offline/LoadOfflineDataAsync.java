@@ -51,7 +51,7 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected SavedRoutesItem doInBackground(Void ... voids) {
-
+        if(file.length() == 0) return null;
         List<MyPlaceSave> placesFromFile = getPlacesFromFile(file);
         for(MyPlaceSave myPlaceSave : placesFromFile){
             List<Bitmap> bitmapList = new ArrayList<>();
@@ -68,6 +68,12 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(SavedRoutesItem savedRoutesItem) {
+        if(savedRoutesItem == null){
+            if(progressDialog != null){
+                progressDialog.dismiss();
+            }
+            return;
+        }
         if(isDelete){
             List<Route> collect = savedRoutesItem.getRoutes().stream()
                     .filter(route1 -> !route1.getRoute_id().equals(routeToBeDeleted.getRoute_id()))
@@ -77,7 +83,9 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem>
         }else{
             savedRouteView.setRouteList(savedRoutesItem.getRoutes(),savedRoutesItem.getMyPlaces());
         }
-        progressDialog.dismiss();
+        if(progressDialog != null){
+            progressDialog.dismiss();
+        }
     }
 
     private List<Route> getRoutesFromFile(File file) {
