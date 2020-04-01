@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
@@ -102,16 +103,16 @@ public class StopCardViewHandler {
             streetView.setFocusable(true);
             buttonParam = new RelativeLayout.LayoutParams(150,150);
             buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.delete_stop);
-            streetView.setBackgroundResource(R.drawable.ic_street_view);
+            streetView.setBackgroundResource(R.drawable.ic_streetview_24px);
             streetView.setLayoutParams(buttonParam);
             streetView.setOnClickListener(v -> {
                 MapFragmentTab2.streetViewPanorama.setPosition(stop.getLocation().getLatLng());
-                MapFragmentTab2.rootView.findViewById(R.id.streetCardView).setVisibility(View.VISIBLE);
+                MapFragmentTab2.rootView.findViewById(R.id.streetCardViewMap2).setVisibility(View.VISIBLE);
 
-                Button exitStreet = MapFragmentTab2.rootView.findViewById(R.id.streetExitButton);
-                exitStreet.setOnClickListener(v1 -> MapFragmentTab2.rootView.findViewById(R.id.streetCardView).setVisibility(View.INVISIBLE));
+                Button exitStreet = MapFragmentTab2.rootView.findViewById(R.id.streetExitButtonMap2);
+                exitStreet.setOnClickListener(v1 -> MapFragmentTab2.rootView.findViewById(R.id.streetCardViewMap2).setVisibility(View.INVISIBLE));
             });
-            
+
             HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -128,8 +129,37 @@ public class StopCardViewHandler {
             HorizontalScrollView horizontalScrollView = stopCardView.findViewById(R.id.horizontalScrollView);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            horizontalScrollView.setLayoutParams(layoutParams);
+            if(viewId.equals("explore")){
+                RelativeLayout buttons = new RelativeLayout(context);
+                buttons.setId(View.generateViewId());
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                buttons.setLayoutParams(params);
+
+                Button streetView = new Button(context);
+                streetView.setId(R.id.street_view_button);
+                streetView.setClickable(true);
+                streetView.setFocusable(true);
+                streetView.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
+                streetView.setBackgroundResource(R.drawable.ic_streetview_24px);
+                streetView.setOnClickListener(v -> {
+                    MapFragmentTab1.streetViewPanorama.setPosition(stop.getLocation().getLatLng());
+                    MapFragmentTab1.rootView.findViewById(R.id.streetCardViewMap1).setVisibility(View.VISIBLE);
+
+                    Button exitStreet = MapFragmentTab1.rootView.findViewById(R.id.streetExitButtonMap1);
+                    exitStreet.setOnClickListener(v1 -> MapFragmentTab1.rootView.findViewById(R.id.streetCardViewMap1).setVisibility(View.INVISIBLE));
+                });
+                buttons.addView(streetView);
+                RelativeLayout relativeLayout = stopCardView.findViewById(R.id.stop_card_relative);
+                relativeLayout.addView(buttons,0);
+
+                layoutParams.addRule(RelativeLayout.BELOW,buttons.getId());
+                horizontalScrollView.setLayoutParams(layoutParams);
+            }else{
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                horizontalScrollView.setLayoutParams(layoutParams);
+            }
         }
 
         LinearLayout textAreasLayout = stopCardView.findViewById(R.id.textAreas);

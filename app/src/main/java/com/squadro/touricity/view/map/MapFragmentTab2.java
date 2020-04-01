@@ -28,7 +28,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -120,9 +119,13 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializePlacesAutofill();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeInfoWindowListener();
+        initializeStreetView();
+    }
+
+    private void initializeStreetView() {
         streetViewPanoramaFragment =
                 (StreetViewPanoramaFragment) getActivity().getFragmentManager()
-                        .findFragmentById(R.id.streetViewMap);
+                        .findFragmentById(R.id.streetViewMap2);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
     }
 
@@ -408,19 +411,16 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         streetViewPanorama.setOnStreetViewPanoramaChangeListener(streetViewPanoramaChangeListener);
     }
 
-    private StreetViewPanorama.OnStreetViewPanoramaChangeListener streetViewPanoramaChangeListener = new StreetViewPanorama.OnStreetViewPanoramaChangeListener() {
-        @Override
-        public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation) {
-            if (streetViewPanoramaLocation == null || streetViewPanoramaLocation.links == null) {
-                MapFragmentTab2.rootView.findViewById(R.id.streetCardView).setVisibility(View.INVISIBLE);
-                new AlertDialog.Builder(getContext())
-                        .setTitle("INFO")
-                        .setMessage("This location has no street view")
-                        .setNeutralButton("OK", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
-                        .show();
-            }
+    private StreetViewPanorama.OnStreetViewPanoramaChangeListener streetViewPanoramaChangeListener = streetViewPanoramaLocation -> {
+        if (streetViewPanoramaLocation == null || streetViewPanoramaLocation.links == null) {
+            MapFragmentTab2.rootView.findViewById(R.id.streetCardViewMap2).setVisibility(View.INVISIBLE);
+            new AlertDialog.Builder(getContext())
+                    .setTitle("INFO")
+                    .setMessage("This location has no street view")
+                    .setNeutralButton("OK", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
         }
     };
 }
