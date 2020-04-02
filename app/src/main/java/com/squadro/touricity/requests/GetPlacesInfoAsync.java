@@ -9,7 +9,6 @@ import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.view.map.MapFragmentTab2;
@@ -19,18 +18,21 @@ import com.squadro.touricity.view.routeList.RouteExploreView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
 
+    private CountDownLatch countDownLatch;
     private Route route;
     private RouteExploreView routeExploreView;
     private double score;
 
-    public GetPlacesInfoAsync(Route route, RouteExploreView routeExploreView, double score) {
+    public GetPlacesInfoAsync(Route route, RouteExploreView routeExploreView, double score, CountDownLatch countDownLatch) {
         this.route = route;
         this.routeExploreView = routeExploreView;
         this.score = score;
+        this.countDownLatch = countDownLatch;
     }
 
     @Override
@@ -59,7 +61,10 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
                         if (photos.size() == photoMetadatas.size()) {
                             MyPlace myPlace = new MyPlace(place, photos);
                             MapFragmentTab2.responsePlaces.add(myPlace);
-                            routeExploreView.addRoute(route,score);
+                            countDownLatch.countDown();
+                            if(countDownLatch.getCount() == 0){
+                                routeExploreView.addRoute(route,score);
+                            }
                         }
 
                     }).addOnFailureListener(Throwable::printStackTrace);
@@ -67,7 +72,10 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
             } else {
                 MyPlace myPlace = new MyPlace(place, null);
                 MapFragmentTab2.responsePlaces.add(myPlace);
-                routeExploreView.addRoute(route,score);
+                countDownLatch.countDown();
+                if(countDownLatch.getCount() == 0){
+                    routeExploreView.addRoute(route,score);
+                }
             }
         }).addOnFailureListener(Throwable::printStackTrace);
         return null;

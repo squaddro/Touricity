@@ -112,7 +112,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         DurationSeekBar durationSeekBar = new DurationSeekBar(getActivity());
         TransportationCheckBox transportationCheckBox = new TransportationCheckBox(getActivity());
         FilterHandler filterHandler = new FilterHandler(getActivity(), searchBar, minRatingBar, averageCostSeekBar,
-                durationSeekBar, transportationCheckBox);
+                durationSeekBar, transportationCheckBox,getContext());
     }
 
     private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior, MapLongClickListener mapLongClickListener) {
