@@ -1,5 +1,7 @@
 package com.squadro.touricity.requests;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -20,6 +22,8 @@ import com.squadro.touricity.view.filter.Filter;
 import com.squadro.touricity.view.routeList.RouteExploreView;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,9 +33,11 @@ import retrofit2.Retrofit;
 public class FilterRequests {
 
     private final RouteExploreView routeExploreView;
+    private final Context context;
 
-    public FilterRequests(RouteExploreView routeExploreView) {
+    public FilterRequests(RouteExploreView routeExploreView, Context context) {
         this.routeExploreView = routeExploreView;
+        this.context = context;
     }
 
     public void filter(Filter filter) {
@@ -51,6 +57,12 @@ public class FilterRequests {
             @Override
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(response.body() == null || response.body().size() == 0){
+                    new AlertDialog.Builder(context)
+                            .setTitle("INFO")
+                            .setMessage("Proper routes could not found according to filter instances")
+                            .setNeutralButton("OK", (dialog, which) -> dialog.dismiss()).show();
+                }
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
 
                 ArrayList<RouteLike> routes = new ArrayList<>();
@@ -63,10 +75,13 @@ public class FilterRequests {
                     routes.add(routeLike);
                 }
                 for (RouteLike routeLike : routes) {
+                    int stopCount = getStopCount(routeLike.getRoute());
+                    CountDownLatch countDownLatch = new CountDownLatch(stopCount);
                     for (IEntry entry : routeLike.getRoute().getEntries()) {
                         if (entry instanceof Stop) {
                             Stop stop = (Stop) entry;
-                            GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(routeLike.getRoute(),routeExploreView,routeLike.getScore());
+                            GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(routeLike.getRoute(),routeExploreView,routeLike.getScore(),
+                                    countDownLatch);
                             getPlacesInfoAsync.execute(stop);
                         }
                     }
@@ -78,5 +93,10 @@ public class FilterRequests {
                 Log.e("ERROR", message);
             }
         });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private int getStopCount(Route route) {
+        return route.getAbstractEntryList().stream().filter(iEntry -> iEntry instanceof Stop)
+                .collect(Collectors.toList()).size();
     }
 }
