@@ -21,20 +21,28 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
             android:isIndicator="false"
             android:numStars="5"
-            android:stepSize="1"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="15dp"/>
+            android:stepSize="1" />
 
         <ImageButton
             android:id="@+id/button_send_like"
-            android:layout_width="16dp"
-            android:layout_height="14dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_toRightOf="@+id/routeLikeBar"
             app:srcCompat="@android:drawable/ic_input_add" />
+
+        <ImageButton
+            android:id="@+id/mic_comment"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@+id/button_send_like"
+            android:background="@drawable/ic_mic_24px"
+            android:layout_marginLeft="5dp" />
 
         <EditText
             android:id="@+id/PostCommentDesc"
@@ -52,8 +60,8 @@
             android:id="@+id/button_send_comment"
             android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_below="@+id/PostCommentDesc"
+            android:layout_alignParentRight="true"
             android:text="Comment" />
 
         <TextView
@@ -70,8 +78,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/link_comments"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
 
         <ImageButton
             android:id="@+id/imageButtonDown"

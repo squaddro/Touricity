@@ -62,6 +62,7 @@ public class FilterRequests {
                             .setTitle("INFO")
                             .setMessage("Proper routes could not found according to filter instances")
                             .setNeutralButton("OK", (dialog, which) -> dialog.dismiss()).show();
+                    return;
                 }
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
 

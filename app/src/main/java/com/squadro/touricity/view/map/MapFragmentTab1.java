@@ -1,8 +1,11 @@
 package com.squadro.touricity.view.map;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -11,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,8 +39,11 @@ import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.search.SearchBar;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import lombok.Getter;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRouteDraw,
         OnStreetViewPanoramaReadyCallback {
@@ -53,6 +60,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     public static StreetViewPanorama streetViewPanorama;
     public static StreetViewPanoramaFragment streetViewPanoramaFragment;
     public static View rootView;
+    private EditText commentText;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +89,34 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         initializeSheetBehaviors();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeStreetView();
+    }
+
+    public void initializeSpeechToText(EditText editText) {
+        this.commentText = editText;
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say your comment");
+        try {
+            startActivityForResult(intent, 100);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null) {
+            ArrayList<String> result = data
+                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (result.size() > 0) {
+                String text = commentText.getText().toString();
+                commentText.setText(text + " "+ result.get(0));
+            }
+        }
     }
 
     private void initializeStreetView() {
@@ -112,7 +148,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         DurationSeekBar durationSeekBar = new DurationSeekBar(getActivity());
         TransportationCheckBox transportationCheckBox = new TransportationCheckBox(getActivity());
         FilterHandler filterHandler = new FilterHandler(getActivity(), searchBar, minRatingBar, averageCostSeekBar,
-                durationSeekBar, transportationCheckBox,getContext());
+                durationSeekBar, transportationCheckBox, getContext());
     }
 
     private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior, MapLongClickListener mapLongClickListener) {

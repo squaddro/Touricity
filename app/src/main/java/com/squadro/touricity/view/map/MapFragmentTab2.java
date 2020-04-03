@@ -130,11 +130,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeInfoWindowListener();
         initializeStreetView();
-        Button micButton = rootView.findViewById(R.id.mic_places);
-        initializeSpeechToText(micButton);
+        initializeSpeechToText();
     }
 
-    private void initializeSpeechToText(Button micButton) {
+    private void initializeSpeechToText() {
+        Button micButton = rootView.findViewById(R.id.mic_places);
         micButton.setOnClickListener(v -> {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -143,8 +143,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a place name");
             try {
                 startActivityForResult(intent, 100);
-            } catch (ActivityNotFoundException a) {
-
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
             }
         });
     }

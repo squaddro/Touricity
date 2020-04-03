@@ -21,7 +21,7 @@
                 android:layout_gravity="start"/>
             <Button
                 android:id="@+id/mic_places"
-                android:layout_width="50dp"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"

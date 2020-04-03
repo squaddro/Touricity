@@ -1,7 +1,6 @@
 package com.squadro.touricity.view.routeList;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +20,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squadro.touricity.HomeActivity;
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Comment;
@@ -53,6 +52,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private Route route;
     private LinearLayout entryList;
     LinearLayout likeCommentView;
+    private EditText commentText;
     private String viewId;
     public String getViewId() {
         return viewId;
@@ -126,6 +126,11 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
         likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
+        ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
+        commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
+        micButton.setOnClickListener(v -> {
+            HomeActivity.fragment1.initializeSpeechToText(commentText);
+        });
     }
 
     @Override
