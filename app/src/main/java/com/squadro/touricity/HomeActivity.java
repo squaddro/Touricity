@@ -24,9 +24,9 @@ public class HomeActivity extends AppCompatActivity {
 
     public static Context context;
     private List<Fragment> fragments;
-    MapFragmentTab1 fragment;
-    MapFragmentTab2 fragment2;
-    MapFragmentTab3 fragment3;
+    public static MapFragmentTab1 fragment1;
+    public static MapFragmentTab2 fragment2;
+    public static MapFragmentTab3 fragment3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +65,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initializeFragments() {
         if(checkConnection()){
-            fragment = new MapFragmentTab1();
-            fragments.add(fragment);
+            fragment1 = new MapFragmentTab1();
+            fragments.add(fragment1);
 
             fragment2 = new MapFragmentTab2();
             fragments.add(fragment2);
@@ -88,8 +88,8 @@ public class HomeActivity extends AppCompatActivity {
             double x = ev.getX();
             double y = ev.getY();
 
-            if (fragment != null) {
-                MapLongClickListener mapLongClickListener = fragment.getMapLongClickListener();
+            if (fragment1 != null) {
+                MapLongClickListener mapLongClickListener = fragment1.getMapLongClickListener();
                 if (mapLongClickListener != null) {
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
