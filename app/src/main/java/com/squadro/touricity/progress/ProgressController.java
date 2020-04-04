@@ -155,7 +155,6 @@ public class ProgressController {
 					continue;
 				}
 			}
-
 		}
 
 		if(closestPoint != null) {

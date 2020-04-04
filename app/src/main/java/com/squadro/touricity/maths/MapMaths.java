@@ -28,8 +28,8 @@ public class MapMaths {
 
         }
     }
-    public final static double DIAMETER_IN_KM = 12742;
-    public final static double DIAMETER_DIVIDED_BY_360_IN_KM = 35.39444444;
+    public final static double PERIMETER_IN_KM = 40030.2;
+    public final static double PERIMETER_DIVIDED_BY_360_IN_KM = 111.195;
     private GoogleMap map;
 
     private MapMaths(GoogleMap map) {
@@ -131,7 +131,17 @@ public class MapMaths {
         DoubleVector vectorA = DoubleMatrix.multiply(matrixA, DoubleVector.forward());
         DoubleVector vectorB = DoubleMatrix.multiply(matrixB, DoubleVector.forward());
         double angleRadians = DoubleVector.angleBetween(vectorA, vectorB);
-        return angleRadians * DIAMETER_DIVIDED_BY_360_IN_KM;
+        return Math.toDegrees(angleRadians) * PERIMETER_DIVIDED_BY_360_IN_KM;
+    }
+
+    public static double angleBetween(LatLng a, LatLng b) {
+        DoubleMatrix matrixA = DoubleMatrix.multiply(DoubleMatrix.RotateY(a.longitude), DoubleMatrix.RotateX(a.latitude));
+        DoubleMatrix matrixB = DoubleMatrix.multiply(DoubleMatrix.RotateY(b.longitude), DoubleMatrix.RotateX(b.latitude));
+
+        DoubleVector vectorA = DoubleMatrix.multiply(matrixA, DoubleVector.forward());
+        DoubleVector vectorB = DoubleMatrix.multiply(matrixB, DoubleVector.forward());
+        double angleRadians = DoubleVector.angleBetween(vectorA, vectorB);
+        return Math.toDegrees(angleRadians);
     }
 
     public static LatLngBounds getRouteBoundings(Route route) {
