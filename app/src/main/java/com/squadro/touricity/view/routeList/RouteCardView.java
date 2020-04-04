@@ -59,12 +59,22 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private EditText commentText;
     private String viewId;
     private List<Bitmap> stopImages;
+    private Button saveButton;
     public String getViewId() {
         return viewId;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setViewId(String viewId) {
         this.viewId = viewId;
+        initialize();
+        setOnClickListener(this);
+        setOnLongClickListener(this);
+        setLongClickable(true);
+        if(viewId.equals("explore")){
+            getLikeComment();
+            setSaveButtonListener();
+        }
     }
 
     public RouteCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -85,7 +95,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
                 if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"explore",stop);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"viewId",stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
                 }
@@ -133,24 +143,27 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
 
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
-        likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
-        ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
-        commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
-        micButton.setOnClickListener(v -> {
-            HomeActivity.fragment1.initializeSpeechToText(commentText);
-        });
+        if(viewId != null && viewId.equals("explore")){
+            likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
+            ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
+            commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
+            micButton.setOnClickListener(v -> {
+                HomeActivity.fragment1.initializeSpeechToText(commentText);
+            });
+        }
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        initialize();
-        setOnClickListener(this);
-        setOnLongClickListener(this);
-        setLongClickable(true);
-        getLikeComment();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void setSaveButtonListener() {
+        saveButton = findViewById(R.id.explore_save_route);
+        saveButton.setOnClickListener(v -> {
+            MapFragmentTab3.getSavedRouteView().getIRouteSave().saveRoute(route);
+        });
     }
 
     public void setViewFlipper(ViewFlipper viewFlipper){
@@ -250,12 +263,16 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     public void onClick(View v) {
         LinearLayout layout = (LinearLayout) findViewById(R.id.route_entries_list);
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) layout.getLayoutParams();
-
+        ImageView imageView = findViewById(R.id.card_view_route_entries_label);
         if (layout.getVisibility() == View.VISIBLE) {
+            imageView.setBackgroundResource(R.drawable.ic_expand_more_24px);
+            imageView.invalidate();
             layout.setVisibility(INVISIBLE);
             lp.height = 0;
             layout.setLayoutParams(lp);
         } else {
+            imageView.setBackgroundResource(R.drawable.ic_expand_less_24px);
+            imageView.invalidate();
             layout.setVisibility(VISIBLE);
             lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             layout.setLayoutParams(lp);

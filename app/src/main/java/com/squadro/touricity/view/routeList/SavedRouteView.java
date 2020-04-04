@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
@@ -63,9 +64,11 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         if (routeList == null || routeList.isEmpty() || places == null || places.isEmpty()) return;
         for (int i = 0; i < routeList.size(); i++) {
             Route route = routeList.get(i);
-            RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
+            RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view_save, null);
             cardView.setViewId("saved");
             cardView.loadRoute(route,places);
+            ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+            cardView.setViewFlipper(stopImages);
             routes.addView(cardView);
         }
     }
@@ -106,6 +109,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     @Override
     public boolean onLongClick(View v) {
         Route route = ((RouteCardView) v).getRoute();
+        routes.removeView(v);
         iRouteSave.deleteRoute(route);
         return false;
     }

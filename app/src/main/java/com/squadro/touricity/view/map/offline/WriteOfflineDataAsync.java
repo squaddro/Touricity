@@ -11,6 +11,7 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
@@ -23,19 +24,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class WriteOfflineDataAsync extends AsyncTask<Route,Void,SavedRoutesItem> {
+public class WriteOfflineDataAsync extends AsyncTask<Route, Void, SavedRoutesItem> {
 
     private SavedRouteView savedRouteView;
     private File file;
     private Activity activity;
-    public WriteOfflineDataAsync(Activity activity, File file, SavedRouteView savedRouteView){
+
+    public WriteOfflineDataAsync(Activity activity, File file, SavedRouteView savedRouteView) {
         this.activity = activity;
         this.file = file;
         this.savedRouteView = savedRouteView;
     }
+
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected SavedRoutesItem doInBackground(Route... routesArr) {
@@ -54,55 +57,70 @@ public class WriteOfflineDataAsync extends AsyncTask<Route,Void,SavedRoutesItem>
         if (file.length() == 0) {
             List<Route> routes = new ArrayList<>();
             routes.add(routesArr[0]);
-            List<MyPlace> places = new ArrayList<>();
+            HashSet<MyPlace> places = new HashSet<>();
             for (IEntry entry : routesArr[0].getAbstractEntryList()) {
                 if (entry instanceof Stop) {
                     Stop stop = (Stop) entry;
-                    places.addAll(MapFragmentTab2.responsePlaces.stream()
-                            .filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
-                            .collect(Collectors.toList()));
+                    List<MyPlace> responsePlaces = MapFragmentTab2.responsePlaces;
+                    for(MyPlace myPlace : responsePlaces){
+                        if(myPlace.getPlace_id().equals(stop.getLocation().getLocation_id())){
+                            places.add(myPlace);
+                        }
+                    }
                 }
             }
 
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
                 List<byte[]> bytes = new ArrayList<>();
-                for (Bitmap bitmap : myPlace.getPhotos()) {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                    byte[] byteArray = byteArrayOutputStream.toByteArray();
-                    bytes.add(byteArray);
+                if (myPlace.getPhotos() != null) {
+                    for (Bitmap bitmap : myPlace.getPhotos()) {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        bytes.add(byteArray);
+                    }
                 }
                 savePlaces.add(new MyPlaceSave(myPlace, bytes));
             }
             new XStream().toXML(new SavedRoutesItem(routes, savePlaces), fileWriter);
-            return new SavedRoutesItem(routes,savePlaces);
+            return new SavedRoutesItem(routes, savePlaces);
         } else {
-            List<Route> routes = getRoutesFromFile(file);
-            List<MyPlaceSave> myPlaces = getPlacesFromFile(file);
+            SavedRoutesItem savedRoutes = getSavedRoutes(file);
+            List<Route> routes = null;
+            List<MyPlaceSave> myPlaces = null;
+            if (savedRoutes != null) {
+                routes = savedRoutes.getRoutes();
+                myPlaces = savedRoutes.getMyPlaces();
+            }
 
             if (routes != null) {
                 routes.add(routesArr[0]);
             }
 
-            List<MyPlace> places = new ArrayList<>();
+            HashSet<MyPlace> places = new HashSet<>();
             for (IEntry entry : routesArr[0].getAbstractEntryList()) {
                 if (entry instanceof Stop) {
                     Stop stop = (Stop) entry;
-                    places.addAll(MapFragmentTab2.responsePlaces.stream()
-                            .filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
-                            .collect(Collectors.toList()));
+                    List<MyPlace> responsePlaces = MapFragmentTab2.responsePlaces;
+                    for(MyPlace myPlace : responsePlaces){
+                        if(myPlace.getPlace_id().equals(stop.getLocation().getLocation_id())){
+                            places.add(myPlace);
+                        }
+                    }
                 }
             }
 
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
                 List<byte[]> bytes = new ArrayList<>();
-                for (Bitmap bitmap : myPlace.getPhotos()) {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                    byte[] byteArray = byteArrayOutputStream.toByteArray();
-                    bytes.add(byteArray);
+                if (myPlace.getPhotos() != null) {
+                    for (Bitmap bitmap : myPlace.getPhotos()) {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        bytes.add(byteArray);
+                    }
                 }
                 savePlaces.add(new MyPlaceSave(myPlace, bytes));
             }
@@ -118,36 +136,26 @@ public class WriteOfflineDataAsync extends AsyncTask<Route,Void,SavedRoutesItem>
                 e.printStackTrace();
             }
             new XStream().toXML(new SavedRoutesItem(routes, myPlaces), fileWriter);
-            return new SavedRoutesItem(routes,myPlaces);
+            return new SavedRoutesItem(routes, myPlaces);
         }
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(SavedRoutesItem savedRoutesItem) {
+        MapFragmentTab3.savedRoutesItem = savedRoutesItem;
         savedRouteView.setRouteList(savedRoutesItem.getRoutes(), savedRoutesItem.getMyPlaces());
     }
 
-    private List<Route> getRoutesFromFile(File file) {
+    private SavedRoutesItem getSavedRoutes(File file) {
         if (file.length() == 0) return null;
         else {
             try {
-                return ((SavedRoutesItem) new XStream().fromXML(file)).getRoutes();
-            } catch (Exception e) {
-                return (ArrayList<Route>) (new XStream().fromXML(file));
-            }
-        }
-    }
-
-    private List<MyPlaceSave> getPlacesFromFile(File file) {
-        if (file.length() == 0) return null;
-        else {
-            try {
-                return ((SavedRoutesItem) new XStream().fromXML(file)).getMyPlaces();
+                return ((SavedRoutesItem) new XStream().fromXML(file));
             } catch (Exception e) {
                 e.printStackTrace();
-                return (ArrayList<MyPlaceSave>) (new XStream().fromXML(file));
             }
         }
+        return null;
     }
 }

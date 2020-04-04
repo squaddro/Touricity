@@ -60,7 +60,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
                         photos.add(bitmap);
                         if (photos.size() == photoMetadatas.size()) {
                             MyPlace myPlace = new MyPlace(place, photos);
-                            MapFragmentTab2.responsePlaces.add(myPlace);
+                            if(!MapFragmentTab2.isPlaceExist(myPlace)) MapFragmentTab2.responsePlaces.add(myPlace);
                             countDownLatch.countDown();
                             if(countDownLatch.getCount() == 0){
                                 routeExploreView.addRoute(route,score);
@@ -71,7 +71,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
                 }
             } else {
                 MyPlace myPlace = new MyPlace(place, null);
-                MapFragmentTab2.responsePlaces.add(myPlace);
+                if(!MapFragmentTab2.isPlaceExist(myPlace)) MapFragmentTab2.responsePlaces.add(myPlace);
                 countDownLatch.countDown();
                 if(countDownLatch.getCount() == 0){
                     routeExploreView.addRoute(route,score);

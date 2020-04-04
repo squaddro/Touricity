@@ -229,7 +229,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             photos.add(bitmap);
                             if (photos.size() == photoMetadatas.size()) {
                                 MyPlace myPlace = new MyPlace(place, photos);
-                                responsePlaces.add(myPlace);
+                                if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                                 Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
                                 Stop stop = new Stop(null, 0, 0, "", location, null);
                                 routeCreateView.onInsertStop(stop);
@@ -238,7 +238,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     }
                 } else {
                     MyPlace myPlace = new MyPlace(place, null);
-                    responsePlaces.add(myPlace);
+                    if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                     Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
                     Stop stop = new Stop(null, 0, 0, "", location, null);
                     routeCreateView.onInsertStop(stop);
@@ -290,7 +290,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
         int numberOfButtons = 1;
         List<String> buttonNames = new ArrayList<>();
-        buttonNames.add("Find nearby places");
+        buttonNames.add("Find Nearby");
         popupWindowParameters = new PopupWindowParameters(numberOfButtons, buttonNames);
         mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(), popupWindowParameters);
         createButtonListeners(mapLongClickListener.getButtons());
@@ -423,7 +423,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             photos.add(bitmap);
                             if (photos.size() == photoMetadata.size()) {
                                 MyPlace myPlace = new MyPlace(place, photos);
-                                MapFragmentTab2.responsePlaces.add(myPlace);
+                                if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                                 MarkerOptions markerOptions = new MarkerOptions();
                                 markerOptions.position(myPlace.getLatLng());
                                 Marker marker = map.addMarker(markerOptions);
@@ -435,7 +435,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     }
                 } else {
                     MyPlace myPlace = new MyPlace(place, null);
-                    MapFragmentTab2.responsePlaces.add(myPlace);
+                    if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(myPlace.getLatLng());
                     Marker marker = map.addMarker(markerOptions);
@@ -483,4 +483,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     .show();
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean isPlaceExist(MyPlace myPlace){
+        return responsePlaces.stream().filter(myPlace1 -> myPlace.getPlace_id().equals(myPlace1.getPlace_id()))
+                .collect(Collectors.toList()).size() > 0;
+    }
 }

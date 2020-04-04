@@ -24,6 +24,7 @@ import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
 import com.squadro.touricity.view.map.offline.CustomMapTileProvider;
+import com.squadro.touricity.view.map.offline.DeleteOfflineDataAsync;
 import com.squadro.touricity.view.map.offline.LoadOfflineDataAsync;
 import com.squadro.touricity.view.map.offline.WriteOfflineDataAsync;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
@@ -31,6 +32,7 @@ import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.SavedRouteView;
+import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
 import com.thoughtworks.xstream.XStream;
@@ -38,6 +40,7 @@ import com.thoughtworks.xstream.XStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -56,6 +59,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     public static List<MyPlace> responsePlaces = new ArrayList<>();
     public static List<MarkerInfo> markerInfoList  = new ArrayList<>();
     private static ConnectivityManager connectivityManager;
+    public static SavedRoutesItem savedRoutesItem;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +89,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
         savedRouteView = getActivity().findViewById(R.id.route_save);
-        LoadOfflineDataAsync loadOfflineDataAsync = new LoadOfflineDataAsync(savedRouteView, offlineDataFile,false,null,getContext());
+        LoadOfflineDataAsync loadOfflineDataAsync = new LoadOfflineDataAsync(savedRouteView, offlineDataFile,getContext());
         loadOfflineDataAsync.execute();
 
         savedRouteView.setIRouteSave(this);
@@ -143,8 +147,16 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void deleteRoute(Route route) {
-        LoadOfflineDataAsync loadOfflineDataAsync = new LoadOfflineDataAsync(savedRouteView,offlineDataFile,true,route,getContext());
-        loadOfflineDataAsync.execute();
+        List<Route> routes = savedRoutesItem.getRoutes();
+        for(int i = 0;i<routes.size();i++){
+            Route route1 = routes.get(i);
+            if(route1.getRoute_id().equals(route.getRoute_id())){
+                routes.remove(route1);
+            }
+        }
+        savedRoutesItem.setRoutes(routes);
+        DeleteOfflineDataAsync deleteOfflineDataAsync = new DeleteOfflineDataAsync(offlineDataFile);
+        deleteOfflineDataAsync.execute(savedRoutesItem);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -152,6 +164,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     public void saveRoute(Route route) {
         WriteOfflineDataAsync writeOfflineDataAsync = new WriteOfflineDataAsync(getActivity(),offlineDataFile,savedRouteView);
         writeOfflineDataAsync.execute(route);
-        Toast.makeText(getContext(),"Routes saved successfully",Toast.LENGTH_LONG);
+        Toast.makeText(getContext(),"Routes saved successfully",Toast.LENGTH_LONG).show();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean isPlaceExist(MyPlace myPlace){
+        return responsePlaces.stream().filter(myPlace1 -> myPlace.getPlace_id().equals(myPlace1.getPlace_id()))
+                .collect(Collectors.toList()).size() > 0;
     }
 }

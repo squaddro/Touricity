@@ -22,14 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/explore_save_route"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="@drawable/ic_save_24px"/>
-
             <RatingBar
                 android:id="@+id/routeRatingBar"
                 style="?android:attr/ratingBarStyleSmall"
@@ -68,25 +60,14 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/card_view_route_entries_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="" />
-        </RelativeLayout>
-
         <LinearLayout
             android:id="@+id/route_entries_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:visibility="invisible"></LinearLayout>
+            android:visibility="invisible">
+        </LinearLayout>
 
-        <include layout="@layout/like_comment_view" />
     </LinearLayout>
 
 </com.squadro.touricity.view.routeList.RouteCardView>
