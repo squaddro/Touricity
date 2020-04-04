@@ -57,6 +57,18 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         UpdateView();
     }
 
+    public RouteCardView addRoute(Route route){
+        routeList.add(route);
+        RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view_save, null);
+        cardView.setViewId("saved");
+        cardView.loadRoute(route);
+        ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+        cardView.setViewFlipper(stopImages);
+        routes.addView(cardView);
+        routes.invalidate();
+        return cardView;
+    }
+
     private void UpdateView() {
         CleanView();
 

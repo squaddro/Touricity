@@ -96,7 +96,7 @@ public class DownloadMapTiles {
                 try {
                     is = c.getInputStream();
                 } catch (IOException e) {
-                    e.printStackTrace();
+
                 }
 
                 try {
