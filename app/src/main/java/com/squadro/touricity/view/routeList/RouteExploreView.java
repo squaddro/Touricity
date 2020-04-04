@@ -12,9 +12,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.DirectionsAPI.RouteMerger;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 
 import java.util.ArrayList;
@@ -98,5 +101,13 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
                 break;
             }
         }
+    }
+
+    public void onLongClick(View v) {
+        Route route = ((RouteCardView) v).getRoute();
+        RouteMerger rm = new RouteMerger(MapFragmentTab2.getRouteCreateView());
+        rm.mergeRoute(route);
+        Toast.makeText(getContext(), "Route is merged!",
+                Toast.LENGTH_LONG).show();
     }
 }

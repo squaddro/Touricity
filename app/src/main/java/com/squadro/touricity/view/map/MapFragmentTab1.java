@@ -49,7 +49,8 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         OnStreetViewPanoramaReadyCallback {
 
     private SupportMapFragment supportMapFragment;
-    private RouteExploreView routeExploreView;
+    @Getter
+    private static RouteExploreView routeExploreView;
     private MapLongClickListener mapLongClickListener = null;
     private TopSheetBehavior topSheetBehavior;
     private BottomSheetBehavior bottomSheetBehavior;

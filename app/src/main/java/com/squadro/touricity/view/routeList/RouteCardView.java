@@ -32,6 +32,7 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.requests.CommentRequest;
 import com.squadro.touricity.requests.LikeRequest;
+import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
@@ -248,6 +249,10 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         if(getViewId().equals("saved")){
             MapFragmentTab3.getSavedRouteView().onLongClick(v);
         }
+        else if(getViewId().equals("explore")){
+            MapFragmentTab1.getRouteExploreView().onLongClick(v);
+        }
+
         return true;
     }
 
