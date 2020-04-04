@@ -15,10 +15,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.squadro.touricity.HomeActivity;
 import com.squadro.touricity.MainActivity;
@@ -52,9 +54,11 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     @Getter
     private Route route;
     private LinearLayout entryList;
+    private ViewFlipper viewFlipper;
     LinearLayout likeCommentView;
     private EditText commentText;
     private String viewId;
+    private List<Bitmap> stopImages;
     public String getViewId() {
         return viewId;
     }
@@ -65,6 +69,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
 
     public RouteCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        stopImages = new ArrayList<>();
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void loadRoute(Route route) {
@@ -82,6 +87,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 if(collect.size() > 0){
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"explore",stop);
                     cardView = stopCardViewHandler.putViews();
+                    stopImages.addAll(stopCardViewHandler.getStopImages());
                 }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
@@ -116,6 +122,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 if(collect.size() > 0){
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"saved",stop);
                     cardView = stopCardViewHandler.putViews();
+                    stopImages.addAll(stopCardViewHandler.getStopImages());
                 }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
@@ -127,6 +134,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
         likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
+        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
         ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
         commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
         micButton.setOnClickListener(v -> {
@@ -143,6 +151,17 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         setOnLongClickListener(this);
         setLongClickable(true);
         getLikeComment();
+    }
+
+    public void setViewFlipper(ViewFlipper viewFlipper){
+        for(Bitmap imageShown : stopImages){
+            ImageView imageViewShown = new ImageView(this.getContext());
+            imageViewShown.setImageBitmap(imageShown);
+
+            viewFlipper.addView(imageViewShown);
+            viewFlipper.setFlipInterval(4000);
+            viewFlipper.setAutoStart(true);
+        }
     }
 
     private void getLikeComment() {

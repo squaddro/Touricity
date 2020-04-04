@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
@@ -53,6 +54,8 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
         cardView.setViewId("explore");
         cardView.loadRoute(route);
+        ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+        cardView.setViewFlipper(stopImages);
         routes.addView(cardView);
         routes.invalidate();
         RatingBar ratingBar = cardView.findViewById(R.id.routeRatingBar);
