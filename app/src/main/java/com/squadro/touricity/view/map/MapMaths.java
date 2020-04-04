@@ -1,5 +1,7 @@
 package com.squadro.touricity.view.map;
 
+import android.util.Pair;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -10,9 +12,12 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class MapMaths {
 
-    public class ClosestPoint {
+    public static class ClosestPoint {
         public boolean isPolyline = false;
         public double distance = Double.MAX_VALUE;
         public LatLng closestPoint = null;
@@ -34,7 +39,7 @@ public class MapMaths {
         this.map = map;
     }
 
-    private LatLng closestPointBetween2D(LatLng p, LatLng a, LatLng b) {
+    private static LatLng closestPointBetween2D(LatLng p, LatLng a, LatLng b) {
         LatLng v = new LatLng(b.latitude - a.latitude, b.longitude - a.longitude);
         LatLng u = new LatLng(a.latitude - p.latitude, a.longitude - p.longitude);
         double vu = v.latitude * u.latitude + v.longitude * u.longitude;
@@ -53,25 +58,25 @@ public class MapMaths {
         return g0 <= g1 ? a : b;
     }
 
-    private LatLng vectorToSegment2D(double t, LatLng p, LatLng a, LatLng b) {
+    private static LatLng vectorToSegment2D(double t, LatLng p, LatLng a, LatLng b) {
         return new LatLng(
                 (1 - t) * a.latitude + t * b.latitude - p.latitude,
                 (1 - t) * a.longitude + t * b.longitude - p.longitude
         );
     }
 
-    private double squaredMagnitude2D(LatLng p) {
+    private static double squaredMagnitude2D(LatLng p) {
         return p.latitude * p.latitude + p.longitude * p.longitude;
     }
 
-    public ClosestPoint getClosestPoint(LatLng point, Polyline polyline) {
+    public static ClosestPoint getClosestPoint(LatLng point, List<LatLng> polyline) {
         ClosestPoint closest = new ClosestPoint();
         closest.isPolyline = true;
 
         int counter = 0;
         LatLng prevPoint = null;
 
-        for (LatLng latLng : polyline.getPoints()) {
+        for (LatLng latLng : polyline) {
             if (prevPoint != null) {
                 LatLng projected = closestPointBetween2D(point, latLng, prevPoint);
                 double distance = distance(projected, point);
@@ -89,6 +94,68 @@ public class MapMaths {
         }
 
         return closest;
+    }
+
+    public static Pair<ClosestPoint, IEntry> getClosestPointToRoute(LatLng position, Route route) {
+        IEntry closestEntry = null;
+        MapMaths.ClosestPoint closestPoint = null;
+        float distanceThreshold = 0.001f;
+
+        for(IEntry entry: route.getEntries()) {
+            // if entry is a stop
+            if(entry instanceof Stop) {
+                Stop stop = (Stop) entry;
+                LatLng place = new LatLng(stop.getLocation().getLatitude(), stop.getLocation().getLongitude());
+                double distance = MapMaths.distance(place, position);
+
+                // if distance is greater than the threshold do not use
+                if(distance>distanceThreshold)
+                    continue;
+
+                // if the point was the first closest point
+                // or if the place is closer than the other
+                if(closestPoint == null || distance < closestPoint.distance || closestEntry instanceof Path){
+                    closestEntry = stop;
+                    closestPoint = new MapMaths.ClosestPoint();
+                    closestPoint.closestPoint = place;
+                    closestPoint.distance = distance;
+                    closestPoint.isPolyline = false;
+                    closestPoint.lowerIndex = 0;
+                    continue;
+                }
+            }
+
+            // else if entry is a path
+            else if(entry instanceof Path) {
+                Path path = (Path) entry;
+                List<LatLng> vertices = new LinkedList<>();
+
+                for (PathVertex vertex: path.getVertices())
+                    vertices.add(vertex.toLatLong());
+
+                MapMaths.ClosestPoint closestToPath = MapMaths.getClosestPoint(position, vertices);
+                if(closestToPath.distance > distanceThreshold)
+                    continue;
+
+                // if the point was the first closest point
+                // or if the path is closer than the other path
+                // stops always has a priority
+                if(closestPoint == null || (closestEntry instanceof Path && closestPoint.distance < closestToPath.distance)) {
+                    closestEntry = path;
+                    closestPoint = closestToPath;
+                    continue;
+                }
+            }
+
+        }
+
+        Pair<MapMaths.ClosestPoint, IEntry> result = null;
+
+        if(closestPoint != null) {
+            result = Pair.create(closestPoint, closestEntry);
+        }
+
+        return result;
     }
 
     public static MapMaths basedOn(GoogleMap map) {

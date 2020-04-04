@@ -252,7 +252,7 @@ public class PathEditor implements IEditor<Path>, GoogleMap.OnMarkerDragListener
             path.getVertices().add(new PathVertex(latLng.latitude, latLng.longitude));
         }
         else {
-            MapMaths.ClosestPoint closestPoint = MapMaths.basedOn(map).getClosestPoint(latLng, editPolyline);
+            MapMaths.ClosestPoint closestPoint = MapMaths.basedOn(map).getClosestPoint(latLng, editPolyline.getPoints());
 
             double distanceToFirst = MapMaths.distance(closestPoint.closestPoint, points.get(0));
             double distanceToLast = MapMaths.distance(closestPoint.closestPoint, points.get(points.size() - 1));

@@ -1,10 +1,22 @@
 package com.squadro.touricity.progress;
 
+import android.util.Pair;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.squadro.touricity.message.types.AbstractEntry;
+import com.squadro.touricity.message.types.Path;
+import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.MapMaths;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ProgressController {
 
@@ -61,7 +73,7 @@ public class ProgressController {
         this.lastProgress = new RouteProgress();
     }
 
-    public ProgressController(Route route, Iterable<LatLng> prevPositions) {
+    public ProgressController(Route route, LatLng[] prevPositions) {
         this(route);
 
         for(LatLng position : prevPositions) {
@@ -70,7 +82,14 @@ public class ProgressController {
     }
 
     public void UpdatePosition(LatLng location) {
+        RouteProgress progress = RouteProgress.createNewProgress();
 
+        Pair<MapMaths.ClosestPoint, IEntry> closestPoint = MapMaths.getClosestPointToRoute(location, route);
+
+        MapMaths.ClosestPoint point = closestPoint.first;
+        IEntry entry = closestPoint.second;
+
+        prevPositions.add(location);
     }
 
     public LatLng[] getPrevPositions() {
@@ -80,4 +99,5 @@ public class ProgressController {
     public Progress getProgress() {
         return lastProgress;
     }
+
 }
