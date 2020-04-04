@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -63,6 +65,10 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     private static ConnectivityManager connectivityManager;
     public static SavedRoutesItem savedRoutesItem;
     public static View rootView;
+
+    public static void progressDone(ProgressBar progressBar, AtomicInteger count) {
+        if(count.get() == 2) progressBar.setVisibility(View.INVISIBLE);
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

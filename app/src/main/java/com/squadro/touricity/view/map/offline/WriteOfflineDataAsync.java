@@ -42,6 +42,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
     private File file;
     private Activity activity;
     private ProgressBar progressBar;
+    private AtomicInteger count = new AtomicInteger(0);
 
     public WriteOfflineDataAsync(Activity activity, File file, RouteCardView routeCardView) {
         this.activity = activity;
@@ -94,9 +95,8 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                 atomicInteger.set(atomicInteger.get() + myPlace.getPhotos().size());
             }
             progressBar.setMax(atomicInteger.get() + 4);
-            int gap = 1;
             if(urlsAndFileNames.get() != null){
-                new Thread(() -> downloadMapTiles.download(urlsAndFileNames.get(),progressBar,gap)).start();
+                new Thread(() -> downloadMapTiles.download(urlsAndFileNames.get(),progressBar,count)).start();
             }
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
@@ -116,7 +116,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                             e.printStackTrace();
                         }
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                        publishProgress(progressBar.getProgress() + gap);
+                        publishProgress(progressBar.getProgress() + 1);
                         photoIds.add(generationId);
                     }
                 }
@@ -155,9 +155,9 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                 }
             }
             progressBar.setMax(atomicInteger.get() + 4);
-            int gap = 1;
+
             if(urlsAndFileNames.get() != null){
-                new Thread(() ->downloadMapTiles.download(urlsAndFileNames.get(),progressBar,gap)).start();
+                new Thread(() ->downloadMapTiles.download(urlsAndFileNames.get(),progressBar,count)).start();
             }
 
             List<MyPlaceSave> savePlaces = new ArrayList<>();
@@ -178,7 +178,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                             e.printStackTrace();
                         }
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                        publishProgress(progressBar.getProgress() + gap);
+                        publishProgress(progressBar.getProgress() + 1);
                         photoIds.add(generationId);
                     }
                 }
@@ -211,7 +211,8 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(RoutePlace routePlace) {
-
+        count.incrementAndGet();
+        MapFragmentTab3.progressDone(progressBar,count);
     }
 
     private SavedRoutesItem getSavedRoutes(File file) {

@@ -1,10 +1,10 @@
 package com.squadro.touricity.view.map.offline;
 
 import android.os.Environment;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.squadro.touricity.view.map.MapFragmentTab3;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DownloadMapTiles {
     private String baseUrl = "https://mt.google.com/vt/lyrs=m";
@@ -56,7 +57,7 @@ public class DownloadMapTiles {
         return urlAndFileName;
     }
 
-    public void download(Map<String, String> urlsAndFileNames, ProgressBar progressBar, int gap) {
+    public void download(Map<String, String> urlsAndFileNames, ProgressBar progressBar, AtomicInteger count) {
         File apkStorage = new File(
                 Environment.getExternalStorageDirectory() + "/"
                         + "Tiles");
@@ -76,14 +77,14 @@ public class DownloadMapTiles {
                     e.printStackTrace();
                 }
             } else {
-                progressBar.setProgress(progressBar.getProgress() + gap);
+                progressBar.setProgress(progressBar.getProgress() + 1);
                 continue;
             }
             URL url = null;
             try {
                 url = new URL(urlStr);
             } catch (MalformedURLException e) {
-                progressBar.setProgress(progressBar.getProgress() + gap);
+                progressBar.setProgress(progressBar.getProgress() + 1);
                 e.printStackTrace();
             }
             HttpURLConnection c = null;
@@ -96,7 +97,7 @@ public class DownloadMapTiles {
                     is = c.getInputStream();
                 }
             } catch (Exception e) {
-                progressBar.setProgress(progressBar.getProgress() + gap);
+                progressBar.setProgress(progressBar.getProgress() + 1);
                 e.printStackTrace();
             }
 
@@ -110,11 +111,12 @@ public class DownloadMapTiles {
                 }
                 fos.close();
                 is.close();
-                progressBar.setProgress(progressBar.getProgress() + gap);
+                progressBar.setProgress(progressBar.getProgress() + 1);
             } catch (Exception e) {
-                progressBar.setProgress(progressBar.getProgress() + gap);
+                progressBar.setProgress(progressBar.getProgress() + 1);
             }
         }
-        progressBar.setVisibility(View.INVISIBLE);
+        count.incrementAndGet();
+        MapFragmentTab3.progressDone(progressBar,count);
     }
 }
