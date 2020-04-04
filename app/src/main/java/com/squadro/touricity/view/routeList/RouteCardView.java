@@ -3,7 +3,6 @@ package com.squadro.touricity.view.routeList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,6 +59,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private String viewId;
     private List<Bitmap> stopImages;
     private Button saveButton;
+
     public String getViewId() {
         return viewId;
     }
@@ -71,7 +71,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         setOnClickListener(this);
         setOnLongClickListener(this);
         setLongClickable(true);
-        if(viewId.equals("explore")){
+        if (viewId.equals("explore")) {
             getLikeComment();
             setSaveButtonListener();
         }
@@ -81,6 +81,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         super(context, attrs);
         stopImages = new ArrayList<>();
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void loadRoute(Route route) {
 
@@ -94,8 +95,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                         .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
-                if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"viewId",stop);
+                if (collect.size() > 0) {
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "viewId", stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
                 }
@@ -105,8 +106,9 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             }
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void loadRoute(Route route,List<MyPlaceSave> myPlaces) {
+    public void loadRoute(Route route, List<MyPlace> myPlaces) {
 
         Context context = getContext();
         this.route = route;
@@ -116,21 +118,17 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
 
                 List<MyPlace> places = new ArrayList<>();
 
-                for(MyPlaceSave myPlaceSave : myPlaces){
-                    List<Bitmap> bitmapList = new ArrayList<>();
-                    for(byte [] bytes : myPlaceSave.getPhotos()){
-                        Bitmap decodedByte = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        bitmapList.add(decodedByte);
-                    }
-                    places.add(new MyPlace(myPlaceSave,bitmapList));
+                for (MyPlace myPlaceSave : myPlaces) {
+                    List<Bitmap> bitmapList = new ArrayList<>(myPlaceSave.getPhotos());
+                    places.add(new MyPlace(myPlaceSave, bitmapList));
                 }
 
                 List<MyPlace> collect = places.stream().filter(myPlace -> myPlace.getPlace_id().equals(stop.getLocation().getLocation_id()))
                         .collect(Collectors.toList());
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
-                if(collect.size() > 0){
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,collect.get(0),context,"saved",stop);
+                if (collect.size() > 0) {
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "saved", stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
                 }
@@ -144,8 +142,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
-        if(viewId != null && viewId.equals("explore")){
-            likeCommentView = (LinearLayout)findViewById(R.id.like_comment_view);
+        if (viewId != null && viewId.equals("explore")) {
+            likeCommentView = (LinearLayout) findViewById(R.id.like_comment_view);
             ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
             commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
             micButton.setOnClickListener(v -> {
@@ -153,11 +151,13 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             });
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setSaveButtonListener() {
         saveButton = findViewById(R.id.explore_save_route);
@@ -166,8 +166,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         });
     }
 
-    public void setViewFlipper(ViewFlipper viewFlipper){
-        for(Bitmap imageShown : stopImages){
+    public void setViewFlipper(ViewFlipper viewFlipper) {
+        for (Bitmap imageShown : stopImages) {
             ImageView imageViewShown = new ImageView(this.getContext());
             imageViewShown.setImageBitmap(imageShown);
 
@@ -184,10 +184,10 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             @Override
             public void onClick(final View v) {
                 Comment comment = new Comment();
-                EditText commentDesc = (EditText)findViewById(R.id.PostCommentDesc);
+                EditText commentDesc = (EditText) findViewById(R.id.PostCommentDesc);
                 comment.setCommentDesc(commentDesc.getText().toString());
                 CommentRegister commentRegister = new CommentRegister(MainActivity.credential.getUser_name(), comment, route.getRoute_id());
-                CommentRequest commentRequest = new CommentRequest(context,likeCommentView);
+                CommentRequest commentRequest = new CommentRequest(context, likeCommentView);
                 try {
                     commentRequest.postComment(commentRegister);
                 } catch (JSONException e) {
@@ -202,7 +202,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             public void onClick(final View v) {
                 Like like = new Like();
                 RatingBar ratingBar = (RatingBar) findViewById(R.id.routeLikeBar);
-                like.setScore((int)ratingBar.getRating());
+                like.setScore((int) ratingBar.getRating());
                 LikeRegister likeRegister = new LikeRegister(MainActivity.credential.getUser_name(), like, route.getRoute_id());
                 LikeRequest likeRequest = new LikeRequest(getContext());
                 try {
@@ -250,7 +250,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             public void onClick(View v) {
                 LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) layout.getLayoutParams();
-                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;;
+                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                ;
                 layout.setLayoutParams(lp);
                 ImageButton buttonUp = findViewById(R.id.imageButtonUp);
                 buttonUp.setVisibility(VISIBLE);
@@ -282,10 +283,9 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onLongClick(View v) {
-        if(getViewId().equals("saved")){
+        if (getViewId().equals("saved")) {
             MapFragmentTab3.getSavedRouteView().onLongClick(v);
-        }
-        else if(getViewId().equals("explore")){
+        } else if (getViewId().equals("explore")) {
             MapFragmentTab1.getRouteExploreView().onLongClick(v);
         }
 

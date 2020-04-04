@@ -15,6 +15,7 @@ import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
 
@@ -41,13 +42,13 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     private LinearLayout routes;
     private NestedScrollView scrollView;
 
-    private List<MyPlaceSave> places;
+    private List<MyPlace> places;
 
     public SavedRouteView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setRouteList(List<Route> routeList, List<MyPlaceSave> places) {
+    public void setRouteList(List<Route> routeList, List<MyPlace> places) {
         this.routeList = routeList;
         this.places = places;
         if(routeList != null && routeList.size() > 0){

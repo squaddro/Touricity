@@ -15,19 +15,21 @@ import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
+import com.squadro.touricity.view.routeList.RoutePlace;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.thoughtworks.xstream.XStream;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class WriteOfflineDataAsync extends AsyncTask<Route, Void, SavedRoutesItem> {
+public class WriteOfflineDataAsync extends AsyncTask<Route, Void, RoutePlace> {
 
     private SavedRouteView savedRouteView;
     private File file;
@@ -41,7 +43,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Void, SavedRoutesIte
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected SavedRoutesItem doInBackground(Route... routesArr) {
+    protected RoutePlace doInBackground(Route... routesArr) {
         if (MainActivity.checkConnection()) {
             DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
             new Thread(() -> {
@@ -72,19 +74,31 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Void, SavedRoutesIte
 
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
-                List<byte[]> bytes = new ArrayList<>();
+                List<String> photoIds = new ArrayList<>();
                 if (myPlace.getPhotos() != null) {
                     for (Bitmap bitmap : myPlace.getPhotos()) {
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                        byte[] byteArray = byteArrayOutputStream.toByteArray();
-                        bytes.add(byteArray);
+                        String generationId = bitmap.getGenerationId()+"";
+                        File root = new File(activity.getApplicationContext().getFilesDir(),"PlacePhotos");
+                        if(!root.exists()){
+                            root.mkdir();
+                        }
+                        File file = new File(root,generationId+".png");
+                        FileOutputStream fileOutputStream = null;
+                        try {
+                            fileOutputStream = new FileOutputStream(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                        photoIds.add(generationId);
                     }
                 }
-                savePlaces.add(new MyPlaceSave(myPlace, bytes));
+                savePlaces.add(new MyPlaceSave(myPlace, photoIds));
             }
-            new XStream().toXML(new SavedRoutesItem(routes, savePlaces), fileWriter);
-            return new SavedRoutesItem(routes, savePlaces);
+            SavedRoutesItem savedRoutesItem = new SavedRoutesItem(routes, savePlaces);
+            MapFragmentTab3.savedRoutesItem = savedRoutesItem;
+            new XStream().toXML(savedRoutesItem, fileWriter);
+            return new RoutePlace(routes, new ArrayList<>(places));
         } else {
             SavedRoutesItem savedRoutes = getSavedRoutes(file);
             List<Route> routes = null;
@@ -113,16 +127,26 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Void, SavedRoutesIte
 
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
-                List<byte[]> bytes = new ArrayList<>();
+                List<String> photoIds = new ArrayList<>();
                 if (myPlace.getPhotos() != null) {
                     for (Bitmap bitmap : myPlace.getPhotos()) {
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                        byte[] byteArray = byteArrayOutputStream.toByteArray();
-                        bytes.add(byteArray);
+                        String generationId = bitmap.getGenerationId()+"";
+                        File root = new File(activity.getApplicationContext().getFilesDir(),"PlacePhotos");
+                        if(!root.exists()){
+                            root.mkdir();
+                        }
+                        File file = new File(root,generationId+".png");
+                        FileOutputStream fileOutputStream = null;
+                        try {
+                            fileOutputStream = new FileOutputStream(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                        photoIds.add(generationId);
                     }
                 }
-                savePlaces.add(new MyPlaceSave(myPlace, bytes));
+                savePlaces.add(new MyPlaceSave(myPlace, photoIds));
             }
             if (myPlaces != null) {
                 myPlaces.addAll(savePlaces);
@@ -135,16 +159,17 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Void, SavedRoutesIte
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            new XStream().toXML(new SavedRoutesItem(routes, myPlaces), fileWriter);
-            return new SavedRoutesItem(routes, myPlaces);
+            SavedRoutesItem savedRoutesItem = new SavedRoutesItem(routes, myPlaces);
+            MapFragmentTab3.savedRoutesItem = savedRoutesItem;
+            new XStream().toXML(savedRoutesItem, fileWriter);
+            return new RoutePlace(routes, new ArrayList<>(places));
         }
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected void onPostExecute(SavedRoutesItem savedRoutesItem) {
-        MapFragmentTab3.savedRoutesItem = savedRoutesItem;
-        savedRouteView.setRouteList(savedRoutesItem.getRoutes(), savedRoutesItem.getMyPlaces());
+    protected void onPostExecute(RoutePlace routePlace) {
+        savedRouteView.setRouteList(routePlace.getRoutes(), routePlace.getMyPlaces());
     }
 
     private SavedRoutesItem getSavedRoutes(File file) {

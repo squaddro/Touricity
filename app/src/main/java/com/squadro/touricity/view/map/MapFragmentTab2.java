@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
@@ -112,16 +111,12 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
         return rootView;
     }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
 
-        LatLng tobb = new LatLng(10, 10);
-        googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
         markerInfoList = new ArrayList<>();
         markersOfNearby = new ArrayList<>();
         createRouteCreateView();
