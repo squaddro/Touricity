@@ -21,6 +21,7 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.squadro.touricity.R;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
 import com.squadro.touricity.view.filter.AverageCostSeekBar;

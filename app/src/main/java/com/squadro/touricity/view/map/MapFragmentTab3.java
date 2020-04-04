@@ -21,6 +21,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
 import com.squadro.touricity.view.map.offline.CustomMapTileProvider;

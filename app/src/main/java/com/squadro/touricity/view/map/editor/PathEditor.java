@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
-import com.squadro.touricity.view.map.MapMaths;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.view.map.event.IDataUpdateListener;
 
 import java.util.ArrayList;

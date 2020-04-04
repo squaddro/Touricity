@@ -1,18 +1,14 @@
-package com.squadro.touricity.view.map;
-
-import android.util.Pair;
+package com.squadro.touricity.maths;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Polyline;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class MapMaths {
@@ -32,7 +28,8 @@ public class MapMaths {
 
         }
     }
-
+    public final static double DIAMETER_IN_KM = 12742;
+    public final static double DIAMETER_DIVIDED_BY_360_IN_KM = 35.39444444;
     private GoogleMap map;
 
     private MapMaths(GoogleMap map) {
@@ -96,68 +93,6 @@ public class MapMaths {
         return closest;
     }
 
-    public static Pair<ClosestPoint, IEntry> getClosestPointToRoute(LatLng position, Route route) {
-        IEntry closestEntry = null;
-        MapMaths.ClosestPoint closestPoint = null;
-        float distanceThreshold = 0.001f;
-
-        for(IEntry entry: route.getEntries()) {
-            // if entry is a stop
-            if(entry instanceof Stop) {
-                Stop stop = (Stop) entry;
-                LatLng place = new LatLng(stop.getLocation().getLatitude(), stop.getLocation().getLongitude());
-                double distance = MapMaths.distance(place, position);
-
-                // if distance is greater than the threshold do not use
-                if(distance>distanceThreshold)
-                    continue;
-
-                // if the point was the first closest point
-                // or if the place is closer than the other
-                if(closestPoint == null || distance < closestPoint.distance || closestEntry instanceof Path){
-                    closestEntry = stop;
-                    closestPoint = new MapMaths.ClosestPoint();
-                    closestPoint.closestPoint = place;
-                    closestPoint.distance = distance;
-                    closestPoint.isPolyline = false;
-                    closestPoint.lowerIndex = 0;
-                    continue;
-                }
-            }
-
-            // else if entry is a path
-            else if(entry instanceof Path) {
-                Path path = (Path) entry;
-                List<LatLng> vertices = new LinkedList<>();
-
-                for (PathVertex vertex: path.getVertices())
-                    vertices.add(vertex.toLatLong());
-
-                MapMaths.ClosestPoint closestToPath = MapMaths.getClosestPoint(position, vertices);
-                if(closestToPath.distance > distanceThreshold)
-                    continue;
-
-                // if the point was the first closest point
-                // or if the path is closer than the other path
-                // stops always has a priority
-                if(closestPoint == null || (closestEntry instanceof Path && closestPoint.distance < closestToPath.distance)) {
-                    closestEntry = path;
-                    closestPoint = closestToPath;
-                    continue;
-                }
-            }
-
-        }
-
-        Pair<MapMaths.ClosestPoint, IEntry> result = null;
-
-        if(closestPoint != null) {
-            result = Pair.create(closestPoint, closestEntry);
-        }
-
-        return result;
-    }
-
     public static MapMaths basedOn(GoogleMap map) {
         return new MapMaths(map);
     }
@@ -190,8 +125,13 @@ public class MapMaths {
     }
 
     public static double distance(LatLng a, LatLng b) {
-        LatLng dir = new LatLng(a.latitude - b.latitude, a.longitude - b.longitude);
-        return Math.sqrt(dir.latitude * dir.latitude + dir.longitude * dir.longitude);
+        DoubleMatrix matrixA = DoubleMatrix.multiply(DoubleMatrix.RotateY(a.longitude), DoubleMatrix.RotateX(a.latitude));
+        DoubleMatrix matrixB = DoubleMatrix.multiply(DoubleMatrix.RotateY(b.longitude), DoubleMatrix.RotateX(b.latitude));
+
+        DoubleVector vectorA = DoubleMatrix.multiply(matrixA, DoubleVector.forward());
+        DoubleVector vectorB = DoubleMatrix.multiply(matrixB, DoubleVector.forward());
+        double angleRadians = DoubleVector.angleBetween(vectorA, vectorB);
+        return angleRadians * DIAMETER_DIVIDED_BY_360_IN_KM;
     }
 
     public static LatLngBounds getRouteBoundings(Route route) {

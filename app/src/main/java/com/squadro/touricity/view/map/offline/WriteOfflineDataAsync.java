@@ -11,7 +11,7 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.MapMaths;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
 import com.squadro.touricity.view.routeList.SavedRouteView;
