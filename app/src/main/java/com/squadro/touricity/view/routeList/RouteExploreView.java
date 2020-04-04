@@ -50,7 +50,7 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
     }
 
     public void addRoute(Route route, double score){
-        routeList.add(route);
+        routeList.add(0,route);
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
         cardView.setViewId("explore");
         cardView.loadRoute(route);

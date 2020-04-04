@@ -2,6 +2,7 @@ package com.squadro.touricity.view.map.offline;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -15,6 +16,7 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
 import com.squadro.touricity.view.routeList.RouteCardView;
@@ -30,6 +32,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace> {
 
@@ -49,17 +54,19 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
     protected void onPreExecute() {
         super.onPreExecute();
         progressBar.setVisibility(View.VISIBLE);
+        progressBar.getProgressDrawable().setColorFilter(
+                Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected RoutePlace doInBackground(Route... routesArr) {
-
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
+        AtomicReference<Map<String, String>> urlsAndFileNames = new AtomicReference<>();
         if (MainActivity.checkConnection()) {
-            DownloadMapTiles downloadMapTiles = new DownloadMapTiles();
-            //      new Thread(() -> {
-            //           downloadMapTiles.downloadTileBounds(MapMaths.getRouteBoundings(routesArr[0]));
-            //s     }).start();
+            urlsAndFileNames.set(downloadMapTiles.downloadTileBounds(MapMaths.getRouteBoundings(routesArr[0])));
+            atomicInteger.set(urlsAndFileNames.get().size());
         }
         FileWriter fileWriter = null;
         try {
@@ -82,12 +89,15 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                     }
                 }
             }
-            int count = 0;
-            for(MyPlace myPlace : places){
-                count += myPlace.getPhotos().size();
+
+            for (MyPlace myPlace : places) {
+                atomicInteger.set(atomicInteger.get() + myPlace.getPhotos().size());
             }
-            int gap = 100 / (count + 4);
-            int progressCount = 0;
+            progressBar.setMax(atomicInteger.get() + 4);
+            int gap = 1;
+            if(urlsAndFileNames.get() != null){
+                new Thread(() -> downloadMapTiles.download(urlsAndFileNames.get(),progressBar,gap)).start();
+            }
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
                 List<String> photoIds = new ArrayList<>();
@@ -106,8 +116,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                             e.printStackTrace();
                         }
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                        progressCount += gap;
-                        publishProgress(progressCount);
+                        publishProgress(progressBar.getProgress() + gap);
                         photoIds.add(generationId);
                     }
                 }
@@ -125,7 +134,9 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                 routes = savedRoutes.getRoutes();
                 myPlaces = savedRoutes.getMyPlaces();
             }
-
+            if(routes != null){
+                routes.add(routesArr[0]);
+            }
             HashSet<MyPlace> places = new HashSet<>();
             for (IEntry entry : routesArr[0].getAbstractEntryList()) {
                 if (entry instanceof Stop) {
@@ -138,14 +149,16 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                     }
                 }
             }
-            int count = 0;
-            for(MyPlace myPlace : places){
+            for (MyPlace myPlace : places) {
                 if(myPlace.getPhotos() != null){
-                    count += myPlace.getPhotos().size();
+                    atomicInteger.set(atomicInteger.get() + myPlace.getPhotos().size());
                 }
             }
-            int gap = 100 / (count + 4);
-            int progressCount = 0;
+            progressBar.setMax(atomicInteger.get() + 4);
+            int gap = 1;
+            if(urlsAndFileNames.get() != null){
+                new Thread(() ->downloadMapTiles.download(urlsAndFileNames.get(),progressBar,gap)).start();
+            }
 
             List<MyPlaceSave> savePlaces = new ArrayList<>();
             for (MyPlace myPlace : places) {
@@ -165,8 +178,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                             e.printStackTrace();
                         }
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                        progressCount += gap;
-                        publishProgress(progressCount);
+                        publishProgress(progressBar.getProgress() + gap);
                         photoIds.add(generationId);
                     }
                 }
@@ -199,8 +211,7 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(RoutePlace routePlace) {
-        progressBar.setProgress(100);
-        progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     private SavedRoutesItem getSavedRoutes(File file) {
