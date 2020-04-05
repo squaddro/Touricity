@@ -18,17 +18,17 @@ public class MyPlaceSave {
     @NonNull
     private LatLng latLng;
     private String name;
-    private List<byte []> photos;
+    private List<String> photosIds;
     private String phoneNumber;
     private Double rating;
 
 
-    public MyPlaceSave(MyPlace place, List<byte []> photos) {
+    public MyPlaceSave(MyPlace place, List<String> photosIds) {
         this.address = place.getAddress();
         this.place_id = place.getPlace_id();
         this.latLng = place.getLatLng();
         this.name = place.getName();
-        this.photos = photos;
+        this.photosIds = photosIds;
         this.phoneNumber = place.getPhoneNumber();
         this.rating = place.getRating();
     }

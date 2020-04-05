@@ -112,16 +112,12 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
         return rootView;
     }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
 
-        LatLng tobb = new LatLng(10, 10);
-        googleMap.addMarker(new MarkerOptions().position(tobb).title("tobb"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(tobb));
         markerInfoList = new ArrayList<>();
         markersOfNearby = new ArrayList<>();
         createRouteCreateView();
@@ -350,7 +346,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
         }
 
-        //map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
         disposeEditor();
     }
 

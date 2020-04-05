@@ -1,18 +1,21 @@
 package com.squadro.touricity.view.map.offline;
 
 import android.os.Environment;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.squadro.touricity.view.map.MapFragmentTab3;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DownloadMapTiles {
     private String baseUrl = "https://mt.google.com/vt/lyrs=m";
@@ -20,9 +23,8 @@ public class DownloadMapTiles {
     public DownloadMapTiles() {
     }
 
-    public void downloadTileBounds(LatLngBounds latLngBounds) {
-        String urlStr = "";
-
+    public Map<String, String> downloadTileBounds(LatLngBounds latLngBounds) {
+        Map<String, String> totalUrls = new HashMap<>();
         for (int zoom = 5; zoom <= 18; zoom++) {
             double n = Math.pow(2, zoom);
             double xMin = latLngBounds.southwest.longitude;
@@ -35,81 +37,86 @@ public class DownloadMapTiles {
             int tileXMax = (int) (n / (2 * Math.PI) * (xMax * Math.PI / 180 + Math.PI));
             int tileYMax = (int) (n / (2 * Math.PI) * (Math.PI - Math.log(Math.tan(Math.PI / 4 + yMax * Math.PI / 360))));
 
-            download(zoom, tileXMin, tileYMin, tileXMax, tileYMax);
-        }
-    }
-
-    private void download(int zoom, int tileXMin, int tileYMin, int tileXMax, int tileYMax) {
-        String urlStr;
-        for (int tileX = tileXMin; tileX <= tileXMax; tileX++) {
-            for (int tileY = tileYMin; tileY <= tileYMax; tileY++) {
-                File apkStorage = new File(
-                        Environment.getExternalStorageDirectory() + "/"
-                                + "Tiles");
-
-                if (!apkStorage.exists()) {
-                    apkStorage.mkdir();
-                }
-                String downloadFileName = zoom + "_" + tileX + "_" + tileY + ".png";
-                File outputFile = new File(apkStorage, downloadFileName);
-                if (!outputFile.exists()) {
-                    try {
-                        outputFile.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    continue;
-                }
-                urlStr = baseUrl.concat("&x=" + tileX + "&y=" + tileY + "&z=" + zoom);
-                URL url = null;
-                try {
-                    url = new URL(urlStr);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                HttpURLConnection c = null;
-                try {
-                    c = (HttpURLConnection) url.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    c.setRequestMethod("GET");
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    c.connect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                FileOutputStream fos = null;//Get OutputStream for NewFile Location
-                try {
-                    fos = new FileOutputStream(outputFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                InputStream is = null;//Get InputStream for connection
-                try {
-                    is = c.getInputStream();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    byte[] buffer = new byte[1024];//Set buffer type
-                    int len1 = 0;//init length
-                    while ((len1 = is.read(buffer)) != -1) {
-                        fos.write(buffer, 0, len1);//Write new file
-                    }
-                    fos.close();
-                    is.close();
-                } catch (Exception e) {
-                }
+            Map<String, String> urls = getUrls(zoom, tileXMin, tileYMin, tileXMax, tileYMax);
+            if (urls != null) {
+                totalUrls.putAll(urls);
             }
         }
+        return totalUrls;
+    }
+
+    private Map<String, String> getUrls(int zoom, int tileXMin, int tileYMin, int tileXMax, int tileYMax) {
+        Map<String, String> urlAndFileName = new HashMap<>();
+        for (int tileX = tileXMin; tileX <= tileXMax; tileX++) {
+            for (int tileY = tileYMin; tileY <= tileYMax; tileY++) {
+                String downloadFileName = zoom + "_" + tileX + "_" + tileY + ".png";
+                String urlStr = baseUrl.concat("&x=" + tileX + "&y=" + tileY + "&z=" + zoom);
+                urlAndFileName.put(urlStr, downloadFileName);
+            }
+        }
+        return urlAndFileName;
+    }
+
+    public void download(Map<String, String> urlsAndFileNames, ProgressBar progressBar, AtomicInteger count) {
+        File apkStorage = new File(
+                Environment.getExternalStorageDirectory() + "/"
+                        + "Tiles");
+
+        if (!apkStorage.exists()) {
+            apkStorage.mkdir();
+        }
+
+        for (Map.Entry<String, String> entry : urlsAndFileNames.entrySet()) {
+            String urlStr = entry.getKey();
+            String fileName = entry.getValue();
+            File outputFile = new File(apkStorage, fileName);
+            if (!outputFile.exists()) {
+                try {
+                    outputFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                progressBar.setProgress(progressBar.getProgress() + 1);
+                continue;
+            }
+            URL url = null;
+            try {
+                url = new URL(urlStr);
+            } catch (MalformedURLException e) {
+                progressBar.setProgress(progressBar.getProgress() + 1);
+                e.printStackTrace();
+            }
+            HttpURLConnection c = null;
+            InputStream is = null;
+            try {
+                if (url != null) {
+                    c = (HttpURLConnection) url.openConnection();
+                    c.setRequestMethod("GET");
+                    c.connect();
+                    is = c.getInputStream();
+                }
+            } catch (Exception e) {
+                progressBar.setProgress(progressBar.getProgress() + 1);
+                e.printStackTrace();
+            }
+
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(outputFile);
+                byte[] buffer = new byte[1024];//Set buffer type
+                int len1 = 0;//init length
+                while ((len1 = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len1);//Write new file
+                }
+                fos.close();
+                is.close();
+                progressBar.setProgress(progressBar.getProgress() + 1);
+            } catch (Exception e) {
+                progressBar.setProgress(progressBar.getProgress() + 1);
+            }
+        }
+        count.incrementAndGet();
+        MapFragmentTab3.progressDone(progressBar,count);
     }
 }

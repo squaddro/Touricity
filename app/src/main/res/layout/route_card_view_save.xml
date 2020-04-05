@@ -22,18 +22,15 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
-            <RatingBar
-                android:id="@+id/routeRatingBar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="220dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:isIndicator="true"
-                android:numStars="5"
-                android:stepSize="0.1" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="1" />
         </RelativeLayout>
 
         <RelativeLayout

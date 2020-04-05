@@ -47,6 +47,16 @@ public class MyPlace {
         this.rating = place.getRating();
     }
 
+    public MyPlace(MyPlace place, List<Bitmap> photos) {
+        this.address = place.getAddress();
+        this.place_id = place.getPlace_id();
+        this.latLng = place.getLatLng();
+        this.name = place.getName();
+        this.photos = photos;
+        this.phoneNumber = place.getPhoneNumber();
+        this.rating = place.getRating();
+    }
+
     public MyPlace(MyPlaceSave place, List<Bitmap> photos) {
         this.address = place.getAddress();
         this.place_id = place.getPlace_id();
