@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
@@ -23,6 +24,7 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
 import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
@@ -280,7 +282,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             route.addEntry(stop);
             UpdateView();
         }
-
+        MapFragmentTab2.getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
     }
     
 }

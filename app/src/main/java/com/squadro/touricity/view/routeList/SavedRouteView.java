@@ -19,6 +19,7 @@ import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -58,6 +59,9 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     }
 
     public RouteCardView addRoute(Route route){
+        if(routeList == null){
+            routeList = new ArrayList<>();
+        }
         routeList.add(0,route);
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view_save, null);
         cardView.setViewId("saved");

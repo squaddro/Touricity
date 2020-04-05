@@ -1,14 +1,16 @@
 package com.squadro.touricity.view.map.offline;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.squadro.touricity.MainActivity;
+import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
@@ -23,25 +25,26 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadOfflineDataAsync extends AsyncTask<Void, Void, RoutePlace> {
+public class LoadOfflineDataAsync extends AsyncTask<Void, Integer, RoutePlace> {
 
     private final File file;
     private Context context;
     private SavedRouteView savedRouteView;
-    private XStream xStream = null;
-    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
+    private XStream xStream;
 
     public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file, Context context) {
         this.savedRouteView = savedRouteView;
         this.file = file;
         this.context = context;
         xStream = new XStream();
+        progressBar = MapFragmentTab3.rootView.findViewById(R.id.progressBarLoad);
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(context, "INFO", "Please wait while the offline data loading...");
         super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -56,17 +59,28 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, RoutePlace> {
             routes = savedRoutes.getRoutes();
             myPlaces = savedRoutes.getMyPlaces();
         }
+        int count = 0;
+        if (myPlaces != null) {
+            for (MyPlaceSave myPlaceSave : myPlaces) {
+                List<String> photosIds = myPlaceSave.getPhotosIds();
+                if (photosIds != null) {
+                    count += photosIds.size();
+                }
+            }
+        }
+        progressBar.setMax(count+20);
         if (myPlaces != null) {
             for (MyPlaceSave myPlaceSave : myPlaces) {
                 List<Bitmap> bitmapList = new ArrayList<>();
                 for (String id : myPlaceSave.getPhotosIds()) {
-                    File root = new File(context.getFilesDir(),"PlacePhotos");
-                    if(!root.exists()){
+                    File root = new File(context.getFilesDir(), "PlacePhotos");
+                    if (!root.exists()) {
                         root.mkdir();
                     }
-                    File file = new File(root,id+".png");
+                    File file = new File(root, id + ".png");
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                     bitmapList.add(bitmap);
+                    publishProgress(progressBar.getProgress() + 1);
                 }
                 MyPlace myPlace = new MyPlace(myPlaceSave, bitmapList);
                 places.add(myPlace);
@@ -79,24 +93,24 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Void, RoutePlace> {
                 }
             }
         }
-        MapFragmentTab3.savedRoutesItem = new SavedRoutesItem(routes,myPlaces);
+        MapFragmentTab3.savedRoutesItem = new SavedRoutesItem(routes, myPlaces);
         return new RoutePlace(routes, places);
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        progressBar.setProgress(values[0]);
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPostExecute(RoutePlace routePlace) {
-        if (routePlace == null) {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
-            return;
+        if (routePlace != null) {
+            savedRouteView.setRouteList(routePlace.getRoutes(), routePlace.getMyPlaces());
         }
-        savedRouteView.setRouteList(routePlace.getRoutes(), routePlace.getMyPlaces());
-
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        progressBar.setProgress(progressBar.getMax());
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private SavedRoutesItem getSavedRoutes(File file) {

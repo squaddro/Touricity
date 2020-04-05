@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
@@ -345,7 +346,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
         }
 
-        //map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(routeCreateView.getRoute()), 0));
         disposeEditor();
     }
 

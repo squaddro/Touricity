@@ -41,6 +41,11 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         setTabNames(tabLayout);
+        if(checkConnection()){
+            tabLayout.getTabAt(2).select();
+        }else{
+            tabLayout.getTabAt(0).select();
+        }
     }
 
     private void setTabNames(TabLayout tabLayout) {

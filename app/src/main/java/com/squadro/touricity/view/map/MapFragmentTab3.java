@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -150,7 +149,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         PolylineDrawer polylineDrawer = new PolylineDrawer(map, "saved");
         polylineDrawer.drawRoute(route);
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
-        map.setMinZoomPreference(map.getCameraPosition().zoom);
+        map.setMinZoomPreference(5);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -183,7 +182,6 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         RouteCardView routeCardView = savedRouteView.addRoute(route);
         WriteOfflineDataAsync writeOfflineDataAsync = new WriteOfflineDataAsync(getActivity(), offlineDataFile, routeCardView);
         writeOfflineDataAsync.execute(route);
-        Toast.makeText(getContext(), "Routes saved successfully", Toast.LENGTH_LONG).show();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
