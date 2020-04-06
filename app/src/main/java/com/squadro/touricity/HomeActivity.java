@@ -1,6 +1,7 @@
 package com.squadro.touricity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import com.squadro.touricity.view.tabView.FragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     public static MapFragmentTab1 fragment1;
     public static MapFragmentTab2 fragment2;
     public static MapFragmentTab3 fragment3;
+    private boolean networkConnection = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +51,28 @@ public class HomeActivity extends AppCompatActivity {
         }else{
             tabLayout.getTabAt(0).select();
         }
+
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        scheduledExecutorService.scheduleAtFixedRate(this::periodicNetworkCheck,1000,1000, TimeUnit.MILLISECONDS );
     }
 
+    private void periodicNetworkCheck(){
+        boolean prev = networkConnection;
+        checkConnection();
+        if(prev != networkConnection){
+            if(networkConnection){
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(new Intent(HomeActivity.context, MainActivity.class));
+                overridePendingTransition(0, 0);
+            }else{
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+            }
+        }
+    }
     private void setTabNames(TabLayout tabLayout) {
         if(checkConnection()){
             tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
@@ -131,7 +156,11 @@ public class HomeActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            networkConnection = true;
             return true;
-        } else return false;
+        } else{
+            networkConnection = false;
+            return false;
+        }
     }
 }
