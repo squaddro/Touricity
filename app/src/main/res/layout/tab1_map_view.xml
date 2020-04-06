@@ -36,4 +36,17 @@
 
     <include layout="@layout/filter_search_view" />
     <include layout="@layout/route_explore"/>
+    <ProgressBar
+        android:id="@+id/progressBarFilter"
+        style="@style/MyProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:scaleY="4"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="1"
+        android:visibility="invisible" />
 </android.support.design.widget.CoordinatorLayout>

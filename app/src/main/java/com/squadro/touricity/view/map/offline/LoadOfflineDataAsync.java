@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -113,6 +114,7 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Integer, RoutePlace> {
         }
         progressBar.setProgress(progressBar.getMax());
         progressBar.setVisibility(View.INVISIBLE);
+        MapFragmentTab3.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private SavedRoutesItem getSavedRoutes(File file) {

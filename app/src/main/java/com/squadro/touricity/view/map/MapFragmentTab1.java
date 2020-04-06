@@ -54,7 +54,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     private static RouteExploreView routeExploreView;
     private MapLongClickListener mapLongClickListener = null;
     private TopSheetBehavior topSheetBehavior;
-    private BottomSheetBehavior bottomSheetBehavior;
+    public static BottomSheetBehavior bottomSheetBehavior;
     @Getter
     private static GoogleMap map;
     private FrameLayout frameLayout;
