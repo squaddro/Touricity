@@ -66,12 +66,16 @@ public class ProgressController {
 
 	protected enum ProgressState {
 		ON_PATH,
-		ON_STOP
+		ON_STOP,
+		OUTSIDE
 	}
 
 	private Route route;
 	private ArrayList<LatLng> prevPositions;
 	private RouteProgress lastProgress;
+	private IEntry lastVisitEntry;
+	private int lastVisitIndex;
+	private ProgressState trackState;
 
 	public ProgressController(Route route) {
 		this.route = route;
@@ -90,10 +94,15 @@ public class ProgressController {
 	public void UpdatePosition(LatLng location) {
 		RouteProgress progress = RouteProgress.createNewProgress();
 
-		TrackedPoint trackedPoint = getClosestPoint(location, route, 0.0001);
+		TrackedPoint trackedPoint = getNextPoint(location, route, 0.0001, lastVisitEntry, lastVisitIndex);
 
-		MapMaths.ClosestPoint point = trackedPoint.closestPoint;
-		IEntry entry = trackedPoint.entry;
+		if(trackedPoint == null) {
+
+		}
+		else{
+			MapMaths.ClosestPoint point = trackedPoint.closestPoint;
+			IEntry entry = trackedPoint.entry;
+		}
 
 		prevPositions.add(location);
 	}
@@ -106,55 +115,68 @@ public class ProgressController {
 		return lastProgress;
 	}
 
-	protected static TrackedPoint getClosestPoint(LatLng position, Route route, double distanceThreshold) {
+	protected static TrackedPoint getNextPoint(LatLng position, Route route, double distanceThreshold, IEntry startFrom, int startIndex) {
 		IEntry closestEntry = null;
 		MapMaths.ClosestPoint closestPoint = null;
+		boolean startEncounter = false;
+		boolean extraPass = false;
 
 		for(IEntry entry: route.getEntries()) {
-			// if entry is a stop
-			if(entry instanceof Stop) {
-				Stop stop = (Stop) entry;
-				LatLng place = new LatLng(stop.getLocation().getLatitude(), stop.getLocation().getLongitude());
-				double distance = MapMaths.distance(place, position);
 
-				// if distance is greater than the threshold do not use
-				if(distance>distanceThreshold)
-					continue;
+			if(!startEncounter && entry == startFrom){
+				startEncounter = true;
+			}
 
-				// if the point was the first closest point
-				// or if the place is closer than the other
-				if(closestPoint == null || distance < closestPoint.distance || closestEntry instanceof Path){
-					closestEntry = stop;
-					closestPoint = new MapMaths.ClosestPoint();
-					closestPoint.closestPoint = place;
-					closestPoint.distance = distance;
-					closestPoint.isPolyline = false;
-					closestPoint.lowerIndex = 0;
-					continue;
+			boolean found = false;
+			if(startEncounter && (extraPass || closestEntry == null))  {
+
+				// if entry is a stop
+				if(entry instanceof Stop) {
+					Stop stop = (Stop) entry;
+					LatLng place = new LatLng(stop.getLocation().getLatitude(), stop.getLocation().getLongitude());
+					double distance = MapMaths.distance(place, position);
+
+					// if distance is greater than the threshold do not use
+					if(distance<distanceThreshold){
+						// if the point was the first closest point
+						// or if the place is closer than the other
+						if(closestPoint == null || distance < closestPoint.distance || closestEntry instanceof Path){
+							closestEntry = stop;
+							closestPoint = new MapMaths.ClosestPoint();
+							closestPoint.closestPoint = place;
+							closestPoint.distance = distance;
+							closestPoint.isPolyline = false;
+							closestPoint.lowerIndex = 0;
+							found = true;
+						}
+					}
+				}
+				// else if entry is a path
+				else if(entry instanceof Path) {
+					Path path = (Path) entry;
+					List<LatLng> vertices = new LinkedList<>();
+					int ignoreStart = entry == startFrom ? startIndex : 0;
+					for (PathVertex vertex: path.getVertices()){
+						if(ignoreStart-- <= 0)
+							vertices.add(vertex.toLatLong());
+					}
+
+					MapMaths.ClosestPoint closestToPath = MapMaths.getClosestPoint(position, vertices);
+					if(closestToPath.distance < distanceThreshold){
+						// if the point was the first closest point
+						// or if the path is closer than the other path
+						// stops always has a priority
+						if(closestPoint == null || (closestEntry instanceof Path && closestPoint.distance < closestToPath.distance)) {
+							closestEntry = path;
+							closestPoint = closestToPath;
+							found = true;
+						}
+					}
 				}
 			}
 
-			// else if entry is a path
-			else if(entry instanceof Path) {
-				Path path = (Path) entry;
-				List<LatLng> vertices = new LinkedList<>();
-
-				for (PathVertex vertex: path.getVertices())
-					vertices.add(vertex.toLatLong());
-
-				MapMaths.ClosestPoint closestToPath = MapMaths.getClosestPoint(position, vertices);
-				if(closestToPath.distance > distanceThreshold)
-					continue;
-
-				// if the point was the first closest point
-				// or if the path is closer than the other path
-				// stops always has a priority
-				if(closestPoint == null || (closestEntry instanceof Path && closestPoint.distance < closestToPath.distance)) {
-					closestEntry = path;
-					closestPoint = closestToPath;
-					continue;
-				}
-			}
+			if(found && !extraPass)
+				extraPass = true;
 		}
 
 		if(closestPoint != null) {
