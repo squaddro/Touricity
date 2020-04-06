@@ -25,5 +25,5 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="1"
-        android:visibility="visible" />
+        android:visibility="invisible" />
 </android.support.design.widget.CoordinatorLayout>

@@ -39,6 +39,7 @@ import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.search.SearchBar;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import lombok.Getter;
@@ -62,6 +63,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     public static StreetViewPanoramaFragment streetViewPanoramaFragment;
     public static View rootView;
     private EditText commentText;
+    public static List<Route> routes;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,13 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         getChildFragmentManager().beginTransaction().replace(R.id.tab1_map, supportMapFragment).commit();
 
         return rootView;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onPause() {
+        super.onPause();
+        routes = routeExploreView.getRouteList();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
