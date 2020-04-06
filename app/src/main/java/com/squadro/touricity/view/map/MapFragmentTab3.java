@@ -49,7 +49,7 @@ import lombok.Getter;
 public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRouteDraw, IRouteSave {
 
     private SupportMapFragment supportMapFragment;
-    private BottomSheetBehavior bottomSheetBehavior;
+    public static BottomSheetBehavior bottomSheetBehavior;
     private FrameLayout frameLayout;
     @Getter
     private static GoogleMap map;
