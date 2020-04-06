@@ -22,6 +22,7 @@ import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ import lombok.Setter;
 public class RouteExploreView extends LinearLayout implements ScrollView.OnScrollChangeListener{
 
     @Getter
-    private ArrayList<Route> routeList;
+    private List<Route> routeList;
 
     @Setter
     private IRouteDraw iRouteDraw;
@@ -44,7 +45,7 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         super(context, attrs);
     }
 
-    public void setRouteList(ArrayList<Route> routeList) {
+    public void setRouteList(List<Route> routeList) {
         this.routeList = routeList;
         UpdateView();
     }
@@ -74,6 +75,8 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
             cardView.setViewId("explore");
             cardView.loadRoute(route);
+            ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+            cardView.setViewFlipper(stopImages);
             routes.addView(cardView);
         }
     }

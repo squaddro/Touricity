@@ -85,8 +85,10 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Integer, RoutePlace> {
                 MyPlace myPlace = new MyPlace(myPlaceSave, bitmapList);
                 places.add(myPlace);
                 if (MainActivity.checkConnection()) {
-                    if (!MapFragmentTab2.isPlaceExist(myPlace))
+                    if (!MapFragmentTab2.isPlaceExist(myPlace)){
                         MapFragmentTab2.responsePlaces.add(myPlace);
+                        MapFragmentTab3.responsePlaces.add(myPlace);
+                    }
                 } else {
                     if (!MapFragmentTab3.isPlaceExist(myPlace))
                         MapFragmentTab3.responsePlaces.add(myPlace);

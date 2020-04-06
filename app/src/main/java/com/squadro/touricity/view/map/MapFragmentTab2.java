@@ -86,10 +86,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Getter
     private static GoogleMap map;
     private PopupWindowParameters popupWindowParameters;
-    public static List<MyPlace> responsePlaces;
+    public static List<MyPlace> responsePlaces = new ArrayList<>();
     public static PlacesClient placesClient;
-    public static List<MarkerInfo> markerInfoList;
-    public static List<Marker> markersOfNearby;
+    public static List<MarkerInfo> markerInfoList = new ArrayList<>();
+    public static List<Marker> markersOfNearby = new ArrayList<>();
+    public static Route route;
 
 
     private IEditor editor;
@@ -102,6 +103,13 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         super.onCreate(savedInstanceState);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onPause() {
+        super.onPause();
+        route = routeCreateView.getRoute();
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab2_map_view, container, false);
@@ -112,14 +120,32 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         getChildFragmentManager().beginTransaction().replace(R.id.tab2_map, supportMapFragment).commit();
         return rootView;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        if (route != null || MapFragmentTab1.routes != null) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("WARNING")
+                    .setMessage("Your internet connection was off suddenly. Do you want to recover your previous works?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        if (route != null && route.getAbstractEntryList().size() > 0) {
+                            routeCreateView.setRoute(route);
+                            route = null;
+                        }
+                        if (MapFragmentTab1.routes != null && MapFragmentTab1.routes.size() > 0) {
+                            MapFragmentTab1.getRouteExploreView().setRouteList(MapFragmentTab1.routes);
+                            MapFragmentTab1.routes = null;
+                        }
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        route = null;
+                        MapFragmentTab1.routes = null;
+                    })
+                    .show();
+        }
         map = googleMap;
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
-
-        markerInfoList = new ArrayList<>();
-        markersOfNearby = new ArrayList<>();
         createRouteCreateView();
         initializeSheetBehaviors();
         initializePlacesAutofill();
@@ -189,7 +215,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private void initializePlacesAutofill() {
         if (!Places.isInitialized()) {
             Places.initialize(this.getContext(), getResources().getString(R.string.api_key));
-            responsePlaces = new ArrayList<>();
         }
 
 
@@ -225,7 +250,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             photos.add(bitmap);
                             if (photos.size() == photoMetadatas.size()) {
                                 MyPlace myPlace = new MyPlace(place, photos);
-                                if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
+                                if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                                 Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
                                 Stop stop = new Stop(null, 0, 0, "", location, null);
                                 routeCreateView.onInsertStop(stop);
@@ -234,7 +259,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     }
                 } else {
                     MyPlace myPlace = new MyPlace(place, null);
-                    if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
+                    if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                     Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
                     Stop stop = new Stop(null, 0, 0, "", location, null);
                     routeCreateView.onInsertStop(stop);
@@ -419,7 +444,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             photos.add(bitmap);
                             if (photos.size() == photoMetadata.size()) {
                                 MyPlace myPlace = new MyPlace(place, photos);
-                                if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
+                                if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                                 MarkerOptions markerOptions = new MarkerOptions();
                                 markerOptions.position(myPlace.getLatLng());
                                 Marker marker = map.addMarker(markerOptions);
@@ -431,7 +456,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     }
                 } else {
                     MyPlace myPlace = new MyPlace(place, null);
-                    if(!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
+                    if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(myPlace.getLatLng());
                     Marker marker = map.addMarker(markerOptions);
@@ -479,8 +504,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     .show();
         }
     };
+
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static boolean isPlaceExist(MyPlace myPlace){
+    public static boolean isPlaceExist(MyPlace myPlace) {
         return responsePlaces.stream().filter(myPlace1 -> myPlace.getPlace_id().equals(myPlace1.getPlace_id()))
                 .collect(Collectors.toList()).size() > 0;
     }

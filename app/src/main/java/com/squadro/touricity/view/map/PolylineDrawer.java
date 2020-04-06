@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -81,7 +82,9 @@ public class PolylineDrawer {
                 }
             }
         }
-
+        if(route.getEntries() != null && route.getEntries().length != 0){
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
+        }
         return map;
     }
     @RequiresApi(api = Build.VERSION_CODES.N)

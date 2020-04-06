@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -64,6 +63,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     private static ConnectivityManager connectivityManager;
     public static SavedRoutesItem savedRoutesItem;
     public static View rootView;
+    public static List<Route> routes;
 
     public static void progressDone(ProgressBar progressBar, AtomicInteger count) {
         if(count.get() == 2) progressBar.setVisibility(View.INVISIBLE);
@@ -87,6 +87,13 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
+    public void onPause() {
+        super.onPause();
+        routes = savedRouteView.getRouteList();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setMaxZoomPreference(18);
@@ -97,12 +104,15 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         xStream = new XStream();
         offlineDataFile = new CreateOfflineDataDirectory().offlineRouteFile(getContext());
         savedRouteView = getActivity().findViewById(R.id.route_save);
-        LoadOfflineDataAsync loadOfflineDataAsync = new LoadOfflineDataAsync(savedRouteView, offlineDataFile, getContext());
-        loadOfflineDataAsync.execute();
-
         savedRouteView.setIRouteSave(this);
         savedRouteView.setIRouteDraw(this);
         connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(routes == null){
+            LoadOfflineDataAsync loadOfflineDataAsync = new LoadOfflineDataAsync(savedRouteView, offlineDataFile, getContext());
+            loadOfflineDataAsync.execute();
+        }else if(routes.size() > 0){
+            savedRouteView.setRouteList(routes,responsePlaces);
+        }
         if (!MainActivity.checkConnection()) {
             map.setMapType(GoogleMap.MAP_TYPE_NONE);
             TileOverlayOptions tileOverlay = new TileOverlayOptions();
@@ -148,7 +158,6 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     public void drawHighlighted(Route route) {
         PolylineDrawer polylineDrawer = new PolylineDrawer(map, "saved");
         polylineDrawer.drawRoute(route);
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
         map.setMinZoomPreference(5);
     }
 
