@@ -3,6 +3,7 @@ package com.squadro.touricity.view.map.placesAPI;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.text.InputType;
@@ -23,6 +24,9 @@ import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IEntryButtonEventsListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -33,6 +37,7 @@ public class StopCardViewHandler {
     private MyPlace myPlace;
     private String viewId;
     private Stop stop;
+    private List<Bitmap> stopImages;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public StopCardViewHandler(StopCardView stopCardView, MyPlace myPlace, Context context,String viewId,Stop stop) {
@@ -41,6 +46,7 @@ public class StopCardViewHandler {
         this.context = context;
         this.viewId = viewId;
         this.stop = stop;
+        stopImages = new ArrayList<>();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -256,6 +262,8 @@ public class StopCardViewHandler {
             imageView.setPadding(10, 0, 10, 0);
             LinearLayout viewById = stopCardView.findViewById(R.id.img_layout);
             viewById.addView(imageView);
+            Bitmap bitmapImage = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+            stopImages.add(bitmapImage);
         }
     }
 
@@ -270,5 +278,9 @@ public class StopCardViewHandler {
         label.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         label.setText(text);
         return label;
+    }
+
+    public List<Bitmap> getStopImages(){
+        return stopImages;
     }
 }

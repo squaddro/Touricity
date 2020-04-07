@@ -10,13 +10,19 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.DirectionsAPI.RouteMerger;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +32,7 @@ import lombok.Setter;
 public class RouteExploreView extends LinearLayout implements ScrollView.OnScrollChangeListener{
 
     @Getter
-    private ArrayList<Route> routeList;
+    private List<Route> routeList;
 
     @Setter
     private IRouteDraw iRouteDraw;
@@ -39,18 +45,25 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         super(context, attrs);
     }
 
-    public void setRouteList(ArrayList<Route> routeList) {
+    public void setRouteList(List<Route> routeList) {
         this.routeList = routeList;
         UpdateView();
     }
 
-    public void addRoute(Route route){
-        routeList.add(route);
+    public void addRoute(Route route, double score){
+        if(routeList == null){
+            routeList = new ArrayList<>();
+        }
+        routeList.add(0,route);
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
         cardView.setViewId("explore");
         cardView.loadRoute(route);
-        routes.addView(cardView);
+        ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+        cardView.setViewFlipper(stopImages);
+        routes.addView(cardView,0);
         routes.invalidate();
+        RatingBar ratingBar = cardView.findViewById(R.id.routeRatingBar);
+        ratingBar.setRating((float) score);
     }
     private void UpdateView() {
         CleanView();
@@ -62,6 +75,8 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
             cardView.setViewId("explore");
             cardView.loadRoute(route);
+            ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+            cardView.setViewFlipper(stopImages);
             routes.addView(cardView);
         }
     }
@@ -95,5 +110,13 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
                 break;
             }
         }
+    }
+
+    public void onLongClick(View v) {
+        Route route = ((RouteCardView) v).getRoute();
+        RouteMerger rm = new RouteMerger(MapFragmentTab2.getRouteCreateView());
+        rm.mergeRoute(route);
+        Toast.makeText(getContext(), "Route is merged!",
+                Toast.LENGTH_LONG).show();
     }
 }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/like_comment_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    tools:showIn="@layout/route_card_view">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RatingBar
+            android:id="@+id/routeLikeBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="1" />
+
+        <ImageButton
+            android:id="@+id/button_send_like"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@+id/routeLikeBar"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+        <ImageButton
+            android:id="@+id/mic_comment"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@+id/button_send_like"
+            android:background="@drawable/ic_mic_24px"
+            android:layout_marginLeft="5dp" />
+
+        <EditText
+            android:id="@+id/PostCommentDesc"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/routeLikeBar"
+            android:background="@drawable/rounded_corner"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Add a comment here"
+            android:inputType="textMultiLine"
+            android:textColor="#130404" />
+
+        <Button
+            android:id="@+id/button_send_comment"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/PostCommentDesc"
+            android:layout_alignParentRight="true"
+            android:text="Comment" />
+
+        <TextView
+            android:id="@+id/link_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button_send_comment"
+            android:text="Show Comments"
+            android:textColor="#0B490C"
+            android:textSize="16dip" />
+
+        <LinearLayout
+            android:id="@+id/comment_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/link_comments"
+            android:orientation="vertical"></LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButtonDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/comment_list"
+            android:layout_alignEnd="@+id/comment_list"
+            android:gravity="center|bottom"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/arrow_down_float" />
+
+        <ImageButton
+            android:id="@+id/imageButtonUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/comment_list"
+            android:layout_alignEnd="@+id/comment_list"
+            android:gravity="center|bottom"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/arrow_up_float" />
+
+
+    </RelativeLayout>
+</LinearLayout>

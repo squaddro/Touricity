@@ -11,12 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -40,19 +43,34 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     private LinearLayout routes;
     private NestedScrollView scrollView;
 
-    private List<MyPlaceSave> places;
+    private List<MyPlace> places;
 
     public SavedRouteView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setRouteList(List<Route> routeList, List<MyPlaceSave> places) {
+    public void setRouteList(List<Route> routeList, List<MyPlace> places) {
         this.routeList = routeList;
         this.places = places;
         if(routeList != null && routeList.size() > 0){
             iRouteDraw.drawHighlighted(routeList.get(0));
         }
         UpdateView();
+    }
+
+    public RouteCardView addRoute(Route route){
+        if(routeList == null){
+            routeList = new ArrayList<>();
+        }
+        routeList.add(0,route);
+        RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view_save, null);
+        cardView.setViewId("saved");
+        cardView.loadRoute(route);
+        ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+        cardView.setViewFlipper(stopImages);
+        routes.addView(cardView,0);
+        routes.invalidate();
+        return cardView;
     }
 
     private void UpdateView() {
@@ -63,9 +81,11 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         if (routeList == null || routeList.isEmpty() || places == null || places.isEmpty()) return;
         for (int i = 0; i < routeList.size(); i++) {
             Route route = routeList.get(i);
-            RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
+            RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view_save, null);
             cardView.setViewId("saved");
             cardView.loadRoute(route,places);
+            ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
+            cardView.setViewFlipper(stopImages);
             routes.addView(cardView);
         }
     }
@@ -106,6 +126,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     @Override
     public boolean onLongClick(View v) {
         Route route = ((RouteCardView) v).getRoute();
+        routes.removeView(v);
         iRouteSave.deleteRoute(route);
         return false;
     }

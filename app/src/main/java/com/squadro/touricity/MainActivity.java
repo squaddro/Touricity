@@ -16,18 +16,24 @@ import com.squadro.touricity.fcm.MyFirebaseMessagingService;
 import com.squadro.touricity.message.types.Credential;
 import com.squadro.touricity.requests.UserRequests;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
+    public static Credential credential;
     private static ConnectivityManager connectivityManager;
+    private static boolean networkConnection = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if (!isTaskRoot()) {
             finish();
             return;
         }
-        super.onCreate(savedInstanceState);
         context = getApplicationContext();
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (!checkConnection()) {
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         btn_login.setOnClickListener(v -> {
             Credential userInfo = getCredentialInfo(v, userName);
+            credential = userInfo;
             UserRequests userRequests = new UserRequests(this, MainActivity.this);
             userRequests.signin(userInfo);
         });
@@ -68,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.register_layout).setVisibility(View.INVISIBLE);
             }
         });
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        scheduledExecutorService.scheduleAtFixedRate(this::periodicNetworkCheck,1000,1000, TimeUnit.MILLISECONDS );
     }
 
     public Credential getCredentialInfo(View v, EditText text) {
@@ -79,6 +88,23 @@ public class MainActivity extends AppCompatActivity {
         return userInfo;
     }
 
+    private void periodicNetworkCheck(){
+        boolean prev = networkConnection;
+        checkConnection();
+        if(prev != networkConnection){
+            if(networkConnection){
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+            }else{
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(new Intent(MainActivity.context, HomeActivity.class));
+                overridePendingTransition(0, 0);
+            }
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -88,7 +114,11 @@ public class MainActivity extends AppCompatActivity {
     public static boolean checkConnection() {
         if (connectivityManager != null && (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)) {
+            networkConnection = true;
             return true;
-        } else return false;
+        } else{
+            networkConnection = false;
+            return false;
+        }
     }
 }

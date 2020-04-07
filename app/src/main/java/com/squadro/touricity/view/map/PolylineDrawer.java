@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.squadro.touricity.MainActivity;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
@@ -81,7 +83,9 @@ public class PolylineDrawer {
                 }
             }
         }
-
+        if(route.getEntries() != null && route.getEntries().length != 0){
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
+        }
         return map;
     }
     @RequiresApi(api = Build.VERSION_CODES.N)

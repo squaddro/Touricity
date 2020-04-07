@@ -149,6 +149,7 @@ public class MapMaths {
         for (IEntry entry : route.getEntries()) {
             if (entry instanceof Path) {
                 Path path = (Path) entry;
+                if(path.getVertices() == null) continue;
                 for (PathVertex vertex : path.getVertices()) {
                     builder.include(vertex.toLatLong());
                 }
@@ -157,6 +158,6 @@ public class MapMaths {
                 builder.include(stop.getLocation().getLatLng());
             }
         }
-        return MapMaths.boundsPadding(builder.build(), 5, 10, 65, 10);
+        return MapMaths.boundsPadding(builder.build(), 10, 10, 60, 10);
     }
 }

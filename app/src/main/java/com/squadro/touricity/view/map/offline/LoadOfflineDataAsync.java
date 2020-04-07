@@ -1,17 +1,23 @@
 package com.squadro.touricity.view.map.offline;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.squadro.touricity.MainActivity;
+import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.MyPlaceSave;
+import com.squadro.touricity.view.routeList.RoutePlace;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
 import com.thoughtworks.xstream.XStream;
@@ -19,97 +25,107 @@ import com.thoughtworks.xstream.XStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class LoadOfflineDataAsync extends AsyncTask<Void, Void, SavedRoutesItem> {
+public class LoadOfflineDataAsync extends AsyncTask<Void, Integer, RoutePlace> {
 
     private final File file;
     private Context context;
     private SavedRouteView savedRouteView;
-    private XStream xStream = null;
-    private boolean isDelete;
-    private Route routeToBeDeleted;
-    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
+    private XStream xStream;
 
-    public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file, boolean isDelete, Route routeToBeDeleted, Context context) {
+    public LoadOfflineDataAsync(SavedRouteView savedRouteView, File file, Context context) {
         this.savedRouteView = savedRouteView;
         this.file = file;
-        this.isDelete = isDelete;
-        this.routeToBeDeleted = routeToBeDeleted;
         this.context = context;
         xStream = new XStream();
+        progressBar = MapFragmentTab3.rootView.findViewById(R.id.progressBarLoad);
     }
 
     @Override
     protected void onPreExecute() {
-        if(!isDelete){
-            progressDialog = ProgressDialog.show(context,"INFO","Please wait while the offline data loading...");
-        }
         super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected SavedRoutesItem doInBackground(Void ... voids) {
-        if(file.length() == 0) return null;
-        List<MyPlaceSave> placesFromFile = getPlacesFromFile(file);
-        for(MyPlaceSave myPlaceSave : placesFromFile){
-            List<Bitmap> bitmapList = new ArrayList<>();
-            for(byte [] bytes : myPlaceSave.getPhotos()){
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                bitmapList.add(decodedByte);
-            }
-            MapFragmentTab3.responsePlaces.add(new MyPlace(myPlaceSave,bitmapList));
+    protected RoutePlace doInBackground(Void... voids) {
+        if (file.length() == 0) return null;
+        SavedRoutesItem savedRoutes = getSavedRoutes(file);
+        List<Route> routes = null;
+        List<MyPlaceSave> myPlaces = null;
+        List<MyPlace> places = new ArrayList<>();
+        if (savedRoutes != null) {
+            routes = savedRoutes.getRoutes();
+            myPlaces = savedRoutes.getMyPlaces();
         }
-        List<Route> routesFromFile = getRoutesFromFile(file);
-        return new SavedRoutesItem(routesFromFile,placesFromFile);
+        int count = 0;
+        if (myPlaces != null) {
+            for (MyPlaceSave myPlaceSave : myPlaces) {
+                List<String> photosIds = myPlaceSave.getPhotosIds();
+                if (photosIds != null) {
+                    count += photosIds.size();
+                }
+            }
+        }
+        progressBar.setMax(count+20);
+        if (myPlaces != null) {
+            for (MyPlaceSave myPlaceSave : myPlaces) {
+                List<Bitmap> bitmapList = new ArrayList<>();
+                for (String id : myPlaceSave.getPhotosIds()) {
+                    File root = new File(context.getFilesDir(), "PlacePhotos");
+                    if (!root.exists()) {
+                        root.mkdir();
+                    }
+                    File file = new File(root, id + ".png");
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    bitmapList.add(bitmap);
+                    publishProgress(progressBar.getProgress() + 1);
+                }
+                MyPlace myPlace = new MyPlace(myPlaceSave, bitmapList);
+                places.add(myPlace);
+                if (MainActivity.checkConnection()) {
+                    if (!MapFragmentTab2.isPlaceExist(myPlace)){
+                        MapFragmentTab2.responsePlaces.add(myPlace);
+                        MapFragmentTab3.responsePlaces.add(myPlace);
+                    }
+                } else {
+                    if (!MapFragmentTab3.isPlaceExist(myPlace))
+                        MapFragmentTab3.responsePlaces.add(myPlace);
+                }
+            }
+        }
+        MapFragmentTab3.savedRoutesItem = new SavedRoutesItem(routes, myPlaces);
+        return new RoutePlace(routes, places);
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        progressBar.setProgress(values[0]);
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected void onPostExecute(SavedRoutesItem savedRoutesItem) {
-        if(savedRoutesItem == null){
-            if(progressDialog != null){
-                progressDialog.dismiss();
-            }
-            return;
+    protected void onPostExecute(RoutePlace routePlace) {
+        if (routePlace != null) {
+            savedRouteView.setRouteList(routePlace.getRoutes(), routePlace.getMyPlaces());
         }
-        if(isDelete){
-            List<Route> collect = savedRoutesItem.getRoutes().stream()
-                    .filter(route1 -> !route1.getRoute_id().equals(routeToBeDeleted.getRoute_id()))
-                    .collect(Collectors.toList());
-            DeleteOfflineDataAsync deleteOfflineDataAsync = new DeleteOfflineDataAsync(file,savedRouteView);
-            deleteOfflineDataAsync.execute(new SavedRoutesItem(collect,savedRoutesItem.getMyPlaces()));
-        }else{
-            savedRouteView.setRouteList(savedRoutesItem.getRoutes(),savedRoutesItem.getMyPlaces());
-        }
-        if(progressDialog != null){
-            progressDialog.dismiss();
-        }
+        progressBar.setProgress(progressBar.getMax());
+        progressBar.setVisibility(View.INVISIBLE);
+        MapFragmentTab3.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    private List<Route> getRoutesFromFile(File file) {
+    private SavedRoutesItem getSavedRoutes(File file) {
         if (file.length() == 0) return null;
         else {
             try {
-                return ((SavedRoutesItem) xStream.fromXML(file)).getRoutes();
-            } catch (Exception e) {
-                return (ArrayList<Route>) (xStream.fromXML(file));
-            }
-        }
-    }
-
-    private List<MyPlaceSave> getPlacesFromFile(File file) {
-        if (file.length() == 0) return null;
-        else {
-            try {
-                return ((SavedRoutesItem) xStream.fromXML(file)).getMyPlaces();
+                return ((SavedRoutesItem) new XStream().fromXML(file));
             } catch (Exception e) {
                 e.printStackTrace();
-                return (ArrayList<MyPlaceSave>) (xStream.fromXML(file));
             }
         }
+        return null;
     }
-
-
 }
