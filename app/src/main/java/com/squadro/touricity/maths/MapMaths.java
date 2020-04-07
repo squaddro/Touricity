@@ -1,18 +1,19 @@
-package com.squadro.touricity.view.map;
+package com.squadro.touricity.maths;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Polyline;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
+import java.util.List;
+
 public class MapMaths {
 
-    public class ClosestPoint {
+    public static class ClosestPoint {
         public boolean isPolyline = false;
         public double distance = Double.MAX_VALUE;
         public LatLng closestPoint = null;
@@ -27,14 +28,15 @@ public class MapMaths {
 
         }
     }
-
+    public final static double PERIMETER_IN_KM = 40030.2;
+    public final static double PERIMETER_DIVIDED_BY_360_IN_KM = 111.195;
     private GoogleMap map;
 
     private MapMaths(GoogleMap map) {
         this.map = map;
     }
 
-    private LatLng closestPointBetween2D(LatLng p, LatLng a, LatLng b) {
+    private static LatLng closestPointBetween2D(LatLng p, LatLng a, LatLng b) {
         LatLng v = new LatLng(b.latitude - a.latitude, b.longitude - a.longitude);
         LatLng u = new LatLng(a.latitude - p.latitude, a.longitude - p.longitude);
         double vu = v.latitude * u.latitude + v.longitude * u.longitude;
@@ -53,25 +55,25 @@ public class MapMaths {
         return g0 <= g1 ? a : b;
     }
 
-    private LatLng vectorToSegment2D(double t, LatLng p, LatLng a, LatLng b) {
+    private static LatLng vectorToSegment2D(double t, LatLng p, LatLng a, LatLng b) {
         return new LatLng(
                 (1 - t) * a.latitude + t * b.latitude - p.latitude,
                 (1 - t) * a.longitude + t * b.longitude - p.longitude
         );
     }
 
-    private double squaredMagnitude2D(LatLng p) {
+    private static double squaredMagnitude2D(LatLng p) {
         return p.latitude * p.latitude + p.longitude * p.longitude;
     }
 
-    public ClosestPoint getClosestPoint(LatLng point, Polyline polyline) {
+    public static ClosestPoint getClosestPoint(LatLng point, List<LatLng> polyline) {
         ClosestPoint closest = new ClosestPoint();
         closest.isPolyline = true;
 
         int counter = 0;
         LatLng prevPoint = null;
 
-        for (LatLng latLng : polyline.getPoints()) {
+        for (LatLng latLng : polyline) {
             if (prevPoint != null) {
                 LatLng projected = closestPointBetween2D(point, latLng, prevPoint);
                 double distance = distance(projected, point);
@@ -123,8 +125,23 @@ public class MapMaths {
     }
 
     public static double distance(LatLng a, LatLng b) {
-        LatLng dir = new LatLng(a.latitude - b.latitude, a.longitude - b.longitude);
-        return Math.sqrt(dir.latitude * dir.latitude + dir.longitude * dir.longitude);
+        DoubleMatrix matrixA = DoubleMatrix.multiply(DoubleMatrix.RotateY(a.longitude), DoubleMatrix.RotateX(a.latitude));
+        DoubleMatrix matrixB = DoubleMatrix.multiply(DoubleMatrix.RotateY(b.longitude), DoubleMatrix.RotateX(b.latitude));
+
+        DoubleVector vectorA = DoubleMatrix.multiply(matrixA, DoubleVector.forward());
+        DoubleVector vectorB = DoubleMatrix.multiply(matrixB, DoubleVector.forward());
+        double angleRadians = DoubleVector.angleBetween(vectorA, vectorB);
+        return Math.toDegrees(angleRadians) * PERIMETER_DIVIDED_BY_360_IN_KM;
+    }
+
+    public static double angleBetween(LatLng a, LatLng b) {
+        DoubleMatrix matrixA = DoubleMatrix.multiply(DoubleMatrix.RotateY(a.longitude), DoubleMatrix.RotateX(a.latitude));
+        DoubleMatrix matrixB = DoubleMatrix.multiply(DoubleMatrix.RotateY(b.longitude), DoubleMatrix.RotateX(b.latitude));
+
+        DoubleVector vectorA = DoubleMatrix.multiply(matrixA, DoubleVector.forward());
+        DoubleVector vectorB = DoubleMatrix.multiply(matrixB, DoubleVector.forward());
+        double angleRadians = DoubleVector.angleBetween(vectorA, vectorB);
+        return Math.toDegrees(angleRadians);
     }
 
     public static LatLngBounds getRouteBoundings(Route route) {

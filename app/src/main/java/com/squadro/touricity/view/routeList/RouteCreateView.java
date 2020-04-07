@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.squadro.touricity.R;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
@@ -24,7 +25,6 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
 import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.MapMaths;
 import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;

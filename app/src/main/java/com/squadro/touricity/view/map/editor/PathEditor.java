@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
-import com.squadro.touricity.view.map.MapMaths;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.view.map.event.IDataUpdateListener;
 
 import java.util.ArrayList;
@@ -252,7 +252,7 @@ public class PathEditor implements IEditor<Path>, GoogleMap.OnMarkerDragListener
             path.getVertices().add(new PathVertex(latLng.latitude, latLng.longitude));
         }
         else {
-            MapMaths.ClosestPoint closestPoint = MapMaths.basedOn(map).getClosestPoint(latLng, editPolyline);
+            MapMaths.ClosestPoint closestPoint = MapMaths.basedOn(map).getClosestPoint(latLng, editPolyline.getPoints());
 
             double distanceToFirst = MapMaths.distance(closestPoint.closestPoint, points.get(0));
             double distanceToLast = MapMaths.distance(closestPoint.closestPoint, points.get(points.size() - 1));
