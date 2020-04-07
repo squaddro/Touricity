@@ -114,7 +114,8 @@ public class LoadOfflineDataAsync extends AsyncTask<Void, Integer, RoutePlace> {
         }
         progressBar.setProgress(progressBar.getMax());
         progressBar.setVisibility(View.INVISIBLE);
-        MapFragmentTab3.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        if(MapFragmentTab3.bottomSheetBehavior != null)
+            MapFragmentTab3.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private SavedRoutesItem getSavedRoutes(File file) {
