@@ -42,4 +42,7 @@ public interface RestAPI {
 
     @POST("get/comment")
     Call<JsonObject> getComment(@Body JsonObject body);
+
+    @POST("suggest")
+    Call<JsonObject> suggest(@Body JsonObject body);
 }
