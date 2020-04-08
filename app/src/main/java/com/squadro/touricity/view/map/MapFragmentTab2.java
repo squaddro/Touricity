@@ -42,6 +42,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.AbstractEntry;
 import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
