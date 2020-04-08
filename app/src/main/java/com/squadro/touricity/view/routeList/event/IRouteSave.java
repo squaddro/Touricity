@@ -6,4 +6,6 @@ public interface IRouteSave {
     void saveRoute(Route route);
 
     void deleteRoute(Route route);
+
+    void startProgress(Route route);
 }

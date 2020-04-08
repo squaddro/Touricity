@@ -15,6 +15,7 @@ import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
@@ -126,8 +127,10 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     @Override
     public boolean onLongClick(View v) {
         Route route = ((RouteCardView) v).getRoute();
-        routes.removeView(v);
-        iRouteSave.deleteRoute(route);
+        /*routes.removeView(v);
+        iRouteSave.deleteRoute(route);*/
+        iRouteSave.startProgress(route);
+
         return false;
     }
 }

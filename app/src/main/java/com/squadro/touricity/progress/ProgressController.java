@@ -10,10 +10,12 @@ import com.squadro.touricity.maths.MapMaths;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProgressController {
+public class ProgressController implements IPositionUpdateListener {
 
 	protected static class RouteProgress extends Progress {
 
@@ -21,13 +23,13 @@ public class ProgressController {
 			return new RouteProgress();
 		}
 
-		public void setProgressInfo(Time progressUpdateTime,LatLng progressUpdatedPosition, boolean isOnRoute) {
+		public void setProgressInfo(Date progressUpdateTime, LatLng progressUpdatedPosition, boolean isOnRoute) {
 			this.progressUpdatePosition = progressUpdatedPosition;
 			this.progressUpdateTime = progressUpdateTime;
 			this.isOnRoute = isOnRoute;
 		}
 
-		public void setRouteTimeInfo(Time startTime, Time actualEndTime, Time expectedFinishTime) {
+		public void setRouteTimeInfo(Date startTime, Date actualEndTime, Date expectedFinishTime) {
 			this.startTime = startTime;
 			this.actualEndTime = actualEndTime;
 			this.expectedFinishTime = expectedFinishTime;
@@ -56,6 +58,10 @@ public class ProgressController {
 			this.placesExistsCount = placesExistsCount;
 			this.placesVisitedCount = placesVisitedCount;
 		}
+
+		public void setPrevPositions(List<LatLng> positions) {
+			this.prevPositions = positions;
+		}
 	}
 
 	protected static class TrackedPoint {
@@ -77,38 +83,23 @@ public class ProgressController {
 	private int lastVisitIndex;
 	private ProgressState trackState;
 
+	private List<IProgressEventListener> progressEventListeners;
+
 	public ProgressController(Route route) {
 		this.route = route;
 		this.prevPositions = new ArrayList<>();
 		this.lastProgress = new RouteProgress();
+		this.progressEventListeners = new LinkedList<>();
 	}
 
 	public ProgressController(Route route, LatLng[] prevPositions) {
 		this(route);
 
-		for(LatLng position : prevPositions) {
-			UpdatePosition(position);
+		if(prevPositions != null) {
+			for(LatLng position : prevPositions) {
+				OnPositionUpdated(position);
+			}
 		}
-	}
-
-	public void UpdatePosition(LatLng location) {
-		RouteProgress progress = RouteProgress.createNewProgress();
-
-		TrackedPoint trackedPoint = getNextPoint(location, route, 0.0001, lastVisitEntry, lastVisitIndex);
-
-		if(trackedPoint == null) {
-
-		}
-		else{
-			MapMaths.ClosestPoint point = trackedPoint.closestPoint;
-			IEntry entry = trackedPoint.entry;
-		}
-
-		prevPositions.add(location);
-	}
-
-	public LatLng[] getPrevPositions() {
-		return (LatLng[]) prevPositions.toArray();
 	}
 
 	public Progress getProgress() {
@@ -188,5 +179,37 @@ public class ProgressController {
 		}
 		else
 			return  null;
+	}
+
+	public void addProgressEventListener(IProgressEventListener eventListener) {
+		progressEventListeners.add(eventListener);
+	}
+
+	@Override
+	public void OnPositionUpdated(LatLng position) {
+		RouteProgress progress = RouteProgress.createNewProgress();
+
+		TrackedPoint trackedPoint = getNextPoint(position, route, 0.0001, lastVisitEntry, lastVisitIndex);
+
+		if(trackedPoint == null) {
+
+		}
+		else{
+			MapMaths.ClosestPoint point = trackedPoint.closestPoint;
+			IEntry entry = trackedPoint.entry;
+		}
+
+		progress.setProgressInfo(Calendar.getInstance().getTime(), position, true);
+
+		prevPositions.add(position);
+		progress.setPrevPositions(prevPositions);
+
+		lastProgress = progress;
+
+		for (IProgressEventListener eventListener: progressEventListeners) {
+			if(eventListener != null) {
+				eventListener.ProgressUpdated(progress);
+			}
+		}
 	}
 }

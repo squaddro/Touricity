@@ -3,24 +3,26 @@ package com.squadro.touricity.progress;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Time;
+import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 
 public class Progress {
 
     @Getter
-    protected Time progressUpdateTime;
+    protected Date progressUpdateTime;
     @Getter
     protected LatLng progressUpdatePosition;
     @Getter
     protected boolean isOnRoute;
 
     @Getter
-    protected Time startTime;
+    protected Date startTime;
     @Getter
-    protected Time actualEndTime;
+    protected Date actualEndTime;
     @Getter
-    protected Time expectedFinishTime;
+    protected Date expectedFinishTime;
 
     @Getter
     protected float totalPathDistance;
@@ -50,11 +52,14 @@ public class Progress {
     @Getter
     protected int placesExistsCount;
 
+    @Getter
+    protected List<LatLng> prevPositions;
+
     protected Progress() {
 
     }
 
-    public float getProgressTimePercentage (Time currentTime) {
+    public float getProgressTimePercentage (Date currentTime) {
         long expectedTotal = expectedFinishTime.getTime() - startTime.getTime();
         long achievedTotal = currentTime.getTime() - startTime.getTime();
 
