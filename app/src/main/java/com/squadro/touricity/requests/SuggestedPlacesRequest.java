@@ -66,24 +66,31 @@ public class SuggestedPlacesRequest {
                             m.remove();
                     }
 
-                    JsonArray jPlaces = body.getAsJsonArray("places");
-                    ArrayList<LatLng> placeList = new ArrayList<>();
+                    JsonArray jPlaces = body.getAsJsonArray("locationList");
 
-                    for(int i=0; i<jPlaces.size(); i++){
-                        JsonObject jLatLon = jPlaces.get(i).getAsJsonObject();
-                        placeList.add(new LatLng(jLatLon.get("lat").getAsDouble(), jLatLon.get("lon").getAsDouble()));
-                    }
+                    if(jPlaces != null && jPlaces.size() > 0){
+                        ArrayList<LatLng> placeList = new ArrayList<>();
 
-                    MarkerOptions mo;
-                    //TODO: set color or icon
+                        for(int i=0; i<jPlaces.size(); i++){
+                            JsonObject jLatLon = jPlaces.get(i).getAsJsonObject();
+                            placeList.add(new LatLng(jLatLon.get("latitude").getAsDouble(), jLatLon.get("longitude").getAsDouble()));
+                        }
 
-                    for(int i=0; i<placeList.size(); i++){
-                        if(placeList.get(i) != null){
-                            mo = new MarkerOptions();
-                            mo.position(new LatLng(placeList.get(i).latitude, placeList.get(i).longitude));
-                            suggestedMarkerList.add(map.addMarker(mo));
+                        MarkerOptions mo;
+                        //TODO: set color or icon
+
+                        for(int i=0; i<placeList.size(); i++){
+                            if(placeList.get(i) != null){
+                                mo = new MarkerOptions();
+                                mo.position(new LatLng(placeList.get(i).latitude, placeList.get(i).longitude));
+                                suggestedMarkerList.add(map.addMarker(mo));
+                            }
                         }
                     }
+                    else{
+                        //TODO: ask places api!
+                    }
+
                 }
             }
 
