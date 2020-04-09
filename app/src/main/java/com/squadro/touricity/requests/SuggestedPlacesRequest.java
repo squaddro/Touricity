@@ -3,6 +3,7 @@ package com.squadro.touricity.requests;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -77,11 +78,10 @@ public class SuggestedPlacesRequest {
                         }
 
                         MarkerOptions mo;
-                        //TODO: set color or icon
-
                         for(int i=0; i<placeList.size(); i++){
                             if(placeList.get(i) != null){
                                 mo = new MarkerOptions();
+                                mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                                 mo.position(new LatLng(placeList.get(i).latitude, placeList.get(i).longitude));
                                 suggestedMarkerList.add(map.addMarker(mo));
                             }
@@ -100,9 +100,5 @@ public class SuggestedPlacesRequest {
                 Log.e("ERROR", message);
             }
         });
-
     }
-
-
-
 }
