@@ -92,7 +92,8 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
             }
 
             for (MyPlace myPlace : places) {
-                atomicInteger.set(atomicInteger.get() + myPlace.getPhotos().size());
+                if(myPlace.getPhotos() != null)
+                    atomicInteger.set(atomicInteger.get() + myPlace.getPhotos().size());
             }
             progressBar.setMax(atomicInteger.get() + 4);
             if(urlsAndFileNames.get() != null){
