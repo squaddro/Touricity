@@ -127,9 +127,9 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     @Override
     public boolean onLongClick(View v) {
         Route route = ((RouteCardView) v).getRoute();
-        /*routes.removeView(v);
-        iRouteSave.deleteRoute(route);*/
-        iRouteSave.startProgress(route);
+        routes.removeView(v);
+        iRouteSave.deleteRoute(route);
+        //iRouteSave.startProgress(route);
 
         return false;
     }
