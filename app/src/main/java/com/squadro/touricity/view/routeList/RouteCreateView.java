@@ -85,9 +85,6 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entryList.addView(cardView);
             }
         }
-        MapFragmentTab2.markerInfoList.clear();
-        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(), "create");
-        pd.drawRoute(route);
     }
 
     public void CleanView() {

@@ -3,6 +3,7 @@ package com.squadro.touricity.view.map;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Pair;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +32,7 @@ public class PolylineDrawer {
 
     private String viewId;
     private GoogleMap map;
-    private static List<Polyline> polylines = new ArrayList<>();
+    private static List<Pair<Polyline, Path>> polylines = new ArrayList<>();
     private static List<Marker> markers = new ArrayList<>();
     private List<MyPlace> responsePlaces;
 
@@ -51,7 +52,10 @@ public class PolylineDrawer {
     public GoogleMap drawRoute(Route route) {
 
         if(viewId.equals("saved")) clearMap();
-        else map.clear();
+        else {
+            map.clear();
+            polylines.clear();
+        }
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
 
@@ -81,7 +85,8 @@ public class PolylineDrawer {
                 }
                 Polyline polyline = map.addPolyline(polylineOptions);
                 polyline.setZIndex(1);
-                polylines.add(polyline);
+                polyline.setClickable(true);
+                polylines.add(new Pair<>(polyline, (Path) entry));
             }
         }
         if(route.getEntries() != null && route.getEntries().length != 0){
@@ -93,7 +98,10 @@ public class PolylineDrawer {
     public GoogleMap drawRoute(Route route, Stop stop) {
 
         if(viewId.equals("saved")) clearMap();
-        else map.clear();
+        else  {
+            map.clear();
+            polylines.clear();
+        }
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
 
@@ -135,10 +143,11 @@ public class PolylineDrawer {
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
                     polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-                    Polyline polyline = map.addPolyline(polylineOptions);
-                    polyline.setZIndex(1);
-                    polylines.add(polyline);
                 }
+                Polyline polyline = map.addPolyline(polylineOptions);
+                polyline.setZIndex(1);
+                polyline.setClickable(true);
+                polylines.add(new Pair<>(polyline, (Path) entry));
             }
         }
         return map;
@@ -166,17 +175,19 @@ public class PolylineDrawer {
                         polylineOptions.color(Color.BLUE);
                         Polyline polyline = map.addPolyline(polylineOptions);
                         polyline.setZIndex(1);
-                        polylines.add(polyline);
+                        polylines.add(new Pair<>(polyline, (Path) entry));
                         polylineOptions.color(Color.BLACK);
                     }
                 } else {
                     List<PathVertex> vertices = ((Path) entry).getVertices();
                     for (int i = 0; i < vertices.size(); i++) {
                         polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-                        Polyline polyline = map.addPolyline(polylineOptions);
-                        polyline.setZIndex(1);
-                        polylines.add(polyline);
                     }
+
+                    Polyline polyline = map.addPolyline(polylineOptions);
+                    polyline.setZIndex(1);
+                    polyline.setClickable(true);
+                    polylines.add(new Pair<>(polyline, (Path) entry));
                 }
             }
         }
@@ -185,8 +196,8 @@ public class PolylineDrawer {
 
     private void clearMap() {
         if (polylines.size() > 0) {
-            for (Polyline polyline : polylines) {
-                polyline.remove();
+            for (Pair<Polyline, Path> polyline : polylines) {
+                polyline.first.remove();
             }
             polylines.clear();
         }
@@ -197,5 +208,15 @@ public class PolylineDrawer {
             }
             markers.clear();
         }
+    }
+
+    public Path findPath(Polyline poly) {
+        for (Pair<Polyline, Path> pair :polylines) {
+            LatLng l1 = pair.first.getPoints().get(0);
+            LatLng l2 = poly.getPoints().get(0);
+            if(l1.longitude == l2.longitude && l1.latitude == l2.latitude)
+                return pair.second;
+        }
+        return null;
     }
 }
