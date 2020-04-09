@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,6 +23,7 @@ import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
 import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.progress.ProgressController;
 import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
 import com.squadro.touricity.view.map.offline.CustomMapTileProvider;
 import com.squadro.touricity.view.map.offline.DeleteOfflineDataAsync;
@@ -31,6 +33,7 @@ import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
+import com.squadro.touricity.view.progress.MapProgressViewer;
 import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
@@ -42,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -186,6 +190,18 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         }
     }
 
+    @Override
+    public void startProgress(Route route) {
+
+        ProgressController progressController = new ProgressController(route, null);
+
+        MapProgressViewer mapProgressViewer = new MapProgressViewer(map);
+        mapProgressViewer.setCustomPositionUpdateListener(progressController);
+
+        progressController.addProgressEventListener(mapProgressViewer);
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void saveRoute(Route route) {
@@ -193,6 +209,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         WriteOfflineDataAsync writeOfflineDataAsync = new WriteOfflineDataAsync(getActivity(), offlineDataFile, routeCardView);
         writeOfflineDataAsync.execute(route);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean isPlaceExist(MyPlace myPlace) {

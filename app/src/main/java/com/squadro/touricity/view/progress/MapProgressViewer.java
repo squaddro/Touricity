@@ -1,27 +1,40 @@
 package com.squadro.touricity.view.progress;
 
+import android.graphics.Paint;
+
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.Gap;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.squadro.touricity.converter.RouteConverter;
-import com.squadro.touricity.progress.ProgressController;
+import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.gms.maps.model.SquareCap;
+import com.squadro.touricity.R;
+import com.squadro.touricity.progress.IPositionUpdateListener;
+import com.squadro.touricity.progress.IProgressEventListener;
+import com.squadro.touricity.progress.Progress;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class MapProgressViewer implements GoogleMap.OnMapLongClickListener {
+public class MapProgressViewer implements GoogleMap.OnMapLongClickListener, IProgressEventListener {
 
 	private GoogleMap map;
-	private ProgressController progressController;
-	private boolean addGpsOnClick;
 
-	private Polyline gpsTrack;
+	private IPositionUpdateListener positionUpdateListener;
 
-	public MapProgressViewer(GoogleMap map, ProgressController progressController, boolean addGpsOnClick) {
+	private Polyline polyline;
+	private Marker positionMarker;
+
+	public MapProgressViewer(GoogleMap map) {
 		this.map = map;
-		this.progressController = progressController;
-		this.addGpsOnClick = addGpsOnClick;
-		this.gpsTrack = map.addPolyline(new PolylineOptions());
 	}
 
 	private void initListeners() {
@@ -30,11 +43,45 @@ public class MapProgressViewer implements GoogleMap.OnMapLongClickListener {
 
 	@Override
 	public void onMapLongClick(LatLng latLng) {
-		List<LatLng> list = gpsTrack.getPoints();
-		list.add(latLng);
+		if(positionUpdateListener != null) {
 
-		gpsTrack.setPoints(list);
+			positionUpdateListener.OnPositionUpdated(latLng);
+		}
+	}
 
-		progressController.UpdatePosition(latLng);
+	@Override
+	public void ProgressUpdated(Progress progress) {
+		if(polyline != null)
+			polyline.remove();
+
+		if(positionMarker != null)
+			positionMarker.remove();
+
+		List<PatternItem> patternItems = Arrays.asList(new Dot(), new Gap(10));
+
+		PolylineOptions options = new PolylineOptions().addAll(progress.getPrevPositions());
+		options.pattern(patternItems);
+		options.jointType(JointType.ROUND);
+		options.startCap(new SquareCap());
+		options.endCap(new RoundCap());
+
+		polyline = map.addPolyline(options);
+
+		MarkerOptions markerOptions = new MarkerOptions();
+		markerOptions.position(progress.getProgressUpdatePosition());
+		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.position_marker));
+		markerOptions.anchor(0.5f, 0.5f);
+
+		positionMarker = map.addMarker(markerOptions);
+	}
+
+	@Override
+	public void ProgressFinished() {
+
+	}
+
+	public void setCustomPositionUpdateListener(IPositionUpdateListener positionUpdateListener) {
+		this.positionUpdateListener = positionUpdateListener;
+		initListeners();
 	}
 }
