@@ -125,6 +125,9 @@ public class MapMaths {
     }
 
     public static double distance(LatLng a, LatLng b) {
+        if(a.latitude == b.latitude && a.longitude == b.longitude)
+            return 0.0;
+
         DoubleMatrix matrixA = DoubleMatrix.multiply(DoubleMatrix.RotateY(a.longitude), DoubleMatrix.RotateX(a.latitude));
         DoubleMatrix matrixB = DoubleMatrix.multiply(DoubleMatrix.RotateY(b.longitude), DoubleMatrix.RotateX(b.latitude));
 
