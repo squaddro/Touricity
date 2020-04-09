@@ -1,71 +1,81 @@
 package com.squadro.touricity.progress;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 
-import java.sql.Time;
+import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 
 public class Progress {
 
     @Getter
-    protected Time progressUpdateTime;
+    protected Date progressUpdateTime;
     @Getter
     protected LatLng progressUpdatePosition;
     @Getter
     protected boolean isOnRoute;
 
     @Getter
-    protected Time startTime;
+    protected Date startTime;
     @Getter
-    protected Time actualEndTime;
+    protected Date actualEndTime;
     @Getter
-    protected Time expectedFinishTime;
+    protected Date expectedFinishTime;
 
     @Getter
-    protected float totalPathDistance;
+    protected double totalRouteDistance;
     @Getter
-    protected float currentDistanceTraveled;
+    protected double currentDistanceTraveled;
 
     @Getter
     protected boolean isOnPath;
     @Getter
     protected String nextGoalTitle;
     @Getter
-    protected float distanceToNextGoal;
+    protected double distanceToNextGoal;
     @Getter
-    protected float distanceAchievedInGoal;
+    protected double distanceAchievedInGoal;
     @Getter
-    protected float timeToNextGoal;
+    protected double timeToNextGoal;
 
     @Getter
     protected String nextPlaceTitle;
     @Getter
-    protected float distanceToNextPlace;
+    protected double distanceToNextPlace;
     @Getter
-    protected float timeToNextPlace;
+    protected double timeToNextPlace;
 
     @Getter
     protected int placesVisitedCount;
     @Getter
     protected int placesExistsCount;
 
+    @Getter
+    protected List<LatLng> prevPositions;
+
+    @Getter
+    protected IEntry currentEntry;
+    @Getter
+    protected int currentEntryIndex;
+
     protected Progress() {
 
     }
 
-    public float getProgressTimePercentage (Time currentTime) {
+    public double getProgressTimePercentage (Date currentTime) {
         long expectedTotal = expectedFinishTime.getTime() - startTime.getTime();
         long achievedTotal = currentTime.getTime() - startTime.getTime();
 
-        return (float) achievedTotal / (float) expectedTotal;
+        return (double) achievedTotal / (double) expectedTotal;
     }
 
-    public float getProgressTimePercentage() {
+    public double getProgressTimePercentage() {
         return getProgressTimePercentage(this.progressUpdateTime);
     }
 
-    public float getProgressDistancePercentage() {
-        return this.currentDistanceTraveled / this.totalPathDistance;
+    public double getProgressDistancePercentage() {
+        return this.currentDistanceTraveled / this.totalRouteDistance;
     }
 }

@@ -77,10 +77,11 @@ public class PolylineDrawer {
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
                     polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
-                    Polyline polyline = map.addPolyline(polylineOptions);
-                    polyline.setZIndex(1);
-                    polylines.add(polyline);
+
                 }
+                Polyline polyline = map.addPolyline(polylineOptions);
+                polyline.setZIndex(1);
+                polylines.add(polyline);
             }
         }
         if(route.getEntries() != null && route.getEntries().length != 0){
