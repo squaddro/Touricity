@@ -423,6 +423,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         savedRouteView.getIRouteSave().saveRoute(route);
         TabLayout tabLayout = getActivity().findViewById(R.id.tabLayout);
         tabLayout.getTabAt(2).select();
+        map.clear();
     }
 
     @Override

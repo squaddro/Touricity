@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Path;
@@ -20,6 +21,7 @@ import com.squadro.touricity.message.types.PathVertex;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
+import com.squadro.touricity.view.map.offline.CustomMapTileProvider;
 import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 
@@ -51,11 +53,17 @@ public class PolylineDrawer {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route) {
 
-        if(viewId.equals("saved")) clearMap();
-        else {
-            map.clear();
-            polylines.clear();
+        map.clear();
+        polylines.clear();
+        markers.clear();
+        if (!MainActivity.checkConnection()) {
+            MapFragmentTab3.getMap().setMapType(GoogleMap.MAP_TYPE_NONE);
+            TileOverlayOptions tileOverlay = new TileOverlayOptions();
+            tileOverlay.tileProvider(new CustomMapTileProvider());
+            tileOverlay.zIndex(0);
+            map.addTileOverlay(tileOverlay);
         }
+
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
 
