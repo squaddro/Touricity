@@ -70,6 +70,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     public static View rootView;
     public static List<Route> routes;
 
+    PolylineDrawer polylineDrawer;
     public static void progressDone(ProgressBar progressBar, AtomicInteger count) {
         if(count.get() == 2) progressBar.setVisibility(View.INVISIBLE);
     }
@@ -104,6 +105,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
         map.setMaxZoomPreference(18);
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
 
+        polylineDrawer = new PolylineDrawer(map, "saved");
         initializeSheetbehavior(googleMap);
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         xStream = new XStream();
@@ -161,7 +163,6 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawHighlighted(Route route) {
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "saved");
         polylineDrawer.drawRoute(route);
         map.setMinZoomPreference(5);
     }

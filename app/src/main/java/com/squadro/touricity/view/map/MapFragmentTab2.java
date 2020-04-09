@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -77,7 +79,7 @@ import lombok.Getter;
 import static android.app.Activity.RESULT_OK;
 
 public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRouteMapViewUpdater,
-        INearByResponse, IRouteResponse, OnStreetViewPanoramaReadyCallback {
+        INearByResponse, IRouteResponse, OnStreetViewPanoramaReadyCallback, GoogleMap.OnPolylineClickListener {
 
     private SupportMapFragment supportMapFragment;
     private MapLongClickListener mapLongClickListener = null;
@@ -99,6 +101,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static StreetViewPanoramaFragment streetViewPanoramaFragment;
     public static View rootView;
     private AutocompleteSupportFragment autocompleteFragment;
+
+    private PolylineDrawer polylineDrawer;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +150,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     .show();
         }
         map = googleMap;
+        polylineDrawer = new PolylineDrawer(map, "create");
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
         createRouteCreateView();
         initializeSheetBehaviors();
@@ -154,6 +159,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializeInfoWindowListener();
         initializeStreetView();
         initializeSpeechToText();
+        initializeMapListeners();
     }
 
     private void initializeSpeechToText() {
@@ -363,16 +369,18 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void updateRoute(Route route) {
         Log.d("fmap", "Update the route ");
+        if(editor == null)
+            polylineDrawer.drawRoute(route);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void highlight(AbstractEntry entry) {
         Log.d("fmap", "highligt the entry " + entry.getComment());
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "create");
 
         if (entry instanceof Stop) {
             polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
@@ -386,14 +394,6 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void focus(AbstractEntry entry) {
         Log.d("fmap", "focus to the entry " + entry.getComment());
-
-        PolylineDrawer polylineDrawer = new PolylineDrawer(map, "create");
-
-        if (entry instanceof Stop)
-            polylineDrawer.drawRoute(routeCreateView.getRoute(), (Stop) entry);
-
-        else if (entry instanceof Path)
-            polylineDrawer.drawRoute(routeCreateView.getRoute(), (Path) entry);
 
         disposeEditor();
 
@@ -413,6 +413,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
             createButtonListeners(mapLongClickListener.getButtons());
             editor = null;
         }
+        initializeMapListeners();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -422,6 +423,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         savedRouteView.getIRouteSave().saveRoute(route);
         TabLayout tabLayout = getActivity().findViewById(R.id.tabLayout);
         tabLayout.getTabAt(2).select();
+        map.clear();
     }
 
     @Override
@@ -516,5 +518,19 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static boolean isPlaceExist(MyPlace myPlace) {
         return responsePlaces.stream().filter(myPlace1 -> myPlace.getPlace_id().equals(myPlace1.getPlace_id()))
                 .collect(Collectors.toList()).size() > 0;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onPolylineClick(Polyline polyline) {
+        Path path = polylineDrawer.findPath(polyline);
+        if(path != null)
+            focus(path);
+        else
+            System.out.println(0);
+    }
+
+    private void initializeMapListeners() {
+        map.setOnPolylineClickListener(this);
     }
 }

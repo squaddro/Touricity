@@ -25,7 +25,6 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
 import com.squadro.touricity.view.map.DirectionsAPI.PointListReturner;
 import com.squadro.touricity.view.map.MapFragmentTab2;
-import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
@@ -60,10 +59,10 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
     public void setRoute(Route route) {
         this.route = route;
-        UpdateView();
+        updateView();
     }
 
-    public void UpdateView() {
+    public void updateView() {
 
         CleanView();
         if (route == null) return;
@@ -85,17 +84,14 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                 entryList.addView(cardView);
             }
         }
-        MapFragmentTab2.markerInfoList.clear();
-        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(), "create");
-        pd.drawRoute(route);
     }
 
     public void CleanView() {
         entryList.removeAllViews();
     }
 
-    public void UpdateRouteInfo() {
-        UpdateView();
+    public void updateRouteInfo() {
+        updateView();
 
         if (routeMapViewUpdater != null)
             routeMapViewUpdater.updateRoute(route);
@@ -124,7 +120,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         Stop stop = new Stop(null, 0, 0, "", new Location(), null);
         route.addEntry(stop);
 
-        UpdateView();
+        updateView();
         scrollToEntry(stop);
 
         return stop;
@@ -137,7 +133,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         Path path = new Path(null, 0, 0, "", null, Path.PathType.DRIVING, new ArrayList<>());
         route.addEntry(path);
 
-        UpdateView();
+        updateView();
         return path;
     }
 
@@ -148,7 +144,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         route.deleteEntry(entry);
 
         updateRoute();
-        UpdateRouteInfo();
+        updateRouteInfo();
     }
 
     public void updateRoute() {
@@ -195,7 +191,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         route.changeEntryPosition(entry,entry.getIndex(),newPos);
 
         updateRoute();
-        UpdateRouteInfo();
+        updateRouteInfo();
     }
 
     @Override
@@ -204,12 +200,12 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
         route.addEntry(stop, route.getAbstractEntryList().size());
 
-        UpdateRouteInfo();
+        updateRouteInfo();
     }
 
     @Override
     public void onInsertRoute(Route otherRoute) {
-        UpdateRouteInfo();
+        updateRouteInfo();
     }
 
     @Override
@@ -242,7 +238,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             }
         }
         route.setEntries(entries);
-        UpdateView();
+        updateView();
     }
 
     @Override
@@ -258,7 +254,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             }
         }
         route.setEntries(entries);
-        UpdateView();
+        updateView();
     }
 
     public void onInsertStop(Stop stop) {
@@ -267,7 +263,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         if (entries.size() == 0) {
             route.addEntry(stop);
             stop.setIndex(0);
-            UpdateView();
+            updateRouteInfo();
         } else {
             int lastIndex = entries.size() - 1;
             Stop prevStop = (Stop) entries.get(lastIndex);
@@ -280,7 +276,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
             PointListReturner plr = new PointListReturner(url, this, lastIndex + 1);
             stop.setIndex(lastIndex+2);
             route.addEntry(stop);
-            UpdateView();
+            updateView();
         }
         MapFragmentTab2.getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
     }

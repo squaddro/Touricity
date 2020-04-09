@@ -150,7 +150,6 @@ public class PathEditor implements IEditor<Path>, GoogleMap.OnMarkerDragListener
     private void initializeListeners() {
         map.setOnMarkerDragListener(this);
         map.setOnMarkerClickListener(this);
-        map.setOnPolylineClickListener(this);
         map.setOnMapLongClickListener(this);
     }
 
@@ -159,7 +158,6 @@ public class PathEditor implements IEditor<Path>, GoogleMap.OnMarkerDragListener
 
         map.setOnMarkerDragListener(null);
         map.setOnMarkerClickListener(null);
-        map.setOnPolylineClickListener(null);
         map.setOnMapLongClickListener(null);
     }
 
