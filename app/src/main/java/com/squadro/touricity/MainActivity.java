@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,10 +16,15 @@ import com.squadro.touricity.cookie.CookieMethods;
 import com.squadro.touricity.fcm.MyFirebaseMessagingService;
 import com.squadro.touricity.message.types.Credential;
 import com.squadro.touricity.requests.UserRequests;
+import com.thoughtworks.xstream.XStream;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import lombok.SneakyThrows;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static ConnectivityManager connectivityManager;
     private static boolean networkConnection = true;
 
+    @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,23 +48,48 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+        File file = new File(context.getFilesDir(),"UserData");
+        if(file.exists()){
+            File dataFile = new File(file, "userData.xml");
+            Credential credential = (Credential)new XStream().fromXML(dataFile);
+            if(credential.getToken().equals(MyFirebaseMessagingService.getToken(this))) {
+                startActivity(new Intent(MainActivity.context, HomeActivity.class));
+                finish();
+            }
+        }
+
         setContentView(R.layout.register_view);
         Button btn_login = findViewById(R.id.btn_login);
         final EditText userName = (EditText) findViewById(R.id.input_username);
 
         btn_login.setOnClickListener(v -> {
-            Credential userInfo = getCredentialInfo(v, userName);
-            credential = userInfo;
-            UserRequests userRequests = new UserRequests(this, MainActivity.this);
-            userRequests.signin(userInfo);
+            signinMethod(userName, v, this);
+        });
+        userName.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    signinMethod(userName, v, v.getContext());
+                    return true;
+                }
+                return false;
+            }
         });
 
         Button btn_register = findViewById(R.id.btn_register);
         final EditText userNameRegister = (EditText) findViewById(R.id.register_username);
         btn_register.setOnClickListener(v -> {
-            Credential userInfo = getCredentialInfo(v, userNameRegister);
-            UserRequests userRequests = new UserRequests(this, MainActivity.this);
-            userRequests.signup(userInfo);
+            registerMethod(userNameRegister, v, this);
+        });
+        userNameRegister.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    registerMethod(userNameRegister, v, v.getContext());
+                    return true;
+                }
+                return false;
+            }
         });
 
         TextView signUp = (TextView) findViewById(R.id.link_signup);
@@ -77,6 +109,23 @@ public class MainActivity extends AppCompatActivity {
         });
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         scheduledExecutorService.scheduleAtFixedRate(this::periodicNetworkCheck,1000,1000, TimeUnit.MILLISECONDS );
+    }
+
+    private void registerMethod(EditText userNameRegister, View v, Context mainActivity) {
+        Credential userInfo = getCredentialInfo(v, userNameRegister);
+        UserRequests userRequests = new UserRequests(mainActivity, MainActivity.this);
+        userRequests.signup(userInfo);
+    }
+
+    private void signinMethod(EditText userName, View v, Context mainActivity) {
+        Credential userInfo = getCredentialInfo(v, userName);
+        credential = userInfo;
+        UserRequests userRequests = new UserRequests(mainActivity, MainActivity.this);
+        try {
+            userRequests.signin(userInfo);
+        } catch (Exception e) {
+        }
+        ;
     }
 
     public Credential getCredentialInfo(View v, EditText text) {

@@ -13,6 +13,11 @@ import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Credential;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
+import com.thoughtworks.xstream.XStream;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +34,16 @@ public class UserRequests {
         this.activity = activity;
     }
 
-    public void signin(Credential credential) {
+    public void signin(Credential credential) throws IOException {
+
+        File file = new File(context.getFilesDir(),"UserData");
+        if(!file.exists()){
+            file.mkdir();
+        }
+        File dataFile = new File(file, "userData.xml");
+        FileWriter fileWriter = new FileWriter(dataFile, false);
+        XStream xStream = new XStream();
+        xStream.toXML(credential, fileWriter);
 
         RetrofitCreate retrofitCreate = new RetrofitCreate();
         Retrofit retrofit = retrofitCreate.createRetrofit();
@@ -50,7 +64,7 @@ public class UserRequests {
                         ((Activity)context).findViewById(R.id.signin_layout).setVisibility(View.INVISIBLE);
                         activity.startActivity(new Intent(MainActivity.context, HomeActivity.class));
                         activity.finish();
-                        }
+                    }
                     else if(statusCode.equals("101")){
                         Toast.makeText(activity,"Error! Could not login",Toast.LENGTH_LONG).show();
                     }
