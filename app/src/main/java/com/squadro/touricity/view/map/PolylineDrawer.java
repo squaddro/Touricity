@@ -43,16 +43,12 @@ public class PolylineDrawer {
     public PolylineDrawer(GoogleMap map,String viewId) {
         this.map = map;
         this.viewId = viewId;
-        if(MainActivity.checkConnection()){
-            responsePlaces = MapFragmentTab2.responsePlaces;
-        }else{
-            responsePlaces = MapFragmentTab3.responsePlaces;
-        }
+        revalidateResponsePlaces();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route) {
-
+        revalidateResponsePlaces();
         map.clear();
         polylines.clear();
         markers.clear();
@@ -104,7 +100,7 @@ public class PolylineDrawer {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Stop stop) {
-
+        revalidateResponsePlaces();
         if(viewId.equals("saved")) clearMap();
         else  {
             map.clear();
@@ -160,6 +156,15 @@ public class PolylineDrawer {
         }
         return map;
     }
+
+    private void revalidateResponsePlaces() {
+        if (MainActivity.checkConnection()) {
+            responsePlaces = MapFragmentTab2.responsePlaces;
+        } else {
+            responsePlaces = MapFragmentTab3.responsePlaces;
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GoogleMap drawRoute(Route route, Path path) {
 
