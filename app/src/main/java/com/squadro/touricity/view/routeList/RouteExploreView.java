@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.routeList;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -29,7 +30,7 @@ import lombok.Setter;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 
-public class RouteExploreView extends LinearLayout implements ScrollView.OnScrollChangeListener{
+public class RouteExploreView extends LinearLayout implements ScrollView.OnScrollChangeListener {
 
     @Getter
     private List<Route> routeList;
@@ -50,27 +51,28 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         UpdateView();
     }
 
-    public void addRoute(Route route, double score){
-        if(routeList == null){
+    public void addRoute(Route route, double score) {
+        if (routeList == null) {
             routeList = new ArrayList<>();
         }
-        routeList.add(0,route);
+        routeList.add(0, route);
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
         cardView.setViewId("explore");
         cardView.loadRoute(route);
         ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
         cardView.setViewFlipper(stopImages);
-        routes.addView(cardView,0);
+        routes.addView(cardView, 0);
         routes.invalidate();
         RatingBar ratingBar = cardView.findViewById(R.id.routeRatingBar);
         ratingBar.setRating((float) score);
     }
+
     private void UpdateView() {
         CleanView();
 
         Context context = getContext();
-        if(routeList.isEmpty()) return;
-        for(int i = 0; i<routeList.size(); i++){
+        if (routeList.isEmpty()) return;
+        for (int i = 0; i < routeList.size(); i++) {
             Route route = routeList.get(i);
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
             cardView.setViewId("explore");
@@ -98,11 +100,11 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
     public void onScrollChange(View view, int i, int i1, int i2, int i3) {
         Rect rect = new Rect();
         scrollView.getHitRect(rect);
-        for(int j=0; j<routes.getChildCount(); j++) {
+        for (int j = 0; j < routes.getChildCount(); j++) {
             RouteCardView routeView = (RouteCardView) routes.getChildAt(j);
             Route route = routeView.getRoute();
-            if(routeView.getLocalVisibleRect(rect)){
-                if((iRouteDraw != null) && (route != null) && (prevHighlighted != route)){
+            if (routeView.getLocalVisibleRect(rect)) {
+                if ((iRouteDraw != null) && (route != null) && (prevHighlighted != route)) {
                     iRouteDraw.drawHighlighted(route);
                 }
                 prevHighlighted = route;
@@ -113,10 +115,16 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
     }
 
     public void onLongClick(View v) {
-        Route route = ((RouteCardView) v).getRoute();
-        RouteMerger rm = new RouteMerger(MapFragmentTab2.getRouteCreateView());
-        rm.mergeRoute(route);
-        Toast.makeText(getContext(), "Route is merged!",
-                Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("WARNING")
+                .setMessage("This action will merge this route with the route in the create tab. Do you want to continue?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Route route = ((RouteCardView) v).getRoute();
+                    RouteMerger rm = new RouteMerger(MapFragmentTab2.getRouteCreateView());
+                    rm.mergeRoute(route);
+                    Toast.makeText(getContext(), "Route is merged!",
+                            Toast.LENGTH_LONG).show();
+                }).setNegativeButton("No",(dialog, which) -> {})
+                .show();
     }
 }

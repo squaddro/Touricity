@@ -24,9 +24,14 @@ import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
 import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.squadro.touricity.R;
 import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.requests.SuggestedPlacesRequest;
 import com.squadro.touricity.topSheetBehavior.TopSheetBehavior;
 import com.squadro.touricity.view.filter.AverageCostSeekBar;
 import com.squadro.touricity.view.filter.DurationSeekBar;
@@ -42,6 +47,9 @@ import com.squadro.touricity.view.search.SearchBar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
 
@@ -59,6 +67,8 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     @Getter
     private static GoogleMap map;
     private FrameLayout frameLayout;
+    private LatLngBounds currentCameraBounds;
+    public static ArrayList<Marker> suggestedMarkerList = new ArrayList<>(5);
 
     public static StreetViewPanorama streetViewPanorama;
     public static StreetViewPanoramaFragment streetViewPanoramaFragment;
@@ -100,6 +110,32 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         initializeSheetBehaviors();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeStreetView();
+        //initializeMapListeners();
+    }
+
+    public void initializeMapListeners(){
+        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+
+            @Override
+            public void onCameraIdle() {
+                currentCameraBounds = getMapBounds();
+
+                LatLng southwest = currentCameraBounds.southwest;
+                LatLng northeast = currentCameraBounds.northeast;
+
+                SuggestedPlacesRequest suggestedPlacesRequest = new SuggestedPlacesRequest(map, southwest, northeast);
+
+                try{
+                    suggestedPlacesRequest.getFavPlaces();
+                }catch (Exception e){
+                    e.getStackTrace();
+                }
+            }
+        });
+    }
+
+    public LatLngBounds getMapBounds(){
+        return map.getProjection().getVisibleRegion().latLngBounds;
     }
 
     public void initializeSpeechToText(EditText editText) {

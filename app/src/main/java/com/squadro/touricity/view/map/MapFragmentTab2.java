@@ -201,20 +201,26 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initializeInfoWindowListener() {
         map.setOnInfoWindowLongClickListener(marker -> {
-            List<MarkerInfo> collect = markerInfoList.stream()
-                    .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
-                    .collect(Collectors.toList());
-            if (collect.size() > 0) {
-                if (!collect.get(0).getIsNearby()) return;
-                MyPlace myPlace = collect.get(0).getMyPlace();
-                Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
-                Stop stop = new Stop(null, 0, 0, "", location, null);
-                MapFragmentTab2.getRouteCreateView().onInsertStop(stop);
-                for (Marker m : MapFragmentTab2.markersOfNearby) {
-                    m.remove();
-                }
-                MapFragmentTab2.markersOfNearby.clear();
-            }
+            new AlertDialog.Builder(getContext())
+                    .setTitle("WARNING")
+                    .setMessage("This action will add this place to the route as stop. Do you want to continue?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        List<MarkerInfo> collect = markerInfoList.stream()
+                                .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
+                                .collect(Collectors.toList());
+                        if (collect.size() > 0) {
+                            if (!collect.get(0).getIsNearby()) return;
+                            MyPlace myPlace = collect.get(0).getMyPlace();
+                            Location location = new Location(myPlace.getPlace_id(), myPlace.getLatLng().latitude, myPlace.getLatLng().longitude);
+                            Stop stop = new Stop(null, 0, 0, "", location, null);
+                            MapFragmentTab2.getRouteCreateView().onInsertStop(stop);
+                            for (Marker m : MapFragmentTab2.markersOfNearby) {
+                                m.remove();
+                            }
+                            MapFragmentTab2.markersOfNearby.clear();
+                        }
+                    }).setNegativeButton("No",(dialog, which) -> {})
+                    .show();
         });
     }
 
@@ -294,7 +300,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         saveButton.setOnClickListener(v -> {
             RouteRequests routeRequests = new RouteRequests();
             routeRequests.updateRoute(routeCreateView.getRoute(), this);
-            routeCreateView.CleanView();
+            routeCreateView.setRoute(new Route());
         });
 
         Button optimizeButton = routeCreateView.findViewById(R.id.route_create_optimize);

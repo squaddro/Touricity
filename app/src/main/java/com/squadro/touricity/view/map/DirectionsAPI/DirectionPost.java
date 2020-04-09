@@ -58,15 +58,17 @@ public class DirectionPost {
                 stopList.add((Stop) entry);
             }
         }
-        if(stopList.size() <= 3){
-            return null;
-        }
 
         //Origin of the route
-        String str_origin = "origin=" + stopList.get(0).getLocation().getLatitude() + "," + stopList.get(0).getLocation().getLongitude();
+        double originLat = (stopList.get(0)).getLocation().getLatitude() + 1;
+        double originLon = (stopList.get(0)).getLocation().getLongitude() + 1;
+        String str_origin = "origin=" + originLat + "," + originLon;
 
         // Destination of route
-        String str_dest = "destination=" + (stopList.get(stopList.size()-1)).getLocation().getLatitude() + "," + (stopList.get(stopList.size()-1)).getLocation().getLongitude();
+        double destLat = (stopList.get(stopList.size()-1)).getLocation().getLatitude() + 1;
+        double destLon = (stopList.get(stopList.size()-1)).getLocation().getLongitude() + 1;
+
+        String str_dest = "destination=" + destLat + "," + destLon;
 
         // Sensor enabled
         String sensor = "sensor=false";
@@ -75,12 +77,10 @@ public class DirectionPost {
 
         String str_waypoints = "waypoints=optimize:true|";
 
-        int i = 1;
-        while (i < stopList.size()-1){
-
-            str_waypoints += stopList.get(i).getLocation().getLatitude() + "," + stopList.get(i).getLocation().getLongitude() + "|";
-            i++;
+        for (Stop s:stopList) {
+            str_waypoints += s.getLocation().getLatitude() + "," + s.getLocation().getLongitude() + "|";
         }
+
         str_waypoints = str_waypoints.substring(0, str_waypoints.length()-1);
 
         // Building the parameters to the web service
