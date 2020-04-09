@@ -23,6 +23,7 @@ public class RouteMerger {
 
         for (IEntry entry:r1.getEntries()) {
             if(entry instanceof Stop){
+                ((Stop) entry).setStop_id(null);
                 rcw.onInsertStop((Stop) entry);
             }
         }
