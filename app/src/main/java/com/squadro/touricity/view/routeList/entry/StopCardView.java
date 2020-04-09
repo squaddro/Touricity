@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.routeList.entry;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -58,11 +59,16 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     @Override
     public boolean onLongClick(View view) {
         if (this.getViewId().equals("explore")) {
-            RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
-
-            if (routeCreateView != null) {
-               routeCreateView.onInsertStop(stop);
-            }
+            new AlertDialog.Builder(getContext())
+                    .setTitle("WARNING")
+                    .setMessage("This action will add this stop to the route in the create tab. Do you want to continue?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
+                        if (routeCreateView != null) {
+                            routeCreateView.onInsertStop(stop);
+                        }
+                    }).setNegativeButton("No",(dialog, which) -> {})
+                    .show();
         }
         return false;
     }
@@ -70,15 +76,13 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View view) {
-        if(this.getViewId().equals("explore")){
+        if (this.getViewId().equals("explore")) {
 
-            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap(),viewId);
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap(), viewId);
             polylineDrawer.drawRoute(this.route, stop);
-        }
+        } else if (this.getViewId().equals("saved")) {
 
-        else if(this.getViewId().equals("saved")){
-
-            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap(),viewId);
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap(), viewId);
             polylineDrawer.drawRoute(this.route, stop);
         }
     }
