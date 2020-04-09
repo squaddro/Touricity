@@ -110,7 +110,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         initializeSheetBehaviors();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeStreetView();
-        initializeMapListeners();
+        //initializeMapListeners();
     }
 
     public void initializeMapListeners(){
