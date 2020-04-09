@@ -288,7 +288,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         saveButton.setOnClickListener(v -> {
             RouteRequests routeRequests = new RouteRequests();
             routeRequests.updateRoute(routeCreateView.getRoute(), this);
-            routeCreateView.CleanView();
+            routeCreateView.setRoute(new Route());
         });
 
         Button optimizeButton = routeCreateView.findViewById(R.id.route_create_optimize);

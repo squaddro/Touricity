@@ -47,13 +47,10 @@ public class WaypointOrder implements IAsync {
                 stopList.add((Stop) entry);
             }
         }
-        stopList.get(0).setIndex(0);
 
-        for(int i = 1; i<stopList.size()-1; i++){
-            stopList.get(i).setIndex(order.get(i-1));
+        for(int i = 0; i<stopList.size(); i++){
+            stopList.get(i).setIndex(order.get(i));
         }
-
-        stopList.get(stopList.size()-1).setIndex(stopList.size()-1);
 
         rcw.getRoute().getAbstractEntryList().clear();
 
