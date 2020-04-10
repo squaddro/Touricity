@@ -43,7 +43,8 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         }
 
         List<MarkerInfo> collect = markerInfos.stream()
-                .filter(markerInfo -> markerInfo.getMarker().getId().equals(marker.getId()))
+                .filter(markerInfo -> markerInfo.getMarker().getPosition().longitude == marker.getPosition().longitude &&
+                        markerInfo.getMarker().getPosition().latitude == marker.getPosition().latitude)
                 .collect(Collectors.toList());
         CardView cardView = null;
         if (collect.size() > 0) {
