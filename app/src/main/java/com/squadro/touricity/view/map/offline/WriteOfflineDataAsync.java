@@ -122,6 +122,8 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                     }
                 }
                 savePlaces.add(new MyPlaceSave(myPlace, photoIds));
+                if (!MapFragmentTab3.isPlaceExist(myPlace))
+                    MapFragmentTab3.responsePlaces.add(myPlace);
             }
             SavedRoutesItem savedRoutesItem = new SavedRoutesItem(routes, savePlaces);
             MapFragmentTab3.savedRoutesItem = savedRoutesItem;
@@ -184,6 +186,8 @@ public class WriteOfflineDataAsync extends AsyncTask<Route, Integer, RoutePlace>
                     }
                 }
                 savePlaces.add(new MyPlaceSave(myPlace, photoIds));
+                if (!MapFragmentTab3.isPlaceExist(myPlace))
+                    MapFragmentTab3.responsePlaces.add(myPlace);
             }
             if (myPlaces != null) {
                 myPlaces.addAll(savePlaces);

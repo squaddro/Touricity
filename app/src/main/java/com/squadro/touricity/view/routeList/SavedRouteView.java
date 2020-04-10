@@ -15,7 +15,6 @@ import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
-import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.routeList.event.IRouteDraw;
 import com.squadro.touricity.view.routeList.event.IRouteSave;
@@ -31,7 +30,7 @@ import lombok.Setter;
 public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollChangeListener, View.OnLongClickListener {
 
     @Getter
-    private List<Route> routeList;
+    private List<Route> routeList = new ArrayList<>();
 
     @Setter
     private IRouteDraw iRouteDraw;

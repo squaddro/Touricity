@@ -70,6 +70,7 @@ public class FilterRequests {
                             .setNeutralButton("OK", (dialog, which) -> dialog.dismiss()).show();
                     return;
                 }
+                routeExploreView.setRouteList(new ArrayList<>());
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
 
                 ArrayList<RouteLike> routes = new ArrayList<>();
