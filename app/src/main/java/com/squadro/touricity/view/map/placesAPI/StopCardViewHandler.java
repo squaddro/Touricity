@@ -51,10 +51,10 @@ public class StopCardViewHandler {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public StopCardView putViews() {
-        TextView minutesLabel = getLabel(" minutes",16);
-        TextView dollarLabel = getLabel(" $",16);
-        TextView durationLabel = getLabel("Duration: ",16);
-        TextView expenseLabel = getLabel("Expense: ",16);
+//        TextView minutesLabel = getLabel(" minutes",16);
+//        TextView dollarLabel = getLabel(" $",16);
+//        TextView durationLabel = getLabel("Duration: ",16);
+//        TextView expenseLabel = getLabel("Expense: ",16);
 
         LinearLayout linearLayoutVertical = new LinearLayout(context);
         linearLayoutVertical.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -186,42 +186,42 @@ public class StopCardViewHandler {
             linearLayoutHorizontal.addView(phoneTextView);
         }
         textAreasLayout.addView(linearLayoutHorizontal);
-        if(viewId.equals("create")){
-
-            EditText durationTextView = getEditText(stop.getDuration(),16);
-            durationAndCost.addView(durationLabel);
-            durationAndCost.addView(durationTextView);
-            durationAndCost.addView(minutesLabel);
-
-            durationTextView.setOnKeyListener((v, keyCode, event) -> {
-                try{
-                    stop.setDuration(Integer.parseInt(durationTextView.getText().toString()));
-                    return false;
-                }catch(Exception e){return false;}
-            });
-
-            EditText costTextView = getEditText(stop.getExpense(),16);
-            expenseLabel.setPadding(10,0,0,0);
-            costTextView.setOnKeyListener((v, keyCode, event) -> {
-                try{
-                    stop.setExpense(Integer.parseInt(costTextView.getText().toString()));
-                    return false;
-                }catch(Exception e){
-                    return false;
-                }
-            });
-            durationAndCost.addView(expenseLabel);
-            durationAndCost.addView(costTextView);
-            durationAndCost.addView(dollarLabel);
-
-        }else{
-            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " minutes",16);
-            TextView expenseTextView = getLabel("Duration: " + stop.getExpense() + " minutes",16);
-            durationAndCost.addView(durationTextView);
-            durationAndCost.addView(expenseTextView);
-        }
-
-        textAreasLayout.addView(durationAndCost);
+//        if(viewId.equals("create")){
+//
+//            EditText durationTextView = getEditText(stop.getDuration(),16);
+//            durationAndCost.addView(durationLabel);
+//            durationAndCost.addView(durationTextView);
+//            durationAndCost.addView(minutesLabel);
+//
+//            durationTextView.setOnKeyListener((v, keyCode, event) -> {
+//                try{
+//                    stop.setDuration(Integer.parseInt(durationTextView.getText().toString()));
+//                    return false;
+//                }catch(Exception e){return false;}
+//            });
+//
+//            EditText costTextView = getEditText(stop.getExpense(),16);
+//            expenseLabel.setPadding(10,0,0,0);
+//            costTextView.setOnKeyListener((v, keyCode, event) -> {
+//                try{
+//                    stop.setExpense(Integer.parseInt(costTextView.getText().toString()));
+//                    return false;
+//                }catch(Exception e){
+//                    return false;
+//                }
+//            });
+//            durationAndCost.addView(expenseLabel);
+//            durationAndCost.addView(costTextView);
+//            durationAndCost.addView(dollarLabel);
+//
+//        }else{
+//            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " minutes",16);
+//            TextView expenseTextView = getLabel("Duration: " + stop.getExpense() + " minutes",16);
+//            durationAndCost.addView(durationTextView);
+//            durationAndCost.addView(expenseTextView);
+//        }
+//
+//        textAreasLayout.addView(durationAndCost);
         return stopCardView;
     }
 
