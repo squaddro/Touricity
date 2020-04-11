@@ -94,7 +94,7 @@ public class FilterRequests {
                     for (IEntry entry : routeLike.getRoute().getEntries()) {
                         if (entry instanceof Stop) {
                             Stop stop = (Stop) entry;
-                            if(stop.getComment() == null){
+                            if(stop.getComment().isEmpty()){
                                 GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(routeLike.getRoute(),routeExploreView,routeLike.getScore(),
                                         countDownLatch,progressBar);
                                 getPlacesInfoAsync.execute(stop);
@@ -116,7 +116,7 @@ public class FilterRequests {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private int getStopCount(Route route) {
-        return route.getAbstractEntryList().stream().filter(iEntry -> iEntry instanceof Stop && iEntry.getComment() != null)
+        return route.getAbstractEntryList().stream().filter(iEntry -> iEntry instanceof Stop && !iEntry.getComment().isEmpty())
                 .collect(Collectors.toList()).size();
     }
 }

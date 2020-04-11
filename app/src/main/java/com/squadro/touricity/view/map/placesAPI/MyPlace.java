@@ -27,7 +27,7 @@ public class MyPlace {
     private Double rating;
 
     public MyPlace(String address, String place_id, LatLng latLng, String name,
-                   List<Bitmap> photos, String phoneNumber, double rating) {
+                   List<Bitmap> photos, String phoneNumber, Double rating) {
         this.address = address;
         this.place_id = place_id;
         this.latLng = latLng;
