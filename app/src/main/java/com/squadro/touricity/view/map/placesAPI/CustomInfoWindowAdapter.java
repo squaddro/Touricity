@@ -69,7 +69,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             if (stopCollect.size() > 0) {
                 Stop stop = stopCollect.get(0);
                 cardView = getStopCardView(stop);
-                cardView.setLayoutParams(new RelativeLayout.LayoutParams(660,660));
+                cardView.setLayoutParams(new RelativeLayout.LayoutParams(660, 660));
             }
         }
         return cardView;
@@ -77,15 +77,19 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     public static StopCardView getStopCardView(Stop stop) {
         String comment = stop.getComment();
-        String title = comment.substring(comment.indexOf("Title:"), comment.indexOf("Desc:"));
-        String desc = comment.substring(comment.indexOf("Desc"));
+        String title = "";
+        String desc = "";
+        if (comment.contains("Title:") && comment.contains("Desc")) {
+            title = comment.substring(comment.indexOf("Title:"), comment.indexOf("Desc:"));
+            desc = comment.substring(comment.indexOf("Desc:"));
+        }
 
         StopCardView stopCardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.arbitrary_stop_output, null);
         TextView titleTextView = stopCardView.findViewById(R.id.stop_name);
         if (!title.isEmpty())
             titleTextView.setText(title);
         TextView descTextView = stopCardView.findViewById(R.id.stop_desc);
-        if(!desc.isEmpty())
+        if (!desc.isEmpty())
             descTextView.setText(desc);
         return stopCardView;
     }
