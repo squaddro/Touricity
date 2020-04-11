@@ -284,8 +284,8 @@ public class StopCardViewHandler {
     public static void addButtonsToView(StopCardView cardView, Context context, Stop stop) {
         RelativeLayout buttons = new RelativeLayout(context);
         buttons.setId(View.generateViewId());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                150);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         buttons.setLayoutParams(params);
 
@@ -315,7 +315,16 @@ public class StopCardViewHandler {
         delete.setLayoutParams(buttonParam);
         delete.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onRemoveEntry(stop));
 
-        cardView.addView(buttons,0);
+        TextView textView = cardView.findViewById(R.id.stop_name);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                150);
+        layoutParams.addRule(RelativeLayout.BELOW,buttons.getId());
+        textView.setLayoutParams(layoutParams);
+        RelativeLayout relativeLayout = cardView.findViewById(R.id.arbitrary_stop_input_relative);
+        buttons.addView(down);
+        buttons.addView(up);
+        buttons.addView(delete);
+        relativeLayout.addView(buttons,0);
     }
 
     public List<Bitmap> getStopImages(){
