@@ -1,0 +1,25 @@
+<com.squadro.touricity.view.routeList.entry.PathCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pathcardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:clickable="true"
+    android:orientation="vertical"
+    card_view:cardCornerRadius="15dp"
+    card_view:cardElevation="10dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="10dp"
+    android:focusable="true">
+
+    <LinearLayout
+        android:id="@+id/textAreas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/horizontalScrollView"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingTop="5dp">
+    </LinearLayout>
+
+</com.squadro.touricity.view.routeList.entry.PathCardView>

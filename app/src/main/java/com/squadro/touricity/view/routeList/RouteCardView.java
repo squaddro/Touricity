@@ -51,7 +51,6 @@ import lombok.Getter;
 
 public class RouteCardView extends CardView implements View.OnClickListener, View.OnLongClickListener {
 
-    @Getter
     private Route route;
     private LinearLayout entryList;
     private ViewFlipper viewFlipper;

@@ -8,4 +8,6 @@ public interface IRouteSave {
     void deleteRoute(Route route);
 
     void startProgress(Route route);
+
+    void endProgress();
 }

@@ -7,7 +7,6 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.maths.MapMaths;
-import com.squadro.touricity.view.map.MapFragmentTab3;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -117,7 +116,7 @@ public class ProgressController implements IPositionUpdateListener {
 
 		if(prevPositions != null) {
 			for(LatLng position : prevPositions) {
-				OnPositionUpdated(position);
+				onPositionUpdated(position);
 			}
 		}
 	}
@@ -206,13 +205,21 @@ public class ProgressController implements IPositionUpdateListener {
 	}
 
 	@Override
-	public void OnPositionUpdated(LatLng position) {
+	public void onPositionUpdated(LatLng position) {
 
-		TrackedPoint trackedPoint = getNextPoint(position, route, 0.0001, lastVisitEntry, lastVisitIndex);
+		TrackedPoint trackedPoint = getNextPoint(position, route, 0.05, lastVisitEntry, lastVisitIndex);
+
+		if(trackedPoint == null) {
+			trackedPoint = getNextPoint(position, route, 0.05, route.getEntries()[0], 0);
+		}
 
 		if(trackedPoint != null) {
 			lastVisitEntry = trackedPoint.entry;
 			lastVisitIndex = trackedPoint.closestPoint.lowerIndex;
+		}
+		else {
+			lastVisitEntry = route.getEntries()[0];
+			lastVisitIndex = 0;
 		}
 
 		prevPositions.add(position);
@@ -221,8 +228,16 @@ public class ProgressController implements IPositionUpdateListener {
 
 		for (IProgressEventListener eventListener: progressEventListeners) {
 			if(eventListener != null) {
-				eventListener.ProgressUpdated(lastProgress);
+				eventListener.progressUpdated(lastProgress);
 			}
+		}
+	}
+
+	@Override
+	public void onEndProgress() {
+		for (IProgressEventListener listener: progressEventListeners) {
+			if(listener != null)
+				listener.progressFinished();
 		}
 	}
 
@@ -289,8 +304,6 @@ public class ProgressController implements IPositionUpdateListener {
 			distanceToNextPlace = previousProgress.distanceToNextPlace;
 			timeToNextPlace = previousProgress.timeToNextPlace;
 
-			ComputedValue[] currentEntryValues = precomputedValues.get(currentEntry);
-
 			if(point != null) {
 				currentPosition = point.closestPoint.closestPoint;
 				isOnRoute = true;
@@ -298,6 +311,8 @@ public class ProgressController implements IPositionUpdateListener {
 				currentEntry = point.entry;
 				indexInCurrentEntry = point.closestPoint.lowerIndex;
 				IEntry place = findNextPlace(route, currentEntry);
+
+				ComputedValue[] currentEntryValues = precomputedValues.get(currentEntry);
 
 				currentDistanceTraveled = currentEntryValues[indexInCurrentEntry].prevTotalDistance;
 
@@ -422,5 +437,9 @@ public class ProgressController implements IPositionUpdateListener {
 		}
 
 		return nextPlace;
+	}
+
+	public void clearProgressEventListeners() {
+		progressEventListeners = new LinkedList<>();
 	}
 }

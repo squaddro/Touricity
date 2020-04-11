@@ -12,6 +12,7 @@
     </FrameLayout>
 
     <include layout="@layout/route_save" />
+    <include layout="@layout/bottom_progress_viewer" />
 
     <ProgressBar
         android:id="@+id/progressBarLoad"

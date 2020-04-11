@@ -69,6 +69,10 @@ public class StopCardViewHandler {
         durationAndCost.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         durationAndCost.setOrientation(HORIZONTAL);
 
+        LinearLayout collapsedDurationAndCost = new LinearLayout(context);
+        collapsedDurationAndCost.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        collapsedDurationAndCost.setOrientation(VERTICAL);
+
         if(viewId.equals("create")){
             RelativeLayout buttons = new RelativeLayout(context);
             buttons.setId(View.generateViewId());
@@ -169,21 +173,25 @@ public class StopCardViewHandler {
         }
 
         LinearLayout textAreasLayout = stopCardView.findViewById(R.id.textAreas);
-        if (myPlace.getPhotos() != null && !myPlace.getPhotos().isEmpty()) {
-            fillImageViews();
-        } if (myPlace.getName() != null && !myPlace.getName().isEmpty()) {
-            TextView nameTextView = getLabel(myPlace.getName(), 20);
-            textAreasLayout.addView(nameTextView);
-        } if (myPlace.getAddress() != null && !myPlace.getAddress().isEmpty()) {
-            TextView addressTextView = getLabel(myPlace.getAddress(),14);
-            textAreasLayout.addView(addressTextView);
-        } if (myPlace.getRating() != null) {
-            RatingBar ratingBar = getRatingBar();
-            linearLayoutHorizontal.addView(ratingBar);
-        } if (myPlace.getPhoneNumber() != null && !myPlace.getPhoneNumber().isEmpty()) {
-            TextView phoneTextView = getLabel(myPlace.getPhoneNumber(),14);
-            phoneTextView.setPadding(20, 0, 0, 0);
-            linearLayoutHorizontal.addView(phoneTextView);
+        LinearLayout collapsedTextAreasLayout = stopCardView.findViewById(R.id.stop_card_text_areas);
+        if(myPlace != null) {
+            if (myPlace.getPhotos() != null && !myPlace.getPhotos().isEmpty()) {
+                fillImageViews();
+            } if (myPlace.getName() != null && !myPlace.getName().isEmpty()) {
+                TextView nameTextView = getLabel(myPlace.getName(), 20);
+                textAreasLayout.addView(nameTextView);
+                collapsedTextAreasLayout.addView(getLabel(myPlace.getName(), 20));
+            } if (myPlace.getAddress() != null && !myPlace.getAddress().isEmpty()) {
+                TextView addressTextView = getLabel(myPlace.getAddress(),14);
+                textAreasLayout.addView(addressTextView);
+            } if (myPlace.getRating() != null) {
+                RatingBar ratingBar = getRatingBar();
+                linearLayoutHorizontal.addView(ratingBar);
+            } if (myPlace.getPhoneNumber() != null && !myPlace.getPhoneNumber().isEmpty()) {
+                TextView phoneTextView = getLabel(myPlace.getPhoneNumber(),14);
+                phoneTextView.setPadding(20, 0, 0, 0);
+                linearLayoutHorizontal.addView(phoneTextView);
+            }
         }
         textAreasLayout.addView(linearLayoutHorizontal);
         if(viewId.equals("create")){
@@ -213,15 +221,27 @@ public class StopCardViewHandler {
             durationAndCost.addView(expenseLabel);
             durationAndCost.addView(costTextView);
             durationAndCost.addView(dollarLabel);
+        }
+        else if(viewId.equals("progress")) {
+            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " minutes ",16);
+            TextView expenseTextView = getLabel(" Cost: " + stop.getExpense() + " $",16);
+            durationAndCost.addView(durationTextView);
+            durationAndCost.addView(expenseTextView);
+            collapsedDurationAndCost.addView(getLabel("Duration: " + stop.getDuration() + " minutes",16));
+            collapsedDurationAndCost.addView(getLabel("Cost: " + stop.getExpense() + " $",16));
 
+            stopCardView.setClickable(true);
         }else{
             TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " minutes",16);
-            TextView expenseTextView = getLabel("Cost: " + stop.getExpense() + " dollars",16);
+            TextView expenseTextView = getLabel("Cost: " + stop.getExpense() + " $",16);
+
             durationAndCost.addView(durationTextView);
             durationAndCost.addView(expenseTextView);
         }
 
         textAreasLayout.addView(durationAndCost);
+        collapsedTextAreasLayout.addView(collapsedDurationAndCost);
+
         return stopCardView;
     }
 
@@ -253,6 +273,7 @@ public class StopCardViewHandler {
         return ratingBar;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void fillImageViews() {
         for (Bitmap bm : myPlace.getPhotos()) {
             ImageView imageView = new ImageView(context);
@@ -260,8 +281,26 @@ public class StopCardViewHandler {
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setImageBitmap(bm);
             imageView.setPadding(10, 0, 10, 0);
+
+            ImageView imageViewCollapsed = new ImageView(context);
+            imageViewCollapsed.setLayoutParams(new LinearLayout.LayoutParams(256, 256));
+            imageViewCollapsed.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageViewCollapsed.setImageBitmap(bm);
+            imageViewCollapsed.setPadding(10, 0, 10, 0);
+
             LinearLayout viewById = stopCardView.findViewById(R.id.img_layout);
+            LinearLayout viewByIdCollapsed = stopCardView.findViewById(R.id.stop_card_collapsed_images);
+
             viewById.addView(imageView);
+            viewByIdCollapsed.addView(imageViewCollapsed);
+
+            if(viewId.equals("progress")) {
+                viewById.setClickable(true);
+                viewById.setOnClickListener(view -> {stopCardView.onClick(view);});
+                viewByIdCollapsed.setClickable(true);
+                viewByIdCollapsed.setOnClickListener(view -> {stopCardView.onClick(view);});
+            }
+
             Bitmap bitmapImage = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
             stopImages.add(bitmapImage);
         }

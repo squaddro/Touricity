@@ -47,5 +47,35 @@
             android:textColor="#000109" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/stop_card_collapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/stop_name_collapsed"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_corner"
+            android:clickable="false"
+            android:ems="10"
+            android:enabled="false"
+            android:focusable="false"
+            android:gravity="start|top"
+            android:text="No title found!"
+            android:textColor="#000109"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/stop_card_text_areas_collapsed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+        </LinearLayout>
+    </RelativeLayout>
 
 </com.squadro.touricity.view.routeList.entry.StopCardView>

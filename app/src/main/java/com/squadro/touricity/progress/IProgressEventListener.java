@@ -1,6 +1,6 @@
 package com.squadro.touricity.progress;
 
 public interface IProgressEventListener {
-	void ProgressUpdated(Progress progress);
-	void ProgressFinished();
+	void progressUpdated(Progress progress);
+	void progressFinished();
 }
