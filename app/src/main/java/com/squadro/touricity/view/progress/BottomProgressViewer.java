@@ -20,6 +20,7 @@ import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.progress.IProgressEventListener;
 import com.squadro.touricity.progress.Progress;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.PathCardView;
@@ -30,6 +31,7 @@ import com.squadro.touricity.view.routeList.event.IRouteSave;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BottomProgressViewer extends LinearLayout implements IProgressEventListener {
 
@@ -111,6 +113,17 @@ public class BottomProgressViewer extends LinearLayout implements IProgressEvent
 				Stop stop = (Stop) entry;
 
 				MyPlace place = MapFragmentTab3.getPlace(stop);
+
+				if(place == null) {
+					String comment = stop.getComment();
+					String title = "";
+					String desc = "";
+					if (comment.contains("Title:") && comment.contains("Desc")) {
+						title = comment.substring(comment.indexOf("Title:"), comment.indexOf("Desc:"));
+						desc = comment.substring(comment.indexOf("Desc:"));
+					}
+					place = new MyPlace(desc, null, null, title, null, null, null);
+				}
 
 				StopCardView stopCardView = (StopCardView) inflate(getContext(), R.layout.stopcardview, null);
 				stopCardView.setViewId("progress");

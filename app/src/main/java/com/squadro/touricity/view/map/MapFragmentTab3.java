@@ -261,7 +261,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	@RequiresApi(api = Build.VERSION_CODES.N)
 	public static MyPlace getPlace(Stop stop) {
 		AtomicReference<MyPlace> answer = new AtomicReference<>();
-		responsePlaces.forEach(myPlace -> {if(myPlace.getPlace_id() == stop.getLocation().getLocation_id()) answer.set(myPlace);} );
+		responsePlaces.forEach(myPlace -> {if(myPlace.getPlace_id().equals(stop.getLocation().getLocation_id())) answer.set(myPlace);} );
 		return answer.get();
 	}
 }

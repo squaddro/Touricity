@@ -224,11 +224,11 @@ public class StopCardViewHandler {
         }
         else if(viewId.equals("progress")) {
             TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " minutes ",16);
-            TextView expenseTextView = getLabel(" Expense: " + stop.getExpense() + " $",16);
+            TextView expenseTextView = getLabel(" Cost: " + stop.getExpense() + " $",16);
             durationAndCost.addView(durationTextView);
             durationAndCost.addView(expenseTextView);
             collapsedDurationAndCost.addView(getLabel("Duration: " + stop.getDuration() + " minutes",16));
-            collapsedDurationAndCost.addView(getLabel("Expense: " + stop.getExpense() + " $",16));
+            collapsedDurationAndCost.addView(getLabel("Cost: " + stop.getExpense() + " $",16));
 
             stopCardView.setClickable(true);
         }else{
