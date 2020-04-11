@@ -7,7 +7,6 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.maths.MapMaths;
-import com.squadro.touricity.view.map.MapFragmentTab3;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,10 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 public class ProgressController implements IPositionUpdateListener {
-
 
 	private static class RouteProgress extends Progress {
 
@@ -119,7 +116,7 @@ public class ProgressController implements IPositionUpdateListener {
 
 		if(prevPositions != null) {
 			for(LatLng position : prevPositions) {
-				OnPositionUpdated(position);
+				onPositionUpdated(position);
 			}
 		}
 	}
@@ -208,7 +205,7 @@ public class ProgressController implements IPositionUpdateListener {
 	}
 
 	@Override
-	public void OnPositionUpdated(LatLng position) {
+	public void onPositionUpdated(LatLng position) {
 
 		TrackedPoint trackedPoint = getNextPoint(position, route, 0.05, lastVisitEntry, lastVisitIndex);
 
@@ -231,8 +228,16 @@ public class ProgressController implements IPositionUpdateListener {
 
 		for (IProgressEventListener eventListener: progressEventListeners) {
 			if(eventListener != null) {
-				eventListener.ProgressUpdated(lastProgress);
+				eventListener.progressUpdated(lastProgress);
 			}
+		}
+	}
+
+	@Override
+	public void onEndProgress() {
+		for (IProgressEventListener listener: progressEventListeners) {
+			if(listener != null)
+				listener.progressFinished();
 		}
 	}
 

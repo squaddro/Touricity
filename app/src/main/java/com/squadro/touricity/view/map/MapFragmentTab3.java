@@ -9,10 +9,13 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -33,8 +36,11 @@ import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
+import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
+import com.squadro.touricity.view.popupWindowView.PopupWindowView;
 import com.squadro.touricity.view.progress.BottomProgressViewer;
-import com.squadro.touricity.view.progress.MapProgressViewer;
+import com.squadro.touricity.view.progress.MapProgressView;
+import com.squadro.touricity.view.progress.TopProgressView;
 import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.SavedRoutesItem;
@@ -72,7 +78,10 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	public static List<Route> routes;
 
 	private PolylineDrawer polylineDrawer;
+
+	ProgressController progressController;
 	BottomProgressViewer bottomProgressViewer;
+	TopProgressView topProgressView;
 
 	public static void progressDone(ProgressBar progressBar, AtomicInteger count) {
 		if(count.get() == 2) progressBar.setVisibility(View.INVISIBLE);
@@ -200,32 +209,38 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	@RequiresApi(api = Build.VERSION_CODES.N)
 	@Override
 	public void startProgress(Route route) {
+		progressController = new ProgressController(route, null);
 
-		ProgressController progressController = new ProgressController(route, null);
-
-		MapProgressViewer mapProgressViewer = new MapProgressViewer(map);
+		MapProgressView mapProgressViewer = new MapProgressView(map);
 		mapProgressViewer.setCustomPositionUpdateListener(progressController);
-
-		progressController.clearProgressEventListeners();
-
-		progressController.addProgressEventListener(mapProgressViewer);
-		progressController.addProgressEventListener(bottomProgressViewer);
 
 		bottomProgressViewer.setRoute(route);
 		bottomProgressViewer.setSavedTabListeners(this);
 
 		CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView;
 
+		topProgressView = (TopProgressView) getLayoutInflater().inflate(R.layout.top_progress_view, null);
+		frameLayout.addView(topProgressView);
 		coordinatorLayout.removeView(savedRouteView);
 		coordinatorLayout.addView(bottomProgressViewer);
+
+		progressController.clearProgressEventListeners();
+		progressController.addProgressEventListener(mapProgressViewer);
+		progressController.addProgressEventListener(bottomProgressViewer);
+		progressController.addProgressEventListener(topProgressView);
+
 	}
 
 	@Override
 	public void endProgress() {
+		progressController.onEndProgress();
+		frameLayout.removeView(topProgressView);
 		CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView;
 
 		coordinatorLayout.removeView(bottomProgressViewer);
 		coordinatorLayout.addView(savedRouteView);
+
+
 	}
 
 	@RequiresApi(api = Build.VERSION_CODES.N)

@@ -47,7 +47,7 @@ public class BottomProgressViewer extends LinearLayout implements IProgressEvent
 	}
 
 	@Override
-	public void ProgressUpdated(Progress progress) {
+	public void progressUpdated(Progress progress) {
 		boolean found = false;
 		Iterator<StopCardView> stopIterator = stopCardViews.iterator();
 		Iterator<PathCardView> pathIterator = pathCardViews.iterator();
@@ -84,7 +84,7 @@ public class BottomProgressViewer extends LinearLayout implements IProgressEvent
 	}
 
 	@Override
-	public void ProgressFinished() {
+	public void progressFinished() {
 		clearView();
 	}
 

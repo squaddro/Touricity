@@ -1,9 +1,6 @@
 package com.squadro.touricity.view.progress;
 
-import android.graphics.Paint;
-
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.Gap;
@@ -24,7 +21,7 @@ import com.squadro.touricity.progress.Progress;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapProgressViewer implements GoogleMap.OnMapLongClickListener, IProgressEventListener {
+public class MapProgressView implements GoogleMap.OnMapLongClickListener, IProgressEventListener {
 
 	private GoogleMap map;
 
@@ -33,7 +30,7 @@ public class MapProgressViewer implements GoogleMap.OnMapLongClickListener, IPro
 	private Polyline polyline;
 	private Marker positionMarker;
 
-	public MapProgressViewer(GoogleMap map) {
+	public MapProgressView(GoogleMap map) {
 		this.map = map;
 	}
 
@@ -45,12 +42,12 @@ public class MapProgressViewer implements GoogleMap.OnMapLongClickListener, IPro
 	public void onMapLongClick(LatLng latLng) {
 		if(positionUpdateListener != null) {
 
-			positionUpdateListener.OnPositionUpdated(latLng);
+			positionUpdateListener.onPositionUpdated(latLng);
 		}
 	}
 
 	@Override
-	public void ProgressUpdated(Progress progress) {
+	public void progressUpdated(Progress progress) {
 		if(polyline != null)
 			polyline.remove();
 
@@ -76,8 +73,9 @@ public class MapProgressViewer implements GoogleMap.OnMapLongClickListener, IPro
 	}
 
 	@Override
-	public void ProgressFinished() {
-		polyline.remove();
+	public void progressFinished() {
+		if(polyline != null)
+			polyline.remove();
 	}
 
 	public void setCustomPositionUpdateListener(IPositionUpdateListener positionUpdateListener) {
