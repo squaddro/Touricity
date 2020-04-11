@@ -97,11 +97,16 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                 StopCardView cardView = (StopCardView) LayoutInflater.from(context).inflate(R.layout.stopcardview, null);
                 cardView.setRoute(route);
                 if (collect.size() > 0) {
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "viewId", stop);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, viewId, stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
                 }else{
-                    cardView = CustomInfoWindowAdapter.getStopCardView(stop);
+                    StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
+                    TextView title = dummy.findViewById(R.id.stop_name);
+                    TextView desc = dummy.findViewById(R.id.stop_desc);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,viewId,stop);
+                    cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
@@ -135,7 +140,12 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
                 }else{
-                    cardView = CustomInfoWindowAdapter.getStopCardView(stop);
+                    StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
+                    TextView title = dummy.findViewById(R.id.stop_name);
+                    TextView desc = dummy.findViewById(R.id.stop_desc);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,viewId,stop);
+                    cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
