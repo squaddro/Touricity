@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -14,11 +15,15 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,7 +37,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -65,12 +69,14 @@ import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.IRouteResponse;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
+import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -94,6 +100,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static List<MarkerInfo> markerInfoList = new ArrayList<>();
     public static List<Marker> markersOfNearby = new ArrayList<>();
     public static Route route;
+    public static List<Stop> customStopList = new ArrayList<>();
 
 
     private IEditor editor;
@@ -219,7 +226,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             }
                             MapFragmentTab2.markersOfNearby.clear();
                         }
-                    }).setNegativeButton("No",(dialog, which) -> {})
+                    }).setNegativeButton("No", (dialog, which) -> {
+            })
                     .show();
         });
     }
@@ -322,9 +330,10 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initializeSheetBehaviors() {
         bottomSheetBehavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.route_create));
-        int numberOfButtons = 1;
+        int numberOfButtons = 2;
         List<String> buttonNames = new ArrayList<>();
-        buttonNames.add("Find Nearby");
+        buttonNames.add("Nearby");
+        buttonNames.add("Custom");
         popupWindowParameters = new PopupWindowParameters(numberOfButtons, buttonNames);
         mapLongClickListener = new MapLongClickListener(map, frameLayout, 0, bottomSheetBehavior.getPeekHeight(), popupWindowParameters);
         createButtonListeners(mapLongClickListener.getButtons());
@@ -333,15 +342,38 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void createButtonListeners(List<Button> buttons) {
-        Button button = buttons.get(0);
-        button.setOnClickListener(v -> {
+        Button nearyBy = buttons.get(0);
+        nearyBy.setOnClickListener(v -> {
             LatLng latLng = mapLongClickListener.getLatLng();
-            Location location = new Location("sample_id", latLng.latitude, latLng.longitude);
-
             int radius = 50;
             NearByPlaceRequest nearByPlaceRequest = new NearByPlaceRequest();
             nearByPlaceRequest.findNearbyPlaces(latLng, radius, this);
             mapLongClickListener.dissmissPopUp();
+        });
+        Button customStop = buttons.get(1);
+        customStop.setOnClickListener(v -> {
+            mapLongClickListener.dissmissPopUp();
+            LatLng latLng = mapLongClickListener.getLatLng();
+            Location location = new Location(UUID.randomUUID().toString(), latLng.latitude, latLng.longitude);
+            StopCardView customStopCardView = (StopCardView) LayoutInflater.from(getContext()).inflate(R.layout.arbitrary_stop_input, null);
+            PopupWindow popupWindow = new PopupWindow(customStopCardView, RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            Point point = map.getProjection().toScreenLocation(latLng);
+            popupWindow.showAtLocation(rootView, Gravity.BOTTOM | Gravity.LEFT, point.x, point.y);
+            popupWindow.setFocusable(true);
+            popupWindow.update();
+            EditText title = customStopCardView.findViewById(R.id.stop_name);
+            EditText desc = customStopCardView.findViewById(R.id.stop_desc);
+            Button saveStopButton = customStopCardView.findViewById(R.id.arbitrary_stop_save);
+            saveStopButton.setOnClickListener(v1 -> {
+                String titleStr = title.getText().toString().isEmpty() ? "No title found!" : title.getText().toString();
+                String descStr = desc.getText().toString().isEmpty() ? "No description found!" : desc.getText().toString();
+                String comment = "Title:" + titleStr + "Desc:" + descStr;
+                Stop stop = new Stop(null, 0, 0, comment, location, null);
+                customStopList.add(stop);
+                popupWindow.dismiss();
+                routeCreateView.onInsertStop(stop);
+            });
         });
     }
 
@@ -373,7 +405,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     @Override
     public void updateRoute(Route route) {
         Log.d("fmap", "Update the route ");
-        if(editor == null)
+        if (editor == null)
             polylineDrawer.drawRoute(route);
     }
 
@@ -521,10 +553,16 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+    public static boolean isStopExist(Stop stop) {
+        return customStopList.stream().filter(stop1 -> stop1.getLocation().getLocation_id().equals(stop.getLocation().getLocation_id()))
+                .collect(Collectors.toList()).size() > 0;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPolylineClick(Polyline polyline) {
         Path path = polylineDrawer.findPath(polyline);
-        if(path != null)
+        if (path != null)
             focus(path);
         else
             System.out.println(0);

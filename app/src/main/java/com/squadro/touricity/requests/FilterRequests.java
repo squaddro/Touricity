@@ -23,6 +23,7 @@ import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 import com.squadro.touricity.view.filter.Filter;
 import com.squadro.touricity.view.map.MapFragmentTab1;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.routeList.RouteExploreView;
 
 import java.util.ArrayList;
@@ -93,9 +94,15 @@ public class FilterRequests {
                     for (IEntry entry : routeLike.getRoute().getEntries()) {
                         if (entry instanceof Stop) {
                             Stop stop = (Stop) entry;
-                            GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(routeLike.getRoute(),routeExploreView,routeLike.getScore(),
-                                    countDownLatch,progressBar);
-                            getPlacesInfoAsync.execute(stop);
+                            if(stop.getComment() == null){
+                                GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(routeLike.getRoute(),routeExploreView,routeLike.getScore(),
+                                        countDownLatch,progressBar);
+                                getPlacesInfoAsync.execute(stop);
+                            }else{
+                                if(!MapFragmentTab2.isStopExist(stop)){
+                                    MapFragmentTab2.customStopList.add(stop);
+                                }
+                            }
                         }
                     }
                 }
@@ -109,7 +116,7 @@ public class FilterRequests {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private int getStopCount(Route route) {
-        return route.getAbstractEntryList().stream().filter(iEntry -> iEntry instanceof Stop)
+        return route.getAbstractEntryList().stream().filter(iEntry -> iEntry instanceof Stop && iEntry.getComment() != null)
                 .collect(Collectors.toList()).size();
     }
 }

@@ -280,6 +280,44 @@ public class StopCardViewHandler {
         return label;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void addButtonsToView(StopCardView cardView, Context context, Stop stop) {
+        RelativeLayout buttons = new RelativeLayout(context);
+        buttons.setId(View.generateViewId());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        buttons.setLayoutParams(params);
+
+        Button down = new Button(context);
+        down.setClickable(true);
+        down.setId(R.id.down_arrow_stop);
+        down.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
+        down.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_24px);
+        down.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onMoveEntry(stop, IEntryButtonEventsListener.EDirection.DOWN));
+
+        Button up = new Button(context);
+        up.setId(R.id.up_arrow_stop);
+        up.setClickable(true);
+        RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(150,150);
+        buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.down_arrow_stop);
+        up.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_24px);
+        up.setLayoutParams(buttonParam);
+
+        up.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onMoveEntry(stop, IEntryButtonEventsListener.EDirection.UP));
+
+        Button delete = new Button(context);
+        delete.setId(R.id.delete_stop);
+        delete.setClickable(true);
+        buttonParam = new RelativeLayout.LayoutParams(150,150);
+        buttonParam.addRule(RelativeLayout.RIGHT_OF,R.id.up_arrow_stop);
+        delete.setBackgroundResource(R.drawable.ic_remove_24px);
+        delete.setLayoutParams(buttonParam);
+        delete.setOnClickListener(v -> MapFragmentTab2.getRouteCreateView().onRemoveEntry(stop));
+
+        cardView.addView(buttons,0);
+    }
+
     public List<Bitmap> getStopImages(){
         return stopImages;
     }
