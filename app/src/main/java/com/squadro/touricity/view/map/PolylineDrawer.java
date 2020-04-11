@@ -78,6 +78,8 @@ public class PolylineDrawer {
                         .collect(Collectors.toList());
                 if(collect.size() > 0){
                     MapFragmentTab2.updateMarkerInfo(new MarkerInfo(marker,collect.get(0),false));
+                }else{
+                    MapFragmentTab2.customStopList.add((Stop)entry);
                 }
 
             } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
@@ -128,6 +130,9 @@ public class PolylineDrawer {
                     if(collect.size() > 0){
                         MapFragmentTab2.updateMarkerInfo(new MarkerInfo(marker,collect.get(0),false));
                     }
+                    else{
+                        MapFragmentTab2.customStopList.add((Stop)entry);
+                    }
                 } else {
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
@@ -139,6 +144,8 @@ public class PolylineDrawer {
                             .collect(Collectors.toList());
                     if(collect.size() > 0){
                         MapFragmentTab2.updateMarkerInfo(new MarkerInfo(marker,collect.get(0),false));
+                    }else{
+                        MapFragmentTab2.customStopList.add((Stop)entry);
                     }
                 }
 

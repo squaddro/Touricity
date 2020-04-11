@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.squadro.touricity.view.routeList.entry.StopCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/arbitrary_stop_input"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="5dp"
+    card_view:cardBackgroundColor="#EBA8BA"
+    card_view:contentPadding="10dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/arbitrary_stop_save"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_save_24px">
+        </Button>
+        <EditText
+            android:id="@+id/stop_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_corner"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:layout_below="@+id/arbitrary_stop_save"
+            android:hint="Title... "
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="#000109" />
+
+        <EditText
+            android:id="@+id/stop_desc"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/rounded_corner"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:layout_below="@+id/stop_name"
+            android:hint="Description... "
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="#000109" />
+    </RelativeLayout>
+
+
+</com.squadro.touricity.view.routeList.entry.StopCardView>

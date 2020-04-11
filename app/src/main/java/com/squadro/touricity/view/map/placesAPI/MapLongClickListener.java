@@ -15,6 +15,8 @@ import com.squadro.touricity.view.popupWindowView.PopupWindowView;
 
 import java.util.List;
 
+import lombok.Getter;
+
 public class MapLongClickListener {
 
     private final GoogleMap googleMap;
@@ -26,6 +28,7 @@ public class MapLongClickListener {
     private PopupWindowParameters popupWindowParameters;
     private PopupWindowView popupWindowView;
     private PopupWindow popupWindow;
+    @Getter
     private LatLng latLng;
 
     public MapLongClickListener(GoogleMap googleMap, FrameLayout frameLayout, int topPeekHeight, int bottomPeekHeight, PopupWindowParameters popupWindowParameters) {

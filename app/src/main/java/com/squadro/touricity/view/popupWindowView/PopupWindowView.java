@@ -10,8 +10,8 @@ import java.util.List;
 
 public class PopupWindowView {
 
-    private final int HEIGHT = 150;
-    private final int WIDTH = 150;
+    private final int HEIGHT = 120;
+    private final int WIDTH = 250;
     private LinearLayout linearLayout;
     private int numberOfButtons;
     private List<String> nameOfButtons;
@@ -29,7 +29,7 @@ public class PopupWindowView {
         nameOfButtons = popupWindowParameters.getButtonNames();
         totalHeight = HEIGHT * numberOfButtons;
         layoutParams = new LinearLayout.LayoutParams(WIDTH, HEIGHT);
-        layoutParams.setMargins(0, -15, 0, -15);
+        layoutParams.setMargins(0, 5, 0, 0);
         buttons = new ArrayList<>();
         addButtonsToView();
     }
@@ -37,9 +37,9 @@ public class PopupWindowView {
     private void addButtonsToView() {
         for (int i = 0; i < numberOfButtons; i++) {
             Button button = new Button(linearLayout.getContext());
-         //   button.setText(nameOfButtons.get(i));
-            button.setBackgroundResource(R.drawable.ic_search_24px);
+            button.setText(nameOfButtons.get(i));
             button.setLayoutParams(layoutParams);
+            button.setBackgroundResource(R.drawable.rounded_button);
             buttons.add(button);
             linearLayout.addView(button);
         }
