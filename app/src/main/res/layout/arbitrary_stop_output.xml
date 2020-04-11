@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.squadro.touricity.view.routeList.entry.StopCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/arbitrary_stop_output"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="5dp"
+    card_view:cardBackgroundColor="#5CC2B7"
+    card_view:contentPadding="5dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/arbitrary_stop_input_relative">
+
+        <TextView
+            android:id="@+id/stop_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_corner"
+            android:clickable="false"
+            android:ems="10"
+            android:enabled="false"
+            android:focusable="false"
+            android:gravity="start|top"
+            android:text="No title found!"
+            android:textColor="#000109"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/stop_desc"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/rounded_corner"
+            android:clickable="false"
+            android:textSize="20sp"
+            android:ems="10"
+            android:enabled="false"
+            android:focusable="false"
+            android:gravity="start|top"
+            android:layout_below="@+id/stop_name"
+            android:text="No description found!"
+            android:textStyle="bold"
+            android:textColor="#000109" />
+    </RelativeLayout>
+
+
+</com.squadro.touricity.view.routeList.entry.StopCardView>

@@ -36,6 +36,7 @@ import com.squadro.touricity.requests.LikeRequest;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
@@ -98,6 +99,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "viewId", stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
+                }else{
+                    cardView = CustomInfoWindowAdapter.getStopCardView(stop);
                 }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
@@ -130,6 +133,8 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "saved", stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
+                }else{
+                    cardView = CustomInfoWindowAdapter.getStopCardView(stop);
                 }
                 cardView.setViewId(this.viewId);
                 cardView.update(stop);
