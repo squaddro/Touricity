@@ -15,8 +15,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class ProgressController implements IPositionUpdateListener {
+
 
 	private static class RouteProgress extends Progress {
 
@@ -208,11 +210,19 @@ public class ProgressController implements IPositionUpdateListener {
 	@Override
 	public void OnPositionUpdated(LatLng position) {
 
-		TrackedPoint trackedPoint = getNextPoint(position, route, 0.0001, lastVisitEntry, lastVisitIndex);
+		TrackedPoint trackedPoint = getNextPoint(position, route, 0.05, lastVisitEntry, lastVisitIndex);
+
+		if(trackedPoint == null) {
+			trackedPoint = getNextPoint(position, route, 0.05, route.getEntries()[0], 0);
+		}
 
 		if(trackedPoint != null) {
 			lastVisitEntry = trackedPoint.entry;
 			lastVisitIndex = trackedPoint.closestPoint.lowerIndex;
+		}
+		else {
+			lastVisitEntry = route.getEntries()[0];
+			lastVisitIndex = 0;
 		}
 
 		prevPositions.add(position);
@@ -289,8 +299,6 @@ public class ProgressController implements IPositionUpdateListener {
 			distanceToNextPlace = previousProgress.distanceToNextPlace;
 			timeToNextPlace = previousProgress.timeToNextPlace;
 
-			ComputedValue[] currentEntryValues = precomputedValues.get(currentEntry);
-
 			if(point != null) {
 				currentPosition = point.closestPoint.closestPoint;
 				isOnRoute = true;
@@ -298,6 +306,8 @@ public class ProgressController implements IPositionUpdateListener {
 				currentEntry = point.entry;
 				indexInCurrentEntry = point.closestPoint.lowerIndex;
 				IEntry place = findNextPlace(route, currentEntry);
+
+				ComputedValue[] currentEntryValues = precomputedValues.get(currentEntry);
 
 				currentDistanceTraveled = currentEntryValues[indexInCurrentEntry].prevTotalDistance;
 
@@ -422,5 +432,9 @@ public class ProgressController implements IPositionUpdateListener {
 		}
 
 		return nextPlace;
+	}
+
+	public void clearProgressEventListeners() {
+		progressEventListeners = new LinkedList<>();
 	}
 }

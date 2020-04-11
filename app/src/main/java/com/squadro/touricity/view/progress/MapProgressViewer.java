@@ -77,7 +77,7 @@ public class MapProgressViewer implements GoogleMap.OnMapLongClickListener, IPro
 
 	@Override
 	public void ProgressFinished() {
-
+		polyline.remove();
 	}
 
 	public void setCustomPositionUpdateListener(IPositionUpdateListener positionUpdateListener) {

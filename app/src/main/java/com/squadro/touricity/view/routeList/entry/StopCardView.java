@@ -2,13 +2,19 @@ package com.squadro.touricity.view.routeList.entry;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
@@ -20,16 +26,30 @@ import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.RouteListItem;
 
+import org.w3c.dom.Text;
+
+import javax.crypto.spec.RC2ParameterSpec;
+
+import lombok.Getter;
 import lombok.Setter;
 
 public class StopCardView extends RouteListItem<Stop> implements ILocationRequest {
 
+    public enum ProgressStatus {
+        NOT_TRACKED,
+        ON_POINT,
+        TRACKED
+    }
+
+    @Getter
     private Stop stop;
     private String viewId;
+    private boolean collapsed = false;
 
     @Setter
     private Route route;
 
+    private int expandedHeight=0;
 
     public String getViewId() {
         return viewId;
@@ -39,9 +59,18 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
         this.viewId = viewId;
     }
 
-
     public StopCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+    }
+
+    @Override
+    public void onFinishInflate() {
+        super.onFinishInflate();
+
+        if(viewId != null && viewId.equals("progress")) {
+            collapse();
+        }
     }
 
     @Override
@@ -85,6 +114,12 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
             PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap(), viewId);
             polylineDrawer.drawRoute(this.route, stop);
         }
+        else if(getViewId().equals("progress")) {
+            if(collapsed)
+                expanse();
+            else
+                collapse();
+        }
     }
 
 
@@ -98,5 +133,40 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     public void onResponseLocationInfo(Location location) {
         RouteCreateView routeCreateView = MapFragmentTab2.getRouteCreateView();
         routeCreateView.onInsertLocation(location);
+    }
+
+    public void collapse() {
+        findViewById(R.id.stop_card_relative).setVisibility(INVISIBLE);
+        findViewById(R.id.stop_card_collapsed).setVisibility(VISIBLE);
+        collapsed = true;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        expandedHeight = params.height;
+        params.height = 450;
+        setLayoutParams(params);
+        invalidate();
+    }
+
+    private void expanse() {
+        findViewById(R.id.stop_card_relative).setVisibility(VISIBLE);
+        findViewById(R.id.stop_card_collapsed).setVisibility(INVISIBLE);
+        collapsed = false;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        params.height = expandedHeight;
+        setLayoutParams(params);
+        invalidate();
+    }
+
+    public void changeProgressStatus(ProgressStatus status) {
+        switch (status) {
+            case TRACKED:
+                setCardBackgroundColor(Color.DKGRAY);
+                break;
+            case ON_POINT:
+                setCardBackgroundColor(Color.LTGRAY);
+                break;
+            case NOT_TRACKED:
+                setCardBackgroundColor(Color.WHITE);
+                break;
+        }
     }
 }
