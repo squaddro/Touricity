@@ -52,8 +52,7 @@ public class StopCardViewHandler {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public StopCardView putViews() {
-        TextView minutesLabel = getLabel(" minutes",16);
-        TextView dollarLabel = getLabel(" $",16);
+        TextView minutesLabel = getLabel(" minutes  ",16);
         TextView durationLabel = getLabel("Duration: ",16);
         TextView expenseLabel = getLabel("Expense: ",16);
 
@@ -215,35 +214,34 @@ public class StopCardViewHandler {
             durationAndCost.addView(expenseLabel);
 
             if (myPlace.getPriceLevel() != null) {
-                RatingBar ratingBar = getPriceRatingBar(true, myPlace.getPriceLevel());
+                RatingBar ratingBar = getPriceRatingBar(true, myPlace.getPriceLevel(), 50);
                 stop.setExpense((int)ratingBar.getRating());
                 durationAndCost.addView(ratingBar);
             }
             else{
-                RatingBar ratingBar = getPriceRatingBar(false, 0);
+                RatingBar ratingBar = getPriceRatingBar(false, 0, 50);
                 ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> stop.setExpense((int)rating));
                 durationAndCost.addView(ratingBar);
             }
         }
         else if(viewId.equals("progress")) {
-            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " min ",16);
-            TextView expenseTextView = getLabel(" Cost: " ,16);
-            RatingBar ratingBar = getPriceRatingBar(true, stop.getExpense());
+            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " minutes ",16);
+            TextView expenseTextView = getLabel("Expense: " ,16);
+            RatingBar ratingBar = getPriceRatingBar(true, stop.getExpense(),20);
+            RatingBar ratingBarCollapsed = getPriceRatingBar(true, stop.getExpense(), 0);
             durationAndCost.addView(durationTextView);
             durationAndCost.addView(expenseTextView);
             durationAndCost.addView(ratingBar);
-            collapsedDurationAndCost.addView(getLabel("Duration: " + stop.getDuration() + " min",16));
-            collapsedDurationAndCost.addView(getLabel("Cost: ",16));
-            RatingBar ratingBarCollapsed = getPriceRatingBar(true, stop.getExpense());
+            collapsedDurationAndCost.addView(getLabel("Duration: " + stop.getDuration() + " minutes",16));
             collapsedDurationAndCost.addView(ratingBarCollapsed);
 
             stopCardView.setClickable(true);
         }else{
-            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " min",16);
-            TextView expenseTextView = getLabel("Cost: ",16);
+            TextView durationTextView = getLabel("Duration: " + stop.getDuration() + " min  ",16);
+            TextView expenseTextView = getLabel("Expense: ",16);
             durationAndCost.addView(durationTextView);
             durationAndCost.addView(expenseTextView);
-            RatingBar ratingBar = getPriceRatingBar(true, stop.getExpense());
+            RatingBar ratingBar = getPriceRatingBar(true, stop.getExpense(), 20);
             durationAndCost.addView(ratingBar);
         }
 
@@ -281,14 +279,14 @@ public class StopCardViewHandler {
         return ratingBar;
     }
 
-    private RatingBar getPriceRatingBar(boolean isIndicator, int rate) {
+    private RatingBar getPriceRatingBar(boolean isIndicator, int rate, int padding) {
         ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(context, R.style.DollarRatingBar);
         RatingBar ratingBar = new RatingBar(contextThemeWrapper, null, 0);
         ratingBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         ratingBar.setIsIndicator(isIndicator);
         ratingBar.setNumStars(5);
         ratingBar.setStepSize(1);
-        ratingBar.setPadding(0, 55, 5, 0);
+        ratingBar.setPadding(0, padding, 0, 0);
         if(isIndicator) {
             ratingBar.setRating(rate);
         }
