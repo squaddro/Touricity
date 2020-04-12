@@ -48,7 +48,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
 
         Stop stop = stops[0];
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
-                Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS);
+                Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS, Place.Field.PRICE_LEVEL);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(stop.getLocation().getLocation_id(), fields);
         MapFragmentTab2.placesClient.fetchPlace(request).addOnSuccessListener((placeResponse) -> {
             Place place = placeResponse.getPlace();

@@ -21,6 +21,7 @@ public class MyPlaceSave {
     private List<String> photosIds;
     private String phoneNumber;
     private Double rating;
+    private Integer priceLevel;
 
 
     public MyPlaceSave(MyPlace place, List<String> photosIds) {
@@ -31,5 +32,6 @@ public class MyPlaceSave {
         this.photosIds = photosIds;
         this.phoneNumber = place.getPhoneNumber();
         this.rating = place.getRating();
+        this.priceLevel = place.getPriceLevel();
     }
 }

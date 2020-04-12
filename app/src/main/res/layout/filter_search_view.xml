@@ -64,29 +64,32 @@
             android:id="@+id/avgCostTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Average cost: "
+            android:text="Average cost:   "
             android:layout_below="@+id/minRateTextView"
             android:layout_marginBottom="20dp"
             android:layout_marginRight="15dp"
             android:layout_alignParentLeft="true"/>
 
-        <SeekBar
-            android:id="@+id/avgCostSeekBar"
-            android:layout_width="120dp"
+
+        <RatingBar
+            android:id="@+id/costRatingBar"
+            style="@style/DollarRatingBarFilter"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:max="500"
-            android:progress="0"
             android:layout_below="@+id/minRateTextView"
             android:layout_toRightOf="@+id/avgCostTextView"
-            android:layout_marginRight="15dp"/>
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="1" />
 
         <TextView
             android:id="@+id/avgCostValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/minRateTextView"
+            android:layout_marginLeft="54dp"
             android:layout_marginBottom="20dp"
-            android:layout_toRightOf="@+id/avgCostSeekBar"
+            android:layout_toRightOf="@+id/costRatingBar"
             android:text="0.0" />
 
         <TextView

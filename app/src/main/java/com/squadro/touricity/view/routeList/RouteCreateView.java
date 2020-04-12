@@ -84,13 +84,13 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
                     StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
                     TextView title = dummy.findViewById(R.id.stop_name);
                     TextView desc = dummy.findViewById(R.id.stop_desc);
-                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null,null);
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,"create",stop);
                     cardView = stopCardViewHandler.putViews();
                     RelativeLayout relativeLayout = cardView.findViewById(R.id.stop_card_relative);
                     RelativeLayout buttons = (RelativeLayout)relativeLayout.getChildAt(0);
                     buttons.removeViewAt(3);
-            }
+                }
                 cardView.setViewId("create");
                 cardView.update(stop);
                 cardView.setEntryEventListener(this);
@@ -293,5 +293,5 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
         }
         MapFragmentTab2.getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(MapMaths.getRouteBoundings(route), 0));
     }
-    
+
 }
