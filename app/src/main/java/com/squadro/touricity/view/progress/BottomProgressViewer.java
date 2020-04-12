@@ -122,7 +122,7 @@ public class BottomProgressViewer extends LinearLayout implements IProgressEvent
 						title = comment.substring(comment.indexOf("Title:"), comment.indexOf("Desc:"));
 						desc = comment.substring(comment.indexOf("Desc:"));
 					}
-					place = new MyPlace(desc, null, null, title, null, null, null);
+					place = new MyPlace(desc, null, null, title, null, null, null, null);
 				}
 
 				StopCardView stopCardView = (StopCardView) inflate(getContext(), R.layout.stopcardview, null);

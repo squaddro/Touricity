@@ -21,19 +21,19 @@ public class FilterHandler {
 
     private SearchBar searchBar = null;
     private MinRatingBar minRatingBar = null;
-    private AverageCostSeekBar averageCostSeekBar = null;
+    private CostRatingBar costRatingBar = null;
     private DurationSeekBar durationSeekBar = null;
     private TransportationCheckBox transportationCheckBox = null;
     private Button filterButton = null;
     private RouteExploreView routeExploreView = null;
 
-    public FilterHandler(Activity activity, SearchBar searchBar, MinRatingBar minRatingBar, AverageCostSeekBar averageCostSeekBar,
+    public FilterHandler(Activity activity, SearchBar searchBar, MinRatingBar minRatingBar, CostRatingBar costRatingBar,
                          DurationSeekBar durationSeekBar, TransportationCheckBox transportationCheckBox, Context context){
 
         this.filter = new Filter();
         this.searchBar = searchBar;
         this.minRatingBar = minRatingBar;
-        this.averageCostSeekBar = averageCostSeekBar;
+        this.costRatingBar = costRatingBar;
         this.durationSeekBar = durationSeekBar;
         this.transportationCheckBox = transportationCheckBox;
         this.routeExploreView = activity.findViewById(R.id.route_explore);
@@ -61,7 +61,7 @@ public class FilterHandler {
         return view -> {
             this.filter.setCity_name(searchBar.getInputCity());
             this.filter.setScore(minRatingBar.getMinRate());
-            this.filter.setExpense(averageCostSeekBar.getAverageCost());
+            this.filter.setExpense(costRatingBar.getAverageCost());
             this.filter.setDuration(durationSeekBar.getDuration());
             this.filter.setPath_type(transportationCheckBox.getTransportation());
             FilterRequests filterRequest = new FilterRequests(this.routeExploreView,context);

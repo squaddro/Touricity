@@ -1,6 +1,7 @@
 package com.squadro.touricity.view.map.placesAPI;
 
 import android.graphics.Bitmap;
+import android.icu.text.SymbolTable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
@@ -25,9 +26,10 @@ public class MyPlace {
     private List<Bitmap> photos;
     private String phoneNumber;
     private Double rating;
+    private Integer priceLevel;
 
     public MyPlace(String address, String place_id, LatLng latLng, String name,
-                   List<Bitmap> photos, String phoneNumber, Double rating) {
+                   List<Bitmap> photos, String phoneNumber, Double rating, Integer priceLevel) {
         this.address = address;
         this.place_id = place_id;
         this.latLng = latLng;
@@ -35,6 +37,7 @@ public class MyPlace {
         this.photos = photos;
         this.phoneNumber = phoneNumber;
         this.rating = rating;
+        this.priceLevel = priceLevel;
     }
 
     public MyPlace(Place place,List<Bitmap> photos) {
@@ -45,6 +48,7 @@ public class MyPlace {
         this.photos = photos;
         this.phoneNumber = place.getPhoneNumber();
         this.rating = place.getRating();
+        this.priceLevel = place.getPriceLevel();
     }
 
     public MyPlace(MyPlace place, List<Bitmap> photos) {
@@ -55,6 +59,7 @@ public class MyPlace {
         this.photos = photos;
         this.phoneNumber = place.getPhoneNumber();
         this.rating = place.getRating();
+        this.priceLevel = place.getPriceLevel();
     }
 
     public MyPlace(MyPlaceSave place, List<Bitmap> photos) {
@@ -65,5 +70,6 @@ public class MyPlace {
         this.photos = photos;
         this.phoneNumber = place.getPhoneNumber();
         this.rating = place.getRating();
+        this.priceLevel = place.getPriceLevel();
     }
 }

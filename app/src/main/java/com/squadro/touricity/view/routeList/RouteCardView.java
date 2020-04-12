@@ -51,6 +51,7 @@ import lombok.Getter;
 
 public class RouteCardView extends CardView implements View.OnClickListener, View.OnLongClickListener {
 
+    @Getter
     private Route route;
     private LinearLayout entryList;
     private ViewFlipper viewFlipper;
@@ -103,7 +104,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
                     TextView title = dummy.findViewById(R.id.stop_name);
                     TextView desc = dummy.findViewById(R.id.stop_desc);
-                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null,null);
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,viewId,stop);
                     cardView = stopCardViewHandler.putViews();
                 }
@@ -142,7 +143,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
                     TextView title = dummy.findViewById(R.id.stop_name);
                     TextView desc = dummy.findViewById(R.id.stop_desc);
-                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null,null);
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,viewId,stop);
                     cardView = stopCardViewHandler.putViews();
                 }
