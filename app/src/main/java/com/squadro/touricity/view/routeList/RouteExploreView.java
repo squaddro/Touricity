@@ -61,6 +61,8 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         cardView.loadRoute(route);
         ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
         cardView.setViewFlipper(stopImages);
+        if(!route.getTitle().equals(""))
+            cardView.setTitle(route.getTitle());
         routes.addView(cardView, 0);
         routes.invalidate();
         RatingBar ratingBar = cardView.findViewById(R.id.routeRatingBar);

@@ -55,6 +55,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private Route route;
     private LinearLayout entryList;
     private ViewFlipper viewFlipper;
+    private TextView routeTitle;
     LinearLayout likeCommentView;
     private EditText commentText;
     private String viewId;
@@ -157,6 +158,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+        routeTitle = findViewById(R.id.routeTitleTextView);
         if (viewId != null && viewId.equals("explore")) {
             likeCommentView = (LinearLayout) findViewById(R.id.like_comment_view);
             ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
@@ -190,6 +192,10 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             viewFlipper.setFlipInterval(4000);
             viewFlipper.setAutoStart(true);
         }
+    }
+
+    public void setTitle(String title){
+        routeTitle.setText(title);
     }
 
     private void getLikeComment() {

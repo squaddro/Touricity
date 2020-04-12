@@ -284,7 +284,7 @@ public class StopCardViewHandler {
         RatingBar ratingBar = new RatingBar(contextThemeWrapper, null, 0);
         ratingBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         ratingBar.setIsIndicator(isIndicator);
-        ratingBar.setNumStars(5);
+        ratingBar.setNumStars(4);
         ratingBar.setStepSize(1);
         ratingBar.setPadding(0, padding, 0, 0);
         if(isIndicator) {

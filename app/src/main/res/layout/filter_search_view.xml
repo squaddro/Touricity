@@ -64,11 +64,11 @@
             android:id="@+id/avgCostTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Average cost:   "
             android:layout_below="@+id/minRateTextView"
-            android:layout_marginBottom="20dp"
+            android:layout_alignParentLeft="true"
             android:layout_marginRight="15dp"
-            android:layout_alignParentLeft="true"/>
+            android:layout_marginBottom="20dp"
+            android:text="Average cost:  " />
 
 
         <RatingBar
@@ -79,7 +79,7 @@
             android:layout_below="@+id/minRateTextView"
             android:layout_toRightOf="@+id/avgCostTextView"
             android:isIndicator="false"
-            android:numStars="5"
+            android:numStars="4"
             android:stepSize="1" />
 
         <TextView
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/minRateTextView"
-            android:layout_marginLeft="54dp"
+            android:layout_marginLeft="72dp"
             android:layout_marginBottom="20dp"
             android:layout_toRightOf="@+id/costRatingBar"
             android:text="0.0" />
