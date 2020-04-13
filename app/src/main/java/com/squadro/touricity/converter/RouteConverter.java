@@ -24,7 +24,7 @@ public class RouteConverter implements IConverter {
 
         String route_id = json.get("route_id").getAsString();
         String creator = "";
-        String title = "";
+        String title = json.get("title").getAsString();;
         String city_id = "";
         int privacy = 0;
 

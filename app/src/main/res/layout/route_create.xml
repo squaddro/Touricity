@@ -53,6 +53,19 @@
                 android:background="@drawable/ic_low_priority_black_24dp">
             </Button>
 
+            <EditText
+                android:id="@+id/routeTitleEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@+id/route_create_optimize"
+                android:background="@drawable/rounded_corner_grey"
+                android:ems="10"
+                android:hint="Set Route Title"
+                android:inputType="text"
+                android:textColorHighlight="#02E211D8" />
         </RelativeLayout>
 
         <android.support.v4.widget.NestedScrollView

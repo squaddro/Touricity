@@ -42,8 +42,28 @@
                 android:isIndicator="true"
                 android:numStars="5"
                 android:stepSize="0.1" />
+
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/routeTitleTextLayout"
+            >
+
+            <TextView
+                android:id="@+id/routeTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner_grey"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#A9000000"
+                android:textSize="20sp"
+                android:textStyle="normal" />
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

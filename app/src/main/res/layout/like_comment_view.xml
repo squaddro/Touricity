@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="6dp"
             android:isIndicator="false"
             android:numStars="5"
             android:stepSize="1" />
@@ -33,7 +33,9 @@
             android:id="@+id/button_send_like"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_marginLeft="0dp"
             android:layout_toRightOf="@+id/routeLikeBar"
+            android:background="#003A1313"
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <ImageButton
@@ -48,7 +50,7 @@
             android:id="@+id/PostCommentDesc"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_below="@+id/routeLikeBar"
+            android:layout_below="@+id/button_send_like"
             android:background="@drawable/rounded_corner"
             android:ems="10"
             android:gravity="start|top"
@@ -62,6 +64,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/PostCommentDesc"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="0dp"
+            android:background="@drawable/rounded_button"
             android:text="Comment" />
 
         <TextView
@@ -71,7 +76,8 @@
             android:layout_below="@+id/button_send_comment"
             android:text="Show Comments"
             android:textColor="#0B490C"
-            android:textSize="16dip" />
+            android:textSize="16dip"
+            android:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/comment_list"

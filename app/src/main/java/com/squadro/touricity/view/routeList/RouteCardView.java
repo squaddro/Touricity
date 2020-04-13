@@ -55,6 +55,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private Route route;
     private LinearLayout entryList;
     private ViewFlipper viewFlipper;
+    private TextView routeTitle;
     LinearLayout likeCommentView;
     private EditText commentText;
     private String viewId;
@@ -157,6 +158,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     protected void initialize() {
         entryList = findViewById(R.id.route_entries_list);
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+        routeTitle = findViewById(R.id.routeTitleTextView);
         if (viewId != null && viewId.equals("explore")) {
             likeCommentView = (LinearLayout) findViewById(R.id.like_comment_view);
             ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
@@ -192,8 +194,14 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         }
     }
 
+    public void setTitle(String title){
+        routeTitle.setText(title);
+    }
+
     private void getLikeComment() {
         Context context = getContext();
+        TextView showComments = findViewById(R.id.link_comments);
+        LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
         Button pushCommentButton = findViewById(R.id.button_send_comment);
         pushCommentButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -228,15 +236,14 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             }
         });
 
-        TextView showComments = findViewById(R.id.link_comments);
         showComments.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 CommentRequest commentRequest = new CommentRequest(context, likeCommentView);
-                LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
                 layout.removeAllViews();
                 ImageButton buttonUp = (ImageButton) likeCommentView.findViewById(R.id.imageButtonUp);
                 buttonUp.setVisibility(VISIBLE);
+                showComments.setVisibility(INVISIBLE);
                 try {
                     commentRequest.getComment(route.getRoute_id());
                 } catch (JSONException e) {

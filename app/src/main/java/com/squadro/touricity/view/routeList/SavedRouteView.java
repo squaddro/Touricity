@@ -10,7 +10,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.squadro.touricity.R;
@@ -42,6 +44,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
     private Route prevHighlighted;
     private LinearLayout routes;
     private NestedScrollView scrollView;
+    private TextView routeTitleView;
 
     private List<MyPlace> places;
 
@@ -68,6 +71,14 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         cardView.loadRoute(route);
         ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
         cardView.setViewFlipper(stopImages);
+        String routeTitle = route.getTitle();
+        RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayout);
+        routeTitleView = cardView.findViewById(R.id.routeTitleTextViewSave);
+        if(routeTitle.equals("null")){
+            routeTitleLayout.setVisibility(View.INVISIBLE);
+        }
+        else
+            routeTitleView.setText(routeTitle);
         routes.addView(cardView,0);
         routes.invalidate();
         return cardView;
@@ -84,6 +95,14 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view_save, null);
             cardView.setViewId("saved");
             cardView.loadRoute(route,places);
+            String routeTitle = route.getTitle();
+            RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayout);
+            routeTitleView = cardView.findViewById(R.id.routeTitleTextViewSave);
+            if(routeTitle.equals("null")){
+                routeTitleLayout.setVisibility(View.INVISIBLE);
+            }
+            else
+                routeTitleView.setText(routeTitle);
             ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
             cardView.setViewFlipper(stopImages);
             routes.addView(cardView);

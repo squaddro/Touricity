@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -62,6 +64,7 @@ public class CommentRequest {
 
         Call<JsonObject> jsonObjectCall = restAPI.postComment(gsonObject);
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
+            @SneakyThrows
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject body = response.body();
@@ -70,7 +73,13 @@ public class CommentRequest {
                     if(statusCode.equals("114")){
                         Toast.makeText((Activity)context,"Commented!",Toast.LENGTH_LONG).show();
                         EditText text = likeCommentView.findViewById(R.id.PostCommentDesc);
+                        TextView showComments = likeCommentView.findViewById(R.id.link_comments);
+                        LinearLayout layout = (LinearLayout) likeCommentView.findViewById(R.id.comment_list);
                         text.setText("");
+                        if(showComments.getVisibility() == View.INVISIBLE){
+                            layout.removeAllViews();
+                            getComment(commentRegister.getRouteId());
+                        }
                     }
                     else if(statusCode.equals("115")){
                         Toast.makeText((Activity)context,"Error! Something's wrong :(",Toast.LENGTH_LONG).show();
@@ -95,7 +104,6 @@ public class CommentRequest {
         JsonObject obj = new JsonObject();
         obj.addProperty("route_id", routeId);
         Call<JsonObject> jsonObjectCall = restAPI.getComment(obj);
-        System.out.println("1. checkpoint");
         ArrayList<CommentRegister> commentRegisters = new ArrayList<>();
 
         jsonObjectCall.enqueue(new Callback<JsonObject>() {

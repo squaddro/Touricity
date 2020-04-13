@@ -3,7 +3,9 @@ package com.squadro.touricity.view.map;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -57,6 +60,7 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.RouteMerger;
 import com.squadro.touricity.view.map.DirectionsAPI.WaypointOrder;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
@@ -67,6 +71,7 @@ import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.IRouteResponse;
+import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
@@ -305,10 +310,23 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         routeCreateView.setRoute(new Route());
         routeCreateView.setRouteMapViewUpdater(this);
         Button saveButton = routeCreateView.findViewById(R.id.route_create_save);
+        EditText routeTitle = routeCreateView.findViewById(R.id.routeTitleEditText);
+        ColorStateList color = routeTitle.getHintTextColors();
         saveButton.setOnClickListener(v -> {
-            RouteRequests routeRequests = new RouteRequests();
-            routeRequests.updateRoute(routeCreateView.getRoute(), this);
-            routeCreateView.setRoute(new Route());
+            if(routeTitle.getText().toString().equals("")){
+                routeTitle.setHintTextColor(Color.RED);
+                routeTitle.setHint("Please enter a title!");
+            }
+            else {
+                routeTitle.setHintTextColor(color);
+                routeTitle.setHint("Set Route Title");
+                RouteRequests routeRequests = new RouteRequests();
+                Route route = routeCreateView.getRoute();
+                route.setTitle(routeTitle.getText().toString());
+                routeRequests.updateRoute(routeCreateView.getRoute(), this);
+                routeCreateView.setRoute(new Route());
+                routeTitle.getText().clear();
+            }
         });
 
         Button optimizeButton = routeCreateView.findViewById(R.id.route_create_optimize);
