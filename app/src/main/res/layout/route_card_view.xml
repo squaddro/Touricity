@@ -46,23 +46,32 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/routeTitleTextLayout"
+            >
 
             <TextView
                 android:id="@+id/routeTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner_grey"
                 android:layout_centerHorizontal="true"
-                android:textColor="#000000"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#A9000000"
                 android:textSize="20sp"
-                android:text="Best Burger In Town"
                 android:textStyle="normal" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <ViewFlipper
                 android:id="@+id/view_flipper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/routeTitleTextView"
                 android:inAnimation="@android:anim/slide_in_left"
                 android:outAnimation="@android:anim/slide_out_right" />
         </RelativeLayout>
@@ -96,18 +105,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             android:visibility="invisible"></LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border"
-            >
 
-            <TextView
-                android:id="@+id/route_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This route is for burger testing. I select 5 best pub for burger. And route is also budget friendly. Hope you enjoy it." />
-        </RelativeLayout>
         <include layout="@layout/like_comment_view" />
     </LinearLayout>
 

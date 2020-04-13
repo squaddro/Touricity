@@ -76,7 +76,8 @@
             android:layout_below="@+id/button_send_comment"
             android:text="Show Comments"
             android:textColor="#0B490C"
-            android:textSize="16dip" />
+            android:textSize="16dip"
+            android:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/comment_list"

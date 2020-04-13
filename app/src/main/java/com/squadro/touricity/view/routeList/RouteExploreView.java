@@ -10,9 +10,12 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -61,12 +64,18 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         cardView.loadRoute(route);
         ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
         cardView.setViewFlipper(stopImages);
-        if(!route.getTitle().equals(""))
-            cardView.setTitle(route.getTitle());
         routes.addView(cardView, 0);
         routes.invalidate();
         RatingBar ratingBar = cardView.findViewById(R.id.routeRatingBar);
         ratingBar.setRating((float) score);
+        String routeTitle = route.getTitle();
+        TextView routeTitleView = cardView.findViewById(R.id.routeTitleTextView);
+        RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayout);
+        if(routeTitle.equals("null")){
+            routeTitleLayout.setVisibility(View.INVISIBLE);
+        }
+        else
+            routeTitleView.setText(route.getTitle());
     }
 
     private void UpdateView() {
@@ -81,6 +90,7 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
             cardView.loadRoute(route);
             ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
             cardView.setViewFlipper(stopImages);
+
             routes.addView(cardView);
         }
     }
