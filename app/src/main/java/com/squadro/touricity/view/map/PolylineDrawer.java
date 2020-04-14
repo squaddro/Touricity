@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.MainActivity;
+import com.squadro.touricity.R;
 import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
@@ -74,10 +75,10 @@ public class PolylineDrawer {
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
                 if(counter == 0){
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)); //TODO: set a proper icon!
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.first_stop));
                 }
                 if(last != 0 && counter == last){
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)); //TODO: set a proper icon!
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.last_stop));
                 }
                 counter++;
 
