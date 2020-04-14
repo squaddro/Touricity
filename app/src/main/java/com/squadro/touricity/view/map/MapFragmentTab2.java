@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +36,8 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -57,13 +58,14 @@ import com.squadro.touricity.message.types.Location;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
+import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
-import com.squadro.touricity.view.map.DirectionsAPI.RouteMerger;
 import com.squadro.touricity.view.map.DirectionsAPI.WaypointOrder;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
+import com.squadro.touricity.view.map.offline.DownloadMapTiles;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.INearByResponse;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
@@ -71,16 +73,17 @@ import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.IRouteResponse;
-import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
 import com.squadro.touricity.view.routeList.event.IRouteMapViewUpdater;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -115,6 +118,15 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private AutocompleteSupportFragment autocompleteFragment;
 
     private PolylineDrawer polylineDrawer;
+    private Circle circle;
+
+    public static List<Place.Type> placeTypes = Arrays.asList(Place.Type.AIRPORT, Place.Type.AMUSEMENT_PARK,
+            Place.Type.AQUARIUM, Place.Type.ART_GALLERY, Place.Type.BAKERY, Place.Type.BAR, Place.Type.BOWLING_ALLEY,
+            Place.Type.CAFE, Place.Type.CAMPGROUND, Place.Type.CASINO, Place.Type.CHURCH, Place.Type.CITY_HALL, Place.Type.EMBASSY,
+            Place.Type.HINDU_TEMPLE, Place.Type.LIBRARY, Place.Type.LIQUOR_STORE, Place.Type.LODGING,
+            Place.Type.MOSQUE, Place.Type.MUSEUM, Place.Type.MOVIE_RENTAL, Place.Type.MOVIE_THEATER,
+            Place.Type.NIGHT_CLUB, Place.Type.PARK, Place.Type.PARKING, Place.Type.RESTAURANT, Place.Type.RV_PARK,
+            Place.Type.SHOPPING_MALL, Place.Type.STADIUM, Place.Type.SPA, Place.Type.SYNAGOGUE, Place.Type.UNIVERSITY, Place.Type.ZOO);
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,6 +243,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             }
                             MapFragmentTab2.markersOfNearby.clear();
                         }
+                        if (circle != null) {
+                            circle.remove();
+                            circle = null;
+                        }
+
                     }).setNegativeButton("No", (dialog, which) -> {
             })
                     .show();
@@ -313,20 +330,55 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         EditText routeTitle = routeCreateView.findViewById(R.id.routeTitleEditText);
         ColorStateList color = routeTitle.getHintTextColors();
         saveButton.setOnClickListener(v -> {
-            if(routeTitle.getText().toString().equals("")){
-                routeTitle.setHintTextColor(Color.RED);
-                routeTitle.setHint("Please enter a title!");
+            int photoCount = 0;
+            double photoSize = 0.0;
+            for (IEntry entry : route.getAbstractEntryList()) {
+                if (entry instanceof Stop) {
+                    Stop stop = (Stop) entry;
+                    List<MyPlace> responsePlaces = MapFragmentTab2.responsePlaces;
+                    for (MyPlace myPlace : responsePlaces) {
+                        if (myPlace.getPlace_id().equals(stop.getLocation().getLocation_id())) {
+                            List<Bitmap> photos = myPlace.getPhotos();
+                            if (photos != null) {
+                                for (Bitmap bitmap : photos) {
+                                    photoCount++;
+                                    photoSize += bitmap.getAllocationByteCount();
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            else {
-                routeTitle.setHintTextColor(color);
-                routeTitle.setHint("Set Route Title");
-                RouteRequests routeRequests = new RouteRequests();
-                Route route = routeCreateView.getRoute();
-                route.setTitle(routeTitle.getText().toString());
-                routeRequests.updateRoute(routeCreateView.getRoute(), this);
-                routeCreateView.setRoute(new Route());
-                routeTitle.getText().clear();
-            }
+            photoSize = photoSize / 1024 / 1024;
+            Map<String, String> tileMap = new DownloadMapTiles().downloadTileBounds(MapMaths.getRouteBoundings(route));
+            int numOfTiles = tileMap.size();
+            double sizeOfTiles = 28.0 * tileMap.size() / 1024;
+            String warning = photoCount != 0 ?
+                    "This operation will download at most " + numOfTiles + " map tiles and " + photoCount + " photos for places" +
+                            " and need up to " + new DecimalFormat("##.#").format(sizeOfTiles + photoSize) + " mb " +
+                            "storage. Do you still want to continue?" :
+                    "This operation will download at most " + numOfTiles + " map tiles for offline usage and may need " +
+                            "up to " + new DecimalFormat("##.#").format(sizeOfTiles) + " mb storage. Do you still want to continue?";
+            new AlertDialog.Builder(getContext())
+                    .setTitle("WARNING")
+                    .setMessage(warning)
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        if (routeTitle.getText().toString().equals("")) {
+                            routeTitle.setHintTextColor(Color.RED);
+                            routeTitle.setHint("Please enter a title!");
+                        } else {
+                            routeTitle.setHintTextColor(color);
+                            routeTitle.setHint("Set Route Title");
+                            RouteRequests routeRequests = new RouteRequests();
+                            Route route = routeCreateView.getRoute();
+                            route.setTitle(routeTitle.getText().toString());
+                            routeRequests.updateRoute(routeCreateView.getRoute(), this);
+                            routeCreateView.setRoute(new Route());
+                            routeTitle.getText().clear();
+                        }
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                    }).show();
         });
 
         Button optimizeButton = routeCreateView.findViewById(R.id.route_create_optimize);
@@ -478,53 +530,74 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void onPlacesResponse(List<String> placesIds) {
+    public void onPlacesResponse(List<String> placesIds, LatLng latLng) {
         for (String placeId : placesIds) {
             List<MyPlace> collect = responsePlaces.stream().filter(myPlace -> myPlace.getPlace_id().equals(placeId))
                     .collect(Collectors.toList());
             if (collect.size() > 0) continue;
             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
-                    Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS, Place.Field.PRICE_LEVEL);
+                    Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING,
+                    Place.Field.PHOTO_METADATAS, Place.Field.PRICE_LEVEL, Place.Field.TYPES);
             FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, fields);
             MapFragmentTab2.placesClient.fetchPlace(request).addOnSuccessListener((placeResponse) -> {
                 Place place = placeResponse.getPlace();
-                List<PhotoMetadata> photoMetadata = place.getPhotoMetadatas();
-                List<Bitmap> photos = new ArrayList<>();
-                if (photoMetadata != null) {
-                    AtomicInteger atomicInteger = new AtomicInteger(0);
-                    for (; atomicInteger.get() < photoMetadata.size(); atomicInteger.incrementAndGet()) {
-                        PhotoMetadata metadata = photoMetadata.get(atomicInteger.get());
-                        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(metadata)
-                                .setMaxWidth(1024) // Optional.
-                                .setMaxHeight(720) // Optional.
-                                .build();
-                        MapFragmentTab2.placesClient.fetchPhoto(photoRequest).addOnSuccessListener(fetchPhotoResponse -> {
-                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                            photos.add(bitmap);
-                            if (photos.size() == photoMetadata.size()) {
-                                MyPlace myPlace = new MyPlace(place, photos);
-                                if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
-                                MarkerOptions markerOptions = new MarkerOptions();
-                                markerOptions.position(myPlace.getLatLng());
-                                Marker marker = map.addMarker(markerOptions);
-                                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                                updateMarkerInfo(new MarkerInfo(marker, myPlace, true));
-                                markersOfNearby.add(marker);
-                            }
-                        }).addOnFailureListener(Throwable::printStackTrace);
+                List<Place.Type> types = place.getTypes();
+                if (types != null && matchTypes(types)) {
+                    List<PhotoMetadata> photoMetadata = place.getPhotoMetadatas();
+                    List<Bitmap> photos = new ArrayList<>();
+                    if (photoMetadata != null) {
+                        AtomicInteger atomicInteger = new AtomicInteger(0);
+                        for (; atomicInteger.get() < photoMetadata.size(); atomicInteger.incrementAndGet()) {
+                            PhotoMetadata metadata = photoMetadata.get(atomicInteger.get());
+                            FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(metadata)
+                                    .setMaxWidth(1024) // Optional.
+                                    .setMaxHeight(720) // Optional.
+                                    .build();
+                            MapFragmentTab2.placesClient.fetchPhoto(photoRequest).addOnSuccessListener(fetchPhotoResponse -> {
+                                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                                photos.add(bitmap);
+                                if (photos.size() == photoMetadata.size()) {
+                                    MyPlace myPlace = new MyPlace(place, photos);
+                                    if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
+                                    MarkerOptions markerOptions = new MarkerOptions();
+                                    markerOptions.position(myPlace.getLatLng());
+                                    Marker marker = map.addMarker(markerOptions);
+                                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                    updateMarkerInfo(new MarkerInfo(marker, myPlace, true));
+                                    circle = map.addCircle(new CircleOptions()
+                                            .center(latLng)
+                                            .radius(50)
+                                            .strokeColor(Color.RED));
+
+                                    markersOfNearby.add(marker);
+                                }
+                            }).addOnFailureListener(Throwable::printStackTrace);
+                        }
+                    } else {
+                        MyPlace myPlace = new MyPlace(place, null);
+                        if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(myPlace.getLatLng());
+                        Marker marker = map.addMarker(markerOptions);
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                        updateMarkerInfo(new MarkerInfo(marker, myPlace, true));
+                        circle = map.addCircle(new CircleOptions()
+                                .center(latLng)
+                                .radius(50)
+                                .strokeColor(Color.RED));
+
+                        markersOfNearby.add(marker);
                     }
-                } else {
-                    MyPlace myPlace = new MyPlace(place, null);
-                    if (!isPlaceExist(myPlace)) responsePlaces.add(myPlace);
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(myPlace.getLatLng());
-                    Marker marker = map.addMarker(markerOptions);
-                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                    updateMarkerInfo(new MarkerInfo(marker, myPlace, true));
-                    markersOfNearby.add(marker);
                 }
             }).addOnFailureListener(Throwable::printStackTrace);
         }
+    }
+
+    private boolean matchTypes(List<Place.Type> types) {
+        for (Place.Type type : types) {
+            if (placeTypes.contains(type)) return true;
+        }
+        return false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

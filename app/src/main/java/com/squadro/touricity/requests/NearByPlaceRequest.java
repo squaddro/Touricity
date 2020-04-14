@@ -33,7 +33,7 @@ public class NearByPlaceRequest {
                     JsonElement id = element.getAsJsonObject().get("place_id");
                     placeIds.add(id.getAsString());
                 }
-                iNearByResponse.onPlacesResponse(placeIds);
+                iNearByResponse.onPlacesResponse(placeIds,latLng);
             }
 
             @Override

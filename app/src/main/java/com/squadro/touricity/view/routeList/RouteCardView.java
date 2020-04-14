@@ -1,6 +1,7 @@
 package com.squadro.touricity.view.routeList;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -24,6 +25,7 @@ import android.widget.ViewFlipper;
 import com.squadro.touricity.HomeActivity;
 import com.squadro.touricity.MainActivity;
 import com.squadro.touricity.R;
+import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Comment;
 import com.squadro.touricity.message.types.CommentRegister;
 import com.squadro.touricity.message.types.Like;
@@ -36,6 +38,7 @@ import com.squadro.touricity.requests.LikeRequest;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.offline.DownloadMapTiles;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.map.placesAPI.StopCardViewHandler;
@@ -43,8 +46,10 @@ import com.squadro.touricity.view.routeList.entry.StopCardView;
 
 import org.json.JSONException;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -101,12 +106,12 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, viewId, stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
-                }else{
+                } else {
                     StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
                     TextView title = dummy.findViewById(R.id.stop_name);
                     TextView desc = dummy.findViewById(R.id.stop_desc);
-                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null,null);
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,viewId,stop);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(), null, null, title.getText().toString(), null, null, null, null);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, myPlace, context, viewId, stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId(this.viewId);
@@ -140,12 +145,12 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
                     StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, collect.get(0), context, "saved", stop);
                     cardView = stopCardViewHandler.putViews();
                     stopImages.addAll(stopCardViewHandler.getStopImages());
-                }else{
+                } else {
                     StopCardView dummy = CustomInfoWindowAdapter.getStopCardView(stop);
                     TextView title = dummy.findViewById(R.id.stop_name);
                     TextView desc = dummy.findViewById(R.id.stop_desc);
-                    MyPlace myPlace = new MyPlace(desc.getText().toString(),null,null,title.getText().toString(),null,null,null,null);
-                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView,myPlace,context,viewId,stop);
+                    MyPlace myPlace = new MyPlace(desc.getText().toString(), null, null, title.getText().toString(), null, null, null, null);
+                    StopCardViewHandler stopCardViewHandler = new StopCardViewHandler(cardView, myPlace, context, viewId, stop);
                     cardView = stopCardViewHandler.putViews();
                 }
                 cardView.setViewId(this.viewId);
@@ -179,7 +184,43 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     private void setSaveButtonListener() {
         saveButton = findViewById(R.id.explore_save_route);
         saveButton.setOnClickListener(v -> {
-            MapFragmentTab3.getSavedRouteView().getIRouteSave().saveRoute(route);
+            Map<String, String> tileMap = new DownloadMapTiles().downloadTileBounds(MapMaths.getRouteBoundings(route));
+            int numOfTiles = tileMap.size();
+            double sizeOfTiles = 28.0 * tileMap.size() / 1024;
+            int photoCount = 0;
+            double photoSize = 0.0;
+            for (IEntry entry : route.getAbstractEntryList()) {
+                if (entry instanceof Stop) {
+                    Stop stop = (Stop) entry;
+                    List<MyPlace> responsePlaces = MapFragmentTab2.responsePlaces;
+                    for (MyPlace myPlace : responsePlaces) {
+                        if (myPlace.getPlace_id().equals(stop.getLocation().getLocation_id())) {
+                            List<Bitmap> photos = myPlace.getPhotos();
+                            if (photos != null) {
+                                for (Bitmap bitmap : photos) {
+                                    photoCount++;
+                                    photoSize += bitmap.getAllocationByteCount();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            photoSize = photoSize / 1024 / 1024;
+            String warning = photoCount != 0 ?
+                    "This operation will download at most " + numOfTiles + " map tiles and " + photoCount + " photos for places" +
+                            " and need up to " + new DecimalFormat("##.#").format(sizeOfTiles + photoSize) + " mb " +
+                            "storage. Do you still want to continue?" :
+                    "This operation will download at most " + numOfTiles + " map tiles for offline usage and may need " +
+                            "up to " + new DecimalFormat("##.#").format(sizeOfTiles) + " mb storage. Do you still want to continue?";
+            new AlertDialog.Builder(getContext())
+                    .setTitle("WARNING")
+                    .setMessage(warning)
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        MapFragmentTab3.getSavedRouteView().getIRouteSave().saveRoute(route);
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                    }).show();
         });
     }
 
@@ -194,7 +235,7 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         }
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         routeTitle.setText(title);
     }
 
