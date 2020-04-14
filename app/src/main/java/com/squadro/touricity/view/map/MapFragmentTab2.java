@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +36,8 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -60,7 +61,6 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
-import com.squadro.touricity.view.map.DirectionsAPI.RouteMerger;
 import com.squadro.touricity.view.map.DirectionsAPI.WaypointOrder;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
@@ -71,7 +71,6 @@ import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
 import com.squadro.touricity.view.routeList.IRouteResponse;
-import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
 import com.squadro.touricity.view.routeList.entry.StopCardView;
@@ -115,6 +114,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     private AutocompleteSupportFragment autocompleteFragment;
 
     private PolylineDrawer polylineDrawer;
+    private Circle circle;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,6 +231,11 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                             }
                             MapFragmentTab2.markersOfNearby.clear();
                         }
+                        if(circle != null){
+                            circle.remove();
+                            circle = null;
+                        }
+
                     }).setNegativeButton("No", (dialog, which) -> {
             })
                     .show();
@@ -478,7 +483,13 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void onPlacesResponse(List<String> placesIds) {
+    public void onPlacesResponse(List<String> placesIds,LatLng latLng) {
+        if(placesIds.size() > 0){
+            circle = map.addCircle(new CircleOptions()
+                    .center(latLng)
+                    .radius(50)
+                    .strokeColor(Color.RED));
+        }
         for (String placeId : placesIds) {
             List<MyPlace> collect = responsePlaces.stream().filter(myPlace -> myPlace.getPlace_id().equals(placeId))
                     .collect(Collectors.toList());
