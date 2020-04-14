@@ -63,16 +63,27 @@ public class PolylineDrawer {
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
 
+        int counter = 0;
+        int last = entryList.size()/2;
+
         while (iterator.hasNext()) {
             entry = (IEntry) iterator.next();
 
             if (entry instanceof Stop) {
+
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
+                if(counter == 0){
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)); //TODO: set a proper icon!
+                }
+                if(last != 0 && counter == last){
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)); //TODO: set a proper icon!
+                }
+                counter++;
+
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
-               // updateStartAndFinish();
 
                 List<MyPlace> collect = responsePlaces.stream()
                         .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
@@ -125,7 +136,7 @@ public class PolylineDrawer {
                     Marker marker = map.addMarker(markerOptions);
                     marker.setZIndex(1);
                     markers.add(marker);
-                    //updateStartAndFinish();
+
 
                     List<MyPlace> collect = responsePlaces.stream()
                             .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
@@ -241,19 +252,5 @@ public class PolylineDrawer {
                 return pair.second;
         }
         return null;
-    }
-
-    private void updateStartAndFinish(){
-        if(markers.size()==2){
-            markers.get(0).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            markers.get(1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-        }
-        else if(markers.size()>2){
-            markers.get(0).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            for(int i=1; i<markers.size()-1;i++){
-                markers.get(i).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            }
-            markers.get(markers.size()-1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-        }
     }
 }

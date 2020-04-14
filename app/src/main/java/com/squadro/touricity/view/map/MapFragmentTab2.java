@@ -397,6 +397,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private void initBottomSheetCallback(BottomSheetBehavior bottomSheetBehavior, MapLongClickListener mapLongClickListener) {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onStateChanged(@NonNull View view, int i) {
                 if (i == BottomSheetBehavior.STATE_EXPANDED) {
@@ -404,6 +405,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                         mapLongClickListener.setBottomPeekHeight(view.getHeight());
                     }
                 } else if (i == BottomSheetBehavior.STATE_COLLAPSED) {
+                    polylineDrawer.drawRoute(routeCreateView.getRoute());
                     if (mapLongClickListener != null) {
                         mapLongClickListener.setBottomPeekHeight(bottomSheetBehavior.getPeekHeight());
                         Log.d("map", map.getProjection().getVisibleRegion().latLngBounds.toString());
