@@ -72,7 +72,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
         ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
         cardView.setViewFlipper(stopImages);
         String routeTitle = route.getTitle();
-        RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayout);
+        RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayoutSave);
         routeTitleView = cardView.findViewById(R.id.routeTitleTextViewSave);
         if(routeTitle.equals("null")){
             routeTitleLayout.setVisibility(View.INVISIBLE);
@@ -96,7 +96,7 @@ public class SavedRouteView extends LinearLayout implements ScrollView.OnScrollC
             cardView.setViewId("saved");
             cardView.loadRoute(route,places);
             String routeTitle = route.getTitle();
-            RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayout);
+            RelativeLayout routeTitleLayout = cardView.findViewById(R.id.routeTitleTextLayoutSave);
             routeTitleView = cardView.findViewById(R.id.routeTitleTextViewSave);
             if(routeTitle.equals("null")){
                 routeTitleLayout.setVisibility(View.INVISIBLE);
