@@ -15,6 +15,7 @@ import com.squadro.touricity.cookie.CookieMethods;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.MapFragmentTab4;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.tabView.FragmentAdapter;
 
@@ -31,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
     public static MapFragmentTab1 fragment1;
     public static MapFragmentTab2 fragment2;
     public static MapFragmentTab3 fragment3;
+    public static MapFragmentTab4 fragment4;
     private boolean networkConnection = true;
 
     @Override
@@ -78,6 +80,7 @@ public class HomeActivity extends AppCompatActivity {
             tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab1_name));
             tabLayout.getTabAt(1).setText(getResources().getString(R.string.tab2_name));
             tabLayout.getTabAt(2).setText(getResources().getString(R.string.tab3_name));
+            tabLayout.getTabAt(3).setText("Suggested Routes");
         }else{
             tabLayout.getTabAt(0).setText(getResources().getString(R.string.tab3_name));
         }
@@ -103,6 +106,9 @@ public class HomeActivity extends AppCompatActivity {
 
             fragment3 = new MapFragmentTab3();
             fragments.add(fragment3);
+
+            fragment4 = new MapFragmentTab4();
+            fragments.add(fragment4);
         }
         else{
             fragment3 = new MapFragmentTab3();
@@ -137,6 +143,14 @@ public class HomeActivity extends AppCompatActivity {
             if (fragment3 != null) {
                 MapLongClickListener mapLongClickListener = fragment3.getMapLongClickListener();
                 if (mapLongClickListener != null) {
+                    mapLongClickListener.setX(x);
+                    mapLongClickListener.setY(y);
+                    mapLongClickListener.dissmissPopUp();
+                }
+            }
+            if(fragment4 != null){
+                MapLongClickListener mapLongClickListener = fragment4.getMapLongClickListener();
+                if(mapLongClickListener != null){
                     mapLongClickListener.setX(x);
                     mapLongClickListener.setY(y);
                     mapLongClickListener.dissmissPopUp();
