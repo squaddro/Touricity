@@ -54,6 +54,12 @@ public class RouteSuggestionView extends LinearLayout implements ScrollView.OnSc
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void addRoute(Route route, double score) {
+        for (Route r:routeList) {
+            if(r.getRoute_id().equals(route.getRoute_id())){
+                return;
+            }
+        }
+        
         if (routeList == null) {
             routeList = new ArrayList<>();
         }
