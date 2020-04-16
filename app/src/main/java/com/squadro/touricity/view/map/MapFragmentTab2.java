@@ -192,22 +192,43 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     }
 
     public void initializeMapListenersForSuggestion(){
-        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
-            @Override
-            public void onCameraIdle() {
-                currentCameraBounds = getMapBounds();
+            Marker currentShown;
 
-                LatLng southwest = currentCameraBounds.southwest;
-                LatLng northeast = currentCameraBounds.northeast;
-
-                SuggestedPlacesRequest suggestedPlacesRequest = new SuggestedPlacesRequest(map, southwest, northeast);
-
-                try{
-                    suggestedPlacesRequest.getFavPlaces();
-                }catch (Exception e){
-                    e.getStackTrace();
+            public boolean onMarkerClick(Marker marker) {
+                if (marker.equals(currentShown)) {
+                    marker.hideInfoWindow();
+                    currentShown = null;
+                } else {
+                    marker.showInfoWindow();
+                    currentShown = marker;
                 }
+                return true;
+            }
+        });
+
+        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+                    @Override
+                    public void onCameraIdle() {
+                        currentCameraBounds = getMapBounds();
+
+                        LatLng southwest = currentCameraBounds.southwest;
+                        LatLng northeast = currentCameraBounds.northeast;
+
+                        SuggestedPlacesRequest suggestedPlacesRequest = new SuggestedPlacesRequest(map, southwest, northeast);
+
+                        try{
+                            suggestedPlacesRequest.getFavPlaces();
+                        }catch (Exception e){
+                            e.getStackTrace();
+                        }
+                        map.setOnCameraIdleListener(null);
+                    }
+                });
             }
         });
     }

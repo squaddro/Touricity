@@ -1,5 +1,7 @@
 package com.squadro.touricity.requests;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -9,6 +11,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.squadro.touricity.R;
+import com.squadro.touricity.message.types.Location;
+import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 import com.squadro.touricity.view.map.MapFragmentTab1;
@@ -17,6 +22,7 @@ import com.squadro.touricity.view.map.MapFragmentTab2;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,14 +60,13 @@ public class SuggestedPlacesRequest {
 
         Call<JsonObject> jsonObjectCall = restAPI.suggest(obj);
         jsonObjectCall.enqueue(new Callback<JsonObject>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject body = response.body();
 
                 if(body != null){
                     ArrayList<Marker> oldMarkers = MapFragmentTab2.suggestedMarkerList;
-
-                    //make it for all the tabs!
 
                     for (Marker m:oldMarkers) {
                         if(m != null)
@@ -71,27 +76,29 @@ public class SuggestedPlacesRequest {
                     JsonArray jPlaces = body.getAsJsonArray("locationList");
 
                     if(jPlaces != null && jPlaces.size() > 0){
-                        ArrayList<LatLng> placeList = new ArrayList<>();
+                        ArrayList<Location> placeList = new ArrayList<>();
 
                         for(int i=0; i<jPlaces.size(); i++){
                             JsonObject jLatLon = jPlaces.get(i).getAsJsonObject();
-                            placeList.add(new LatLng(jLatLon.get("latitude").getAsDouble(), jLatLon.get("longitude").getAsDouble()));
+                            placeList.add(new Location(jLatLon.get("location_id").getAsString(),jLatLon.get("latitude").getAsDouble(), jLatLon.get("longitude").getAsDouble()));
                         }
 
                         MarkerOptions mo;
                         for(int i=0; i<placeList.size(); i++){
                             if(placeList.get(i) != null){
                                 mo = new MarkerOptions();
-                                mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                                mo.position(new LatLng(placeList.get(i).latitude, placeList.get(i).longitude));
+                                mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.location));
+                                mo.position(new LatLng(placeList.get(i).getLatitude(), placeList.get(i).getLongitude()));
                                 suggestedMarkerList.add(map.addMarker(mo));
+                                //Stop dummyStop = new Stop(null, 0,0,"",placeList.get(i),null);
+                                //GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(MapFragmentTab2.getRouteCreateView().getRoute(),MapFragmentTab2.getRouteCreateView(),0.0,new CountDownLatch(5),null);
+                                //getPlacesInfoAsync.execute(dummyStop);
                             }
                         }
                     }
                     else{
                         //TODO: ask places api!
                     }
-
                 }
             }
 
