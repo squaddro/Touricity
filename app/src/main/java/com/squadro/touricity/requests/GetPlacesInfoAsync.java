@@ -43,6 +43,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
         this.score = score;
         this.countDownLatch = countDownLatch;
         this.progressBar = progressBar;
+        this.routeSuggestionView = null;
     }
 
     public GetPlacesInfoAsync(Route route, RouteSuggestionView routeSuggestionView, double score, CountDownLatch countDownLatch,
@@ -52,13 +53,14 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
         this.score = score;
         this.countDownLatch = countDownLatch;
         this.progressBar = progressBar;
+        this.routeExploreView = null;
     }
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected Void doInBackground(Stop... stops) {
 
-        if(routeExploreView != null){
+        if(routeExploreView != null && routeSuggestionView == null){
             Stop stop = stops[0];
             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
                     Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS, Place.Field.PRICE_LEVEL);
@@ -113,7 +115,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
             return null;
         }
 
-        else{
+        else if (routeExploreView == null && routeSuggestionView != null){
             Stop stop = stops[0];
             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
                     Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.PHOTO_METADATAS, Place.Field.PRICE_LEVEL);
@@ -168,6 +170,7 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
             return null;
         }
 
+        return null;
     }
 }
 

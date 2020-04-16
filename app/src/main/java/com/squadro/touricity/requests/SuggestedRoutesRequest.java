@@ -1,5 +1,6 @@
 package com.squadro.touricity.requests;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -56,6 +57,13 @@ public class SuggestedRoutesRequest {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(response.body() == null || response.body().size() == 0){
+                    new AlertDialog.Builder(context)
+                            .setTitle("INFO")
+                            .setMessage("Proper routes could not found according to filter instances")
+                            .setNeutralButton("OK", (dialog, which) -> dialog.dismiss()).show();
+                    return;
+                }
                 routeSuggestionView.setRouteList(new ArrayList<>());
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
 
@@ -72,7 +80,6 @@ public class SuggestedRoutesRequest {
                 }
                 count += routes.size()*2;
                 progressBar.setVisibility(View.VISIBLE);
-
                 for (RouteLike routeLike : routes) {
                     int stopCount = getStopCount(routeLike.getRoute());
                     progressBar.setMax(count);
