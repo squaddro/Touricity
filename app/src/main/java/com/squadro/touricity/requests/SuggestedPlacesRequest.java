@@ -18,11 +18,15 @@ import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
+import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,10 +93,20 @@ public class SuggestedPlacesRequest {
                                 mo = new MarkerOptions();
                                 mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.location));
                                 mo.position(new LatLng(placeList.get(i).getLatitude(), placeList.get(i).getLongitude()));
-                                suggestedMarkerList.add(map.addMarker(mo));
-                                //Stop dummyStop = new Stop(null, 0,0,"",placeList.get(i),null);
-                                //GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(MapFragmentTab2.getRouteCreateView().getRoute(),MapFragmentTab2.getRouteCreateView(),0.0,new CountDownLatch(5),null);
-                                //getPlacesInfoAsync.execute(dummyStop);
+
+
+                                Marker marker = map.addMarker(mo);
+                                suggestedMarkerList.add(marker);
+                                Stop dummyStop = new Stop(null, 0,0,"",placeList.get(i),null);
+                                GetPlacesInfoAsync getPlacesInfoAsync = new GetPlacesInfoAsync(MapFragmentTab2.getRouteCreateView().getRoute(),MapFragmentTab2.getRouteCreateView(),0.0,new CountDownLatch(5),null);
+                                getPlacesInfoAsync.execute(dummyStop);
+
+                                List<MyPlace> collect = MapFragmentTab2.responsePlaces.stream()
+                                        .filter(myPlace -> myPlace.getPlace_id().equals((dummyStop).getLocation().getLocation_id()))
+                                        .collect(Collectors.toList());
+                                if(collect.size() > 0){
+                                    MapFragmentTab2.updateMarkerInfo(new MarkerInfo(marker,collect.get(0), true));
+                                }
                             }
                         }
                     }
