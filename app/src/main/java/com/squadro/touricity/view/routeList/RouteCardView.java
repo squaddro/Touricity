@@ -38,6 +38,7 @@ import com.squadro.touricity.requests.LikeRequest;
 import com.squadro.touricity.view.map.MapFragmentTab1;
 import com.squadro.touricity.view.map.MapFragmentTab2;
 import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.MapFragmentTab4;
 import com.squadro.touricity.view.map.offline.DownloadMapTiles;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
@@ -79,6 +80,10 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
         setOnLongClickListener(this);
         setLongClickable(true);
         if (viewId.equals("explore")) {
+            getLikeComment();
+            setSaveButtonListener();
+        }
+        else if(viewId.equals("suggestion")){
             getLikeComment();
             setSaveButtonListener();
         }
@@ -170,6 +175,14 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
             commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
             micButton.setOnClickListener(v -> {
                 HomeActivity.fragment1.initializeSpeechToText(commentText);
+            });
+        }
+        else if(viewId !=null && viewId.equals("suggestion")){
+            likeCommentView = findViewById(R.id.like_comment_view);
+            ImageButton micButton = likeCommentView.findViewById(R.id.mic_comment);
+            commentText = likeCommentView.findViewById(R.id.PostCommentDesc);
+            micButton.setOnClickListener(view -> {
+                HomeActivity.fragment4.initializeSpeechToText(commentText);
             });
         }
     }
@@ -348,8 +361,12 @@ public class RouteCardView extends CardView implements View.OnClickListener, Vie
     public boolean onLongClick(View v) {
         if (getViewId().equals("saved")) {
             MapFragmentTab3.getSavedRouteView().onLongClick(v);
-        } else if (getViewId().equals("explore")) {
+        }
+        else if (getViewId().equals("explore")) {
             MapFragmentTab1.getRouteExploreView().onLongClick(v);
+        }
+        else if(getViewId().equals("suggestion")){
+            MapFragmentTab4.getRouteSuggestionView().onLongClick(v);
         }
 
         return true;

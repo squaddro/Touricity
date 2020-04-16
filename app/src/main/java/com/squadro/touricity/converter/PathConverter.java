@@ -1,5 +1,7 @@
 package com.squadro.touricity.converter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,6 +24,7 @@ public class PathConverter extends AbstractEntryConverter<Path> {
             path_type = Path.PathType.valueOf(json.get("path_type").getAsString());
             vertices = json.get("vertices").getAsJsonArray();
         } catch (Exception e) {
+            Log.e("ERROR", e.getMessage());
         }
 
         List<PathVertex> pathVertex_list = jsonArrayToVertexList(vertices);

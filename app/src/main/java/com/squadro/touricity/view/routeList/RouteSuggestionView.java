@@ -10,7 +10,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -31,43 +30,42 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
-
-public class RouteExploreView extends LinearLayout implements ScrollView.OnScrollChangeListener {
+@RequiresApi(api = Build.VERSION_CODES.M)
+public class RouteSuggestionView extends LinearLayout implements ScrollView.OnScrollChangeListener {
 
     @Getter
     private List<Route> routeList;
 
     @Setter
     private IRouteDraw iRouteDraw;
-
     LinearLayout routes;
     NestedScrollView scrollView;
     private Route prevHighlighted;
 
-    public RouteExploreView(Context context, @Nullable AttributeSet attrs) {
+    public RouteSuggestionView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setRouteList(List<Route> routeList) {
         this.routeList = routeList;
-        UpdateView();
+        updateView();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void addRoute(Route route, double score) {
-
         for (Route r:routeList) {
             if(r.getRoute_id().equals(route.getRoute_id())){
                 return;
             }
         }
-
+        
         if (routeList == null) {
             routeList = new ArrayList<>();
         }
         routeList.add(0, route);
         RouteCardView cardView = (RouteCardView) LayoutInflater.from(getContext()).inflate(R.layout.route_card_view, null);
-        cardView.setViewId("explore");
+        cardView.setViewId("suggestion");
         cardView.loadRoute(route);
         ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
         cardView.setViewFlipper(stopImages);
@@ -85,15 +83,16 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
             routeTitleView.setText(route.getTitle());
     }
 
-    private void UpdateView() {
-        CleanView();
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void updateView() {
+        cleanView();
 
         Context context = getContext();
         if (routeList.isEmpty()) return;
         for (int i = 0; i < routeList.size(); i++) {
             Route route = routeList.get(i);
             RouteCardView cardView = (RouteCardView) LayoutInflater.from(context).inflate(R.layout.route_card_view, null);
-            cardView.setViewId("explore");
+            cardView.setViewId("suggestion");
             cardView.loadRoute(route);
             ViewFlipper stopImages = cardView.findViewById(R.id.view_flipper);
             cardView.setViewFlipper(stopImages);
@@ -102,7 +101,7 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
         }
     }
 
-    private void CleanView() {
+    private void cleanView() {
         routes.removeAllViews();
     }
 
@@ -110,8 +109,8 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        routes = findViewById(R.id.route_explore_list);
-        scrollView = findViewById(R.id.route_explore_scroll);
+        routes = findViewById(R.id.route_suggestion_list);
+        scrollView = findViewById(R.id.route_suggestion_scroll);
         scrollView.setOnScrollChangeListener(this);
     }
 
@@ -127,12 +126,12 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
                     iRouteDraw.drawHighlighted(route);
                 }
                 prevHighlighted = route;
-
                 break;
             }
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void onLongClick(View v) {
         new AlertDialog.Builder(getContext())
                 .setTitle("WARNING")
@@ -146,4 +145,5 @@ public class RouteExploreView extends LinearLayout implements ScrollView.OnScrol
                 }).setNegativeButton("No",(dialog, which) -> {})
                 .show();
     }
+
 }

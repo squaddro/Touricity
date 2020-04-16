@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.squadro.touricity.MainActivity;
+import com.squadro.touricity.R;
 import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
@@ -63,12 +64,24 @@ public class PolylineDrawer {
         List<IEntry> entryList = route.getAbstractEntryList();
         Iterator iterator = entryList.iterator();
 
+        int counter = 0;
+        int last = entryList.size()/2;
+
         while (iterator.hasNext()) {
             entry = (IEntry) iterator.next();
 
             if (entry instanceof Stop) {
+
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
+                if(counter == 0){
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.first_stop));
+                }
+                if(last != 0 && counter == last){
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.last_stop));
+                }
+                counter++;
+
                 Marker marker = map.addMarker(markerOptions);
                 marker.setZIndex(1);
                 markers.add(marker);
@@ -124,6 +137,8 @@ public class PolylineDrawer {
                     Marker marker = map.addMarker(markerOptions);
                     marker.setZIndex(1);
                     markers.add(marker);
+
+
                     List<MyPlace> collect = responsePlaces.stream()
                             .filter(myPlace -> myPlace.getPlace_id().equals(((Stop) entry).getLocation().getLocation_id()))
                             .collect(Collectors.toList());
