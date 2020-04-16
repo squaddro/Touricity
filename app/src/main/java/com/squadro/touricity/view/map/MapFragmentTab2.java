@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -61,6 +62,7 @@ import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
+import com.squadro.touricity.requests.SuggestedPlacesRequest;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
 import com.squadro.touricity.view.map.DirectionsAPI.WaypointOrder;
 import com.squadro.touricity.view.map.editor.IEditor;
@@ -109,7 +111,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
     public static List<Marker> markersOfNearby = new ArrayList<>();
     public static Route route;
     public static List<Stop> customStopList = new ArrayList<>();
-
+    private LatLngBounds currentCameraBounds;
 
     private IEditor editor;
     public static StreetViewPanorama streetViewPanorama;
@@ -119,6 +121,8 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private PolylineDrawer polylineDrawer;
     private Circle circle;
+
+    public static ArrayList<Marker> suggestedMarkerList = new ArrayList<>(5);
 
     public static List<Place.Type> placeTypes = Arrays.asList(Place.Type.AIRPORT, Place.Type.AMUSEMENT_PARK,
             Place.Type.AQUARIUM, Place.Type.ART_GALLERY, Place.Type.BAKERY, Place.Type.BAR, Place.Type.BOWLING_ALLEY,
@@ -184,6 +188,28 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         initializeStreetView();
         initializeSpeechToText();
         initializeMapListeners();
+        initializeMapListenersForSuggestion();
+    }
+
+    public void initializeMapListenersForSuggestion(){
+        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+
+            @Override
+            public void onCameraIdle() {
+                currentCameraBounds = getMapBounds();
+
+                LatLng southwest = currentCameraBounds.southwest;
+                LatLng northeast = currentCameraBounds.northeast;
+
+                SuggestedPlacesRequest suggestedPlacesRequest = new SuggestedPlacesRequest(map, southwest, northeast);
+
+                try{
+                    suggestedPlacesRequest.getFavPlaces();
+                }catch (Exception e){
+                    e.getStackTrace();
+                }
+            }
+        });
     }
 
     private void initializeSpeechToText() {
@@ -663,5 +689,9 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
 
     private void initializeMapListeners() {
         map.setOnPolylineClickListener(this);
+    }
+
+    public LatLngBounds getMapBounds(){
+        return map.getProjection().getVisibleRegion().latLngBounds;
     }
 }

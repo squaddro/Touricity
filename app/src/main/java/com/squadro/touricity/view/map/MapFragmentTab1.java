@@ -67,8 +67,6 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
     @Getter
     private static GoogleMap map;
     private FrameLayout frameLayout;
-    private LatLngBounds currentCameraBounds;
-    public static ArrayList<Marker> suggestedMarkerList = new ArrayList<>(5);
 
     public static StreetViewPanorama streetViewPanorama;
     public static StreetViewPanoramaFragment streetViewPanoramaFragment;
@@ -110,32 +108,7 @@ public class MapFragmentTab1 extends Fragment implements OnMapReadyCallback, IRo
         initializeSheetBehaviors();
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeStreetView();
-        initializeMapListeners();
-    }
 
-    public void initializeMapListeners(){
-        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-
-            @Override
-            public void onCameraIdle() {
-                currentCameraBounds = getMapBounds();
-
-                LatLng southwest = currentCameraBounds.southwest;
-                LatLng northeast = currentCameraBounds.northeast;
-
-                SuggestedPlacesRequest suggestedPlacesRequest = new SuggestedPlacesRequest(map, southwest, northeast);
-
-                try{
-                    suggestedPlacesRequest.getFavPlaces();
-                }catch (Exception e){
-                    e.getStackTrace();
-                }
-            }
-        });
-    }
-
-    public LatLngBounds getMapBounds(){
-        return map.getProjection().getVisibleRegion().latLngBounds;
     }
 
     public void initializeSpeechToText(EditText editText) {

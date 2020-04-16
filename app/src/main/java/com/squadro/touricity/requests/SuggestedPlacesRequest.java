@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.squadro.touricity.retrofit.RestAPI;
 import com.squadro.touricity.retrofit.RetrofitCreate;
 import com.squadro.touricity.view.map.MapFragmentTab1;
+import com.squadro.touricity.view.map.MapFragmentTab2;
 
 import org.json.JSONException;
 
@@ -22,7 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.squadro.touricity.view.map.MapFragmentTab1.suggestedMarkerList;
+import static com.squadro.touricity.view.map.MapFragmentTab2.suggestedMarkerList;
 
 public class SuggestedPlacesRequest {
 
@@ -58,7 +59,7 @@ public class SuggestedPlacesRequest {
                 JsonObject body = response.body();
 
                 if(body != null){
-                    ArrayList<Marker> oldMarkers = MapFragmentTab1.suggestedMarkerList;
+                    ArrayList<Marker> oldMarkers = MapFragmentTab2.suggestedMarkerList;
 
                     //make it for all the tabs!
 
