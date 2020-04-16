@@ -45,4 +45,7 @@ public interface RestAPI {
 
     @POST("suggest")
     Call<JsonObject> suggest(@Body JsonObject body);
+
+    @POST("suggestRoutes")
+    Call<JsonObject> suggestRoutes(@Body JsonObject body);
 }

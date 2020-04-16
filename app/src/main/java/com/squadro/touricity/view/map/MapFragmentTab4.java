@@ -26,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.squadro.touricity.R;
 import com.squadro.touricity.maths.MapMaths;
 import com.squadro.touricity.message.types.Route;
+import com.squadro.touricity.requests.SuggestedRoutesRequest;
 import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.routeList.RouteSuggestionView;
@@ -91,6 +92,12 @@ public class MapFragmentTab4 extends Fragment implements OnMapReadyCallback, IRo
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         initializeStreetView();
         //initializeMapListeners();
+        initializeSuggestedRoutes();
+    }
+
+    private void initializeSuggestedRoutes() {
+        SuggestedRoutesRequest suggestedRoutesRequest = new SuggestedRoutesRequest(getActivity(), routeSuggestionView);
+        suggestedRoutesRequest.getFavRoutes();
     }
 
     public void initializeSpeechToText(EditText editText) {
