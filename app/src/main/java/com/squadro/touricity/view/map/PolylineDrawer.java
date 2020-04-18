@@ -97,6 +97,8 @@ public class PolylineDrawer {
 
             } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 PolylineOptions polylineOptions = new PolylineOptions();
+                polylineOptions.color(0xff0000ff);
+                polylineOptions.width(15);
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
                     polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
@@ -166,6 +168,8 @@ public class PolylineDrawer {
 
             } else if (entry instanceof Path && ((Path)entry).getVertices() != null) {
                 PolylineOptions polylineOptions = new PolylineOptions();
+                polylineOptions.color(0xff0000ff);
+                polylineOptions.width(15);
                 List<PathVertex> vertices = ((Path) entry).getVertices();
                 for (int i = 0; i < vertices.size(); i++) {
                     polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
@@ -203,6 +207,8 @@ public class PolylineDrawer {
              if (entry instanceof Path && ((Path)entry).getVertices() != null) {
 
                 PolylineOptions polylineOptions = new PolylineOptions();
+                 polylineOptions.color(0xff0000ff);
+                 polylineOptions.width(15);
                 if (entry.equals(path)) {
                     List<PathVertex> vertices = ((Path) entry).getVertices();
                     for (int i = 0; i < vertices.size(); i++) {
