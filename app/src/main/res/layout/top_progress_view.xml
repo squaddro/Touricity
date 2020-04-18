@@ -37,14 +37,41 @@
                 android:id="@+id/top_progress_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="%0"
+                android:text="%100"
                 android:textSize="32sp"/>
+
             <LinearLayout
-                android:id="@+id/top_progress_text_areas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="5dp"/>
+                android:padding="5dp">
+                <TextView
+                    android:id="@+id/top_progress_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Next Goal"
+                    android:textSize="24sp"/>
+                <LinearLayout
+                    android:id="@+id/top_progress_text_areas_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+                    <TextView
+                        android:id="@+id/top_progress_time_to_next_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time left: 0.0"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/top_progress_text_areas_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

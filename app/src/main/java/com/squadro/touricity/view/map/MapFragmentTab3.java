@@ -209,7 +209,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	@RequiresApi(api = Build.VERSION_CODES.N)
 	@Override
 	public void startProgress(Route route) {
-		progressController = new ProgressController(route, null);
+		progressController = new ProgressController(route, responsePlaces, null);
 
 		MapProgressView mapProgressViewer = new MapProgressView(map);
 		mapProgressViewer.setCustomPositionUpdateListener(progressController);

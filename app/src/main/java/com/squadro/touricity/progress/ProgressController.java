@@ -1,5 +1,9 @@
 package com.squadro.touricity.progress;
 
+import android.media.Image;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.squadro.touricity.message.types.Path;
 import com.squadro.touricity.message.types.PathVertex;
@@ -7,6 +11,8 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 import com.squadro.touricity.maths.MapMaths;
+import com.squadro.touricity.view.map.MapFragmentTab3;
+import com.squadro.touricity.view.map.placesAPI.MyPlace;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ProgressController implements IPositionUpdateListener {
 
@@ -99,20 +107,25 @@ public class ProgressController implements IPositionUpdateListener {
 
 	private HashMap<IEntry, ComputedValue[]> precomputedTimes;
 
-	public ProgressController(Route route) {
+	private HashMap<Stop, MyPlace> myPlaces;
+
+	@RequiresApi(api = Build.VERSION_CODES.N)
+	public ProgressController(Route route, List<MyPlace> myPlaces) {
 		this.route = route;
 
 		prevPositions = new ArrayList<>();
 		lastProgress = new RouteProgress();
 		progressEventListeners = new LinkedList<>();
+		this.myPlaces = extractPlaces(route);
 		lastVisitIndex = 0;
 		lastVisitEntry = route.getEntries()[0];
 		precomputedTimes = preComputeDistancesAndMinutes(route);
 		lastProgress = calculateProgress(route, precomputedTimes, null, null, prevPositions);
 	}
 
-	public ProgressController(Route route, LatLng[] prevPositions) {
-		this(route);
+	@RequiresApi(api = Build.VERSION_CODES.N)
+	public ProgressController(Route route, List<MyPlace> myPlaces, LatLng[] prevPositions) {
+		this(route, myPlaces);
 
 		if(prevPositions != null) {
 			for(LatLng position : prevPositions) {
@@ -284,7 +297,7 @@ public class ProgressController implements IPositionUpdateListener {
 
 			currentEntry = entries[0];
 			indexInCurrentEntry = 0;
-			nextPlaceTitle = "" + currentEntry.getIndex();
+			nextPlaceTitle = myPlaces.get(currentEntry).getName();
 			distanceToNextPlace = 0;
 			currentDistanceTraveled = 0;
 			timeToNextGoal = 0;
@@ -324,8 +337,7 @@ public class ProgressController implements IPositionUpdateListener {
 				}
 
 				if(place != null) {
-					nextPlaceTitle = "" + place.getIndex();
-					//nextPlaceTitle = MapFragmentTab3.responsePlaces;
+					nextPlaceTitle = myPlaces.get(place).getName();
 
 					distanceToNextPlace = currentEntryValues[0].prevTotalDistance - currentDistanceTraveled;
 					if(isOnPath)
@@ -441,5 +453,33 @@ public class ProgressController implements IPositionUpdateListener {
 
 	public void clearProgressEventListeners() {
 		progressEventListeners = new LinkedList<>();
+	}
+
+	@RequiresApi(api = Build.VERSION_CODES.N)
+	private HashMap<Stop, MyPlace> extractPlaces(Route route) {
+		HashMap<Stop, MyPlace> myPlaceHashMap = new HashMap<>();
+
+		for(IEntry entry : route.getEntries()) {
+			if(entry instanceof Stop) {
+				Stop stop = (Stop) entry;
+
+				MyPlace place = MapFragmentTab3.getPlace(stop);
+
+				if(place == null) {
+					String comment = stop.getComment();
+					String title = "";
+					String desc = "";
+					if (comment.contains("Title:") && comment.contains("Desc")) {
+						title = comment.substring(comment.indexOf("Title:"), comment.indexOf("Desc:"));
+						desc = comment.substring(comment.indexOf("Desc:"));
+					}
+					place = new MyPlace(desc, null, null, title, null, null, null, null);
+				}
+
+				myPlaceHashMap.put(stop, place);
+			}
+		}
+
+		return myPlaceHashMap;
 	}
 }
