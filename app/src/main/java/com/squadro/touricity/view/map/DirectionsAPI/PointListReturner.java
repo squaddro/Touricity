@@ -38,10 +38,12 @@ public class PointListReturner implements IAsync, IAsync2{
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void onComplete2(List<LatLng> data) {
+    public void onComplete2(List<LatLng> data, int seconds) {
 
         this.path.setVertices(latlonListToPathVertexList(data));
+        this.path.setDuration(seconds);
         ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
+        ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setDuration(seconds);
 
         PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(),"create");
         pd.drawRoute(rcw.getRoute());

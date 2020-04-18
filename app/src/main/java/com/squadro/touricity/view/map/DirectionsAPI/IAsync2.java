@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IAsync2 {
 
-    void onComplete2(List<LatLng> data);
+    void onComplete2(List<LatLng> data, int minutes);
 
 }
