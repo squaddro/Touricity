@@ -9,7 +9,6 @@ import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.message.types.interfaces.IEntry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapMaths {
@@ -165,27 +164,26 @@ public class MapMaths {
         return MapMaths.boundsPadding(builder.build(), 10, 10, 60, 10);
     }
 
-    public static double distanceOfPath(Path path){
-        double distance = 0.0;
-        List<PathVertex> vertices = path.getVertices();
-        int firstIndex = 0;
-        int secondIndex = 1;
+    public static double distanceOfStops(Stop stop1, Stop stop2){
 
-        while(secondIndex < vertices.size()){
-            distance += distance(vertices.get(firstIndex).toLatLong(), vertices.get(secondIndex).toLatLong());
+        if(stop1 == null || stop2 == null)
+            return 0.0;
+        return distance(stop1.getLocation().getLatLng(), stop2.getLocation().getLatLng());
+    }
+
+    public static double distanceOfRoute(List<Stop> stops){
+        double distance = 0.0;
+
+        if(stops == null)
+            return 0.0;
+        int index1 = 0;
+        int index2 = 1;
+
+        while(index2 < stops.size()){
+            distance += distanceOfStops(stops.get(index1), stops.get(index2));
+            index1++;
+            index2++;
         }
         return distance;
     }
-
-    public static double distanceOfRoute(Route route){
-        double distance = 0.0;
-
-        for (IEntry entry:route.getAbstractEntryList()){
-            if(entry instanceof Path){
-                distance += distanceOfPath((Path) entry);
-            }
-        }
-        return distance;
-    }
-
 }

@@ -64,6 +64,7 @@ import com.squadro.touricity.requests.NearByPlaceRequest;
 import com.squadro.touricity.requests.RouteRequests;
 import com.squadro.touricity.requests.SuggestedPlacesRequest;
 import com.squadro.touricity.view.map.DirectionsAPI.DirectionPost;
+import com.squadro.touricity.view.map.DirectionsAPI.ManuelOrderer;
 import com.squadro.touricity.view.map.DirectionsAPI.WaypointOrder;
 import com.squadro.touricity.view.map.editor.IEditor;
 import com.squadro.touricity.view.map.editor.PathEditor;
@@ -431,10 +432,15 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
         Button optimizeButton = routeCreateView.findViewById(R.id.route_create_optimize);
         optimizeButton.setOnClickListener(view -> {
 
-            if (routeCreateView.getRoute().getAbstractEntryList().size() >= 7) {
+            if (routeCreateView.getRoute().getAbstractEntryList().size() >= 19) {
                 DirectionPost dp = new DirectionPost();
                 String url = dp.getOptimizedDirectionsURL(routeCreateView.getRoute(), "driving");
                 WaypointOrder wp = new WaypointOrder(url, routeCreateView);
+            }
+            else if(routeCreateView.getRoute().getAbstractEntryList().size()>=3){
+                ManuelOrderer mo = new ManuelOrderer();
+                List<Integer> order = mo.getOptimizedOrder(routeCreateView.getRoute());
+                WaypointOrder wp = new WaypointOrder(routeCreateView, order);
             }
 
         });
