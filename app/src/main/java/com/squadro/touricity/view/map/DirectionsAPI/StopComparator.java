@@ -4,7 +4,7 @@ import com.squadro.touricity.message.types.Stop;
 
 import java.util.Comparator;
 
-class StopComparator implements Comparator<Stop> {
+public class StopComparator implements Comparator<Stop> {
 
     @Override
     public int compare(Stop stop, Stop t1) {

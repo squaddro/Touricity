@@ -163,4 +163,27 @@ public class MapMaths {
         }
         return MapMaths.boundsPadding(builder.build(), 10, 10, 60, 10);
     }
+
+    public static double distanceOfStops(Stop stop1, Stop stop2){
+
+        if(stop1 == null || stop2 == null)
+            return 0.0;
+        return distance(stop1.getLocation().getLatLng(), stop2.getLocation().getLatLng());
+    }
+
+    public static double distanceOfRoute(List<Stop> stops){
+        double distance = 0.0;
+
+        if(stops == null)
+            return 0.0;
+        int index1 = 0;
+        int index2 = 1;
+
+        while(index2 < stops.size()){
+            distance += distanceOfStops(stops.get(index1), stops.get(index2));
+            index1++;
+            index2++;
+        }
+        return distance;
+    }
 }

@@ -17,6 +17,8 @@ import java.util.List;
 public class WaypointOrder implements IAsync {
 
     RouteCreateView rcw = null;
+    Route route;
+    List<Integer> order;
     public IAsync async;
 
 
@@ -26,6 +28,12 @@ public class WaypointOrder implements IAsync {
         this.rcw = route;
         FetchUrl fetchUrl = new FetchUrl(this);
         fetchUrl.execute(url);
+    }
+
+    public WaypointOrder(RouteCreateView route, List<Integer> order){
+        this.rcw = route;
+        this.order = order;
+        routeOrder(rcw, order);
     }
 
     @Override
