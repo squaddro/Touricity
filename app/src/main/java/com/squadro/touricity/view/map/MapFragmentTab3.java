@@ -1,6 +1,8 @@
 package com.squadro.touricity.view.map;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +27,7 @@ import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Route;
 import com.squadro.touricity.message.types.Stop;
 import com.squadro.touricity.progress.ProgressController;
+import com.squadro.touricity.progress.ProgressLocationProvider;
 import com.squadro.touricity.view.map.offline.CreateOfflineDataDirectory;
 import com.squadro.touricity.view.map.offline.CustomMapTileProvider;
 import com.squadro.touricity.view.map.offline.DeleteOfflineDataAsync;
@@ -77,6 +81,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	ProgressController progressController;
 	BottomProgressViewer bottomProgressViewer;
 	TopProgressView topProgressView;
+	ProgressLocationProvider locationProvider;
 
 	public static void progressDone(ProgressBar progressBar, AtomicInteger count) {
 		if(count.get() == 2) progressBar.setVisibility(View.INVISIBLE);
@@ -204,7 +209,11 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	@RequiresApi(api = Build.VERSION_CODES.N)
 	@Override
 	public void startProgress(Route route) {
+
 		progressController = new ProgressController(route, responsePlaces, null);
+
+		locationProvider = new ProgressLocationProvider(getContext());
+		locationProvider.setPositionUpdateListener(progressController);
 
 		MapProgressView mapProgressViewer = new MapProgressView(map);
 		mapProgressViewer.setCustomPositionUpdateListener(progressController);
@@ -235,7 +244,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 		coordinatorLayout.removeView(bottomProgressViewer);
 		coordinatorLayout.addView(savedRouteView);
 
-
+		locationProvider.stopListener();
 	}
 
 	@RequiresApi(api = Build.VERSION_CODES.N)

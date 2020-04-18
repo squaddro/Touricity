@@ -49,7 +49,7 @@
                     android:id="@+id/top_progress_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Go first stop to start!"
+                    android:text="Start from first stop!"
                     android:textSize="24sp"/>
                 <LinearLayout
                     android:id="@+id/top_progress_text_areas_1"
@@ -61,7 +61,7 @@
                         android:id="@+id/top_progress_time_to_next_place"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Time left: 0.0"
+                        android:text="Time to next place: 00:00"
                         android:textSize="20sp"/>
                 </LinearLayout>
                 <LinearLayout
