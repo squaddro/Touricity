@@ -1,9 +1,7 @@
 package com.squadro.touricity.view.map.DirectionsAPI;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
@@ -12,10 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Getter;
 
 public class FetchUrl extends AsyncTask<String, Void, String>{
 
@@ -36,9 +31,8 @@ public class FetchUrl extends AsyncTask<String, Void, String>{
         try {
         // Fetching the data from web service
             data = downloadUrl(url[0]);
-            Log.d("Background Task data", data.toString());
         } catch (Exception e) {
-            Log.d("Background Task", e.toString());
+
         }
 
         async.onComplete(data);
@@ -47,14 +41,6 @@ public class FetchUrl extends AsyncTask<String, Void, String>{
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
-        //ParserTask parserTask = new ParserTask();
-        // Invokes the thread for parsing the JSON data
-
-        //parserTask.delegate = this;
-        //parserTask.execute(result);
-
-
     }
 
     private String downloadUrl(String strUrl) throws IOException {
@@ -76,22 +62,13 @@ public class FetchUrl extends AsyncTask<String, Void, String>{
                 sb.append(line);
             }
             data = sb.toString();
-            Log.d("downloadUrl", data.toString());
             br.close();
         } catch (Exception e) {
-            Log.d("Exception", e.toString());
+
         } finally {
             iStream.close();
             urlConnection.disconnect();
         }
         return data;
-    }
-
-
-    public List<LatLng> getPointList() {
-
-            System.out.println("a");
-
-        return pointList;
     }
 }
