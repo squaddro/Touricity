@@ -24,6 +24,9 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
 
     public IAsync2 async2;
 
+    @Getter
+    public int seconds;
+
     public ParserTask(IAsync2 async2){
         this.async2 = async2;
         this.pointList = new ArrayList<>();
@@ -41,6 +44,7 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
 
         // Starts parsing data
             routes = parser.parse(jObject);
+            this.seconds = parser.getSeconds();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,7 +78,7 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
         if(lineOptions != null) {
             //mMap.addPolyline(lineOptions);
             this.pointList = lineOptions.getPoints();
-            async2.onComplete2(this.pointList);
+            async2.onComplete2(this.pointList, getSeconds());
         }
         else {
 
