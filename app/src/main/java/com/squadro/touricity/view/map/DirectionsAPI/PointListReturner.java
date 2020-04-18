@@ -43,9 +43,9 @@ public class PointListReturner implements IAsync, IAsync2{
     public void onComplete2(List<LatLng> data, int seconds) {
 
         this.path.setVertices(latlonListToPathVertexList(data));
-        this.path.setDuration(seconds);
+        this.path.setDuration(seconds / 60);
         ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
-        ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setDuration(seconds);
+        ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setDuration(seconds / 60);
 
         PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(),"create",context);
         pd.drawRoute(rcw.getRoute());

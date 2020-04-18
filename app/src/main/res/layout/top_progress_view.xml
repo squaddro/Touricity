@@ -37,7 +37,7 @@
                 android:id="@+id/top_progress_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="%100"
+                android:text="%0.0"
                 android:textSize="32sp"/>
 
             <LinearLayout
@@ -49,7 +49,7 @@
                     android:id="@+id/top_progress_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Next Goal"
+                    android:text="Go first stop to start!"
                     android:textSize="24sp"/>
                 <LinearLayout
                     android:id="@+id/top_progress_text_areas_1"

@@ -338,10 +338,10 @@ public class ProgressController implements IPositionUpdateListener {
 
 				if(place != null) {
 					nextPlaceTitle = myPlaces.get(place).getName();
-
-					distanceToNextPlace = currentEntryValues[0].prevTotalDistance - currentDistanceTraveled;
+					ComputedValue[] nextPlaceComputedValues = precomputedValues.get(place);
+					distanceToNextPlace = nextPlaceComputedValues[0].prevTotalDistance - currentDistanceTraveled;
 					if(isOnPath)
-						timeToNextPlace = (distanceToNextPlace / (precomputedValues.get(place)[0].prevTotalDistance - currentEntryValues[0].prevTotalDistance)) * currentEntry.getDuration();
+						timeToNextPlace = (distanceToNextPlace / (nextPlaceComputedValues[0].prevTotalDistance - currentEntryValues[0].prevTotalDistance)) * currentEntry.getDuration();
 					else
 						timeToNextPlace = 0;
 					nextPlace = place;
