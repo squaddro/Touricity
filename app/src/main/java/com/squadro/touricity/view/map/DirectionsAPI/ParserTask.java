@@ -25,7 +25,7 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
     public IAsync2 async2;
 
     @Getter
-    public int minutes;
+    public int seconds;
 
     public ParserTask(IAsync2 async2){
         this.async2 = async2;
@@ -45,7 +45,7 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
             Log.d("ParserTask", parser.toString());
         // Starts parsing data
             routes = parser.parse(jObject);
-            this.minutes = parser.getSeconds();
+            this.seconds = parser.getSeconds();
 
             Log.d("ParserTask","Executing routes");
             Log.d("ParserTask",routes.toString());
@@ -84,7 +84,7 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
         if(lineOptions != null) {
             //mMap.addPolyline(lineOptions);
             this.pointList = lineOptions.getPoints();
-            async2.onComplete2(this.pointList, getMinutes());
+            async2.onComplete2(this.pointList, getSeconds());
         }
         else {
             Log.d("onPostExecute","without Polylines drawn");
