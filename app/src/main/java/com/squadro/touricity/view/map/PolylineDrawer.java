@@ -102,6 +102,8 @@ public class PolylineDrawer {
                     polylineOptions.add(new LatLng(vertices.get(i).getLatitude(), vertices.get(i).getLongitude()));
 
                 }
+                polylineOptions.width(15);
+                polylineOptions.color(0xff7f00ff);
                 Polyline polyline = map.addPolyline(polylineOptions);
                 polyline.setZIndex(1);
                 polyline.setClickable(true);
