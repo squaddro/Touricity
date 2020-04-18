@@ -9,10 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.squadro.touricity.R;
 import com.squadro.touricity.message.types.Location;
@@ -25,10 +22,6 @@ import com.squadro.touricity.view.map.MapFragmentTab3;
 import com.squadro.touricity.view.map.PolylineDrawer;
 import com.squadro.touricity.view.routeList.RouteCreateView;
 import com.squadro.touricity.view.routeList.RouteListItem;
-
-import org.w3c.dom.Text;
-
-import javax.crypto.spec.RC2ParameterSpec;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -107,11 +100,11 @@ public class StopCardView extends RouteListItem<Stop> implements ILocationReques
     public void onClick(View view) {
         if (this.getViewId().equals("explore")) {
 
-            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap(), viewId);
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab1.getMap(), viewId,getContext());
             polylineDrawer.drawRoute(this.route, stop);
         } else if (this.getViewId().equals("saved")) {
 
-            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap(), viewId);
+            PolylineDrawer polylineDrawer = new PolylineDrawer(MapFragmentTab3.getMap(), viewId,getContext());
             polylineDrawer.drawRoute(this.route, stop);
         }
         else if(getViewId().equals("progress")) {

@@ -286,7 +286,7 @@ public class RouteCreateView extends LinearLayout implements IEntryButtonEventsL
 
             route.addEntry(new Path(null, 0, 0, "", null, Path.PathType.DRIVING, null));
 
-            PointListReturner plr = new PointListReturner(url, this, lastIndex + 1);
+            PointListReturner plr = new PointListReturner(url, this, lastIndex + 1,getContext());
             stop.setIndex(lastIndex+2);
             route.addEntry(stop);
             updateView();

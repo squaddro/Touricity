@@ -1,5 +1,8 @@
 package com.squadro.touricity.view.map;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -38,12 +41,14 @@ public class PolylineDrawer {
     private static List<Pair<Polyline, Path>> polylines = new ArrayList<>();
     private static List<Marker> markers = new ArrayList<>();
     private List<MyPlace> responsePlaces;
+    private Context context;
 
     private IEntry entry;
 
-    public PolylineDrawer(GoogleMap map,String viewId) {
+    public PolylineDrawer(GoogleMap map,String viewId,Context context) {
         this.map = map;
         this.viewId = viewId;
+        this.context = context;
         revalidateResponsePlaces();
     }
 
@@ -74,11 +79,16 @@ public class PolylineDrawer {
 
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(new LatLng(((Stop) entry).getLocation().getLatitude(), ((Stop) entry).getLocation().getLongitude()));
+                int size = (int)(38 * context.getResources().getDisplayMetrics().density);
                 if(counter == 0){
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.first_stop));
+                    Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.first_stop);
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(icon, size, size, false)));
                 }
                 if(last != 0 && counter == last){
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.last_stop));
+                    Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.last_stop);
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(icon, size, size, false)));
                 }
                 counter++;
 

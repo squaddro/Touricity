@@ -1,5 +1,6 @@
 package com.squadro.touricity.view.map.DirectionsAPI;
 
+import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
@@ -20,14 +21,15 @@ public class PointListReturner implements IAsync, IAsync2{
     private RouteCreateView rcw = null;
 
     private int pathIndex;
-
+    private Context context;
     private Path path = new Path(null,0,0,"",null, Path.PathType.DRIVING,null);
 
-    public PointListReturner(String url, RouteCreateView route, int newPathIndex){
+    public PointListReturner(String url, RouteCreateView route, int newPathIndex, Context context){
         FetchUrl fetchUrl = new FetchUrl(this);
         fetchUrl.execute(url);
         this.rcw = route;
         this.pathIndex = newPathIndex;
+        this.context = context;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class PointListReturner implements IAsync, IAsync2{
         ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
         ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setDuration(seconds);
 
-        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(),"create");
+        PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(),"create",context);
         pd.drawRoute(rcw.getRoute());
     }
 

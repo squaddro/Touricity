@@ -9,13 +9,10 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -36,8 +33,6 @@ import com.squadro.touricity.view.map.placesAPI.CustomInfoWindowAdapter;
 import com.squadro.touricity.view.map.placesAPI.MapLongClickListener;
 import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
-import com.squadro.touricity.view.popupWindowView.PopupWindowParameters;
-import com.squadro.touricity.view.popupWindowView.PopupWindowView;
 import com.squadro.touricity.view.progress.BottomProgressViewer;
 import com.squadro.touricity.view.progress.MapProgressView;
 import com.squadro.touricity.view.progress.TopProgressView;
@@ -117,7 +112,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 		map.setMaxZoomPreference(18);
 		frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab3_map);
 
-		polylineDrawer = new PolylineDrawer(map, "saved");
+		polylineDrawer = new PolylineDrawer(map, "saved",getContext());
 		initializeSheetbehavior(googleMap);
 		map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
 		xStream = new XStream();
