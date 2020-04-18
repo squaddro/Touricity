@@ -24,6 +24,9 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
 
     public IAsync2 async2;
 
+    @Getter
+    public int seconds;
+
     public ParserTask(IAsync2 async2){
         this.async2 = async2;
         this.pointList = new ArrayList<>();
@@ -37,15 +40,12 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
         List<List<HashMap<String, String>>> routes = null;
         try {
             jObject = new JSONObject(jsonData[0]);
-            Log.d("ParserTask",jsonData[0].toString());
             DataParser parser = new DataParser();
-            Log.d("ParserTask", parser.toString());
+
         // Starts parsing data
             routes = parser.parse(jObject);
-            Log.d("ParserTask","Executing routes");
-            Log.d("ParserTask",routes.toString());
+            this.seconds = parser.getSeconds();
         } catch (Exception e) {
-            Log.d("ParserTask",e.toString());
             e.printStackTrace();
         }
         return routes;
@@ -73,16 +73,15 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
             lineOptions.addAll(points);
             lineOptions.width(10);
             lineOptions.color(Color.RED);
-            Log.d("onPostExecute","onPostExecute lineoptions decoded");
         }
         // Drawing polyline in the Google Map for the i-th route
         if(lineOptions != null) {
             //mMap.addPolyline(lineOptions);
             this.pointList = lineOptions.getPoints();
-            async2.onComplete2(this.pointList);
+            async2.onComplete2(this.pointList, getSeconds());
         }
         else {
-            Log.d("onPostExecute","without Polylines drawn");
+
         }
     }
 }

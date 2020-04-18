@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
+
 public class DataParser {
+
+    @Getter
+    public int seconds = 0;
 
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
         List<List<HashMap<String, String>>> routes = new ArrayList<>() ;
@@ -25,6 +30,8 @@ public class DataParser {
                 List path = new ArrayList<>();
                 /** Traversing all legs */
                 for(int j=0;j<jLegs.length();j++){
+                    JSONObject duration = ((JSONObject)(jLegs.get(j))).getJSONObject("duration");
+                    seconds += Integer.parseInt(duration.get("value").toString());
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
                     /** Traversing all steps */
                     for(int k=0;k<jSteps.length();k++){

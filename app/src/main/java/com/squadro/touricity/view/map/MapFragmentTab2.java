@@ -179,7 +179,7 @@ public class MapFragmentTab2 extends Fragment implements OnMapReadyCallback, IRo
                     .show();
         }
         map = googleMap;
-        polylineDrawer = new PolylineDrawer(map, "create");
+        polylineDrawer = new PolylineDrawer(map, "create",getContext());
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.tab2_map);
         createRouteCreateView();
         initializeSheetBehaviors();
