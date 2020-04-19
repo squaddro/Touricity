@@ -18,7 +18,7 @@ public class SearchBar {
     private ArrayAdapter<String> adapter = null;
 
     private static final String[] CITIES = {
-      "Ankara", "Istanbul", "Izmir"
+      "Ankara", "İstanbul", "İzmir"
     };
 
     public SearchBar(Activity activity, Context context){
