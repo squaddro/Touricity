@@ -185,6 +185,7 @@ public class ProgressController implements IPositionUpdateListener {
 					}
 
 					MapMaths.ClosestPoint closestToPath = MapMaths.getClosestPoint(position, vertices);
+					closestToPath.lowerIndex += startIndex;
 					if(closestToPath.distance < distanceThreshold){
 						// if the point was the first closest point
 						// or if the path is closer than the other path

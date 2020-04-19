@@ -45,6 +45,7 @@ public class ProgressLocationProvider extends Service implements LocationListene
 	protected LocationManager locationManager;
 
 	private IPositionUpdateListener positionUpdateListener;
+	private Handler handler;
 
 	public ProgressLocationProvider(Context mContext) {
 		this.mContext = mContext;
@@ -57,8 +58,8 @@ public class ProgressLocationProvider extends Service implements LocationListene
 	private Location initListener() {
 
 		try {
-			ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-			scheduledExecutorService.scheduleAtFixedRate(this::update, 5000, 1000, TimeUnit.MILLISECONDS);
+			//ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+			//scheduledExecutorService.scheduleAtFixedRate(this::update, 5000, 5000, TimeUnit.MILLISECONDS);
 			locationManager = (LocationManager) mContext
 					.getSystemService(LOCATION_SERVICE);
 
@@ -119,9 +120,8 @@ public class ProgressLocationProvider extends Service implements LocationListene
 					&& ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
 			}
-			loc = locationManager
-					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			new Handler(Looper.getMainLooper()).post(() -> onLocationChanged(loc));
+
+			locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -142,38 +142,6 @@ public class ProgressLocationProvider extends Service implements LocationListene
 		}
 		return latitude;
 	}
-
-	public boolean canGetLocation() {
-		return this.canGetLocation;
-	}
-
-	public void showSettingsAlert() {
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-
-		alertDialog.setTitle("GPS is not Enabled!");
-
-		alertDialog.setMessage("Do you want to turn on GPS?");
-
-
-		alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-				mContext.startActivity(intent);
-			}
-		});
-
-
-		alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		});
-
-
-		alertDialog.show();
-	}
-
 
 	public void stopListener() {
 		if (locationManager != null) {
