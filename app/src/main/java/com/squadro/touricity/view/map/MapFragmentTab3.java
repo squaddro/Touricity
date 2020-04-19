@@ -39,6 +39,7 @@ import com.squadro.touricity.view.map.placesAPI.MarkerInfo;
 import com.squadro.touricity.view.map.placesAPI.MyPlace;
 import com.squadro.touricity.view.progress.BottomProgressViewer;
 import com.squadro.touricity.view.progress.MapProgressView;
+import com.squadro.touricity.view.progress.ProgressNotificationBar;
 import com.squadro.touricity.view.progress.TopProgressView;
 import com.squadro.touricity.view.routeList.RouteCardView;
 import com.squadro.touricity.view.routeList.SavedRouteView;
@@ -82,6 +83,7 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 	BottomProgressViewer bottomProgressViewer;
 	TopProgressView topProgressView;
 	ProgressLocationProvider locationProvider;
+	ProgressNotificationBar notificationBar;
 
 	public static void progressDone(ProgressBar progressBar, AtomicInteger count) {
 		if(count.get() == 2) progressBar.setVisibility(View.INVISIBLE);
@@ -228,10 +230,13 @@ public class MapFragmentTab3 extends Fragment implements OnMapReadyCallback, IRo
 		coordinatorLayout.removeView(savedRouteView);
 		coordinatorLayout.addView(bottomProgressViewer);
 
+		notificationBar = new ProgressNotificationBar(getContext());
+
 		progressController.clearProgressEventListeners();
 		progressController.addProgressEventListener(mapProgressViewer);
 		progressController.addProgressEventListener(bottomProgressViewer);
 		progressController.addProgressEventListener(topProgressView);
+		progressController.addProgressEventListener(notificationBar);
 
 	}
 

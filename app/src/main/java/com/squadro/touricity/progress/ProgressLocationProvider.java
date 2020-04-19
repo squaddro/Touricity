@@ -58,8 +58,8 @@ public class ProgressLocationProvider extends Service implements LocationListene
 	private Location initListener() {
 
 		try {
-			//ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-			//scheduledExecutorService.scheduleAtFixedRate(this::update, 5000, 5000, TimeUnit.MILLISECONDS);
+			ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+			scheduledExecutorService.scheduleAtFixedRate(this::update, 5000, 5000, TimeUnit.MILLISECONDS);
 			locationManager = (LocationManager) mContext
 					.getSystemService(LOCATION_SERVICE);
 
