@@ -73,7 +73,13 @@ public class FilterRequests {
                 }
                 routeExploreView.setRouteList(new ArrayList<>());
                 JsonArray routeList = response.body().getAsJsonArray("routeList");
-
+                if(routeList.size() == 0){
+                    new AlertDialog.Builder(context)
+                            .setTitle("INFO")
+                            .setMessage("Proper routes could not found according to filter instances")
+                            .setNeutralButton("OK", (dialog, which) -> dialog.dismiss()).show();
+                    return;
+                }
                 ArrayList<RouteLike> routes = new ArrayList<>();
                 RouteConverter routeConverter = new RouteConverter();
                 int count = 0;
