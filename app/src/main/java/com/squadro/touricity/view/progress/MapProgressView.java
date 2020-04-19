@@ -1,5 +1,7 @@
 package com.squadro.touricity.view.progress;
 
+import android.graphics.Color;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
@@ -61,6 +63,7 @@ public class MapProgressView implements GoogleMap.OnMapLongClickListener, IProgr
 		options.jointType(JointType.ROUND);
 		options.startCap(new SquareCap());
 		options.endCap(new RoundCap());
+		options.zIndex(1000);
 
 		polyline = map.addPolyline(options);
 
@@ -76,6 +79,8 @@ public class MapProgressView implements GoogleMap.OnMapLongClickListener, IProgr
 	public void progressFinished() {
 		if(polyline != null)
 			polyline.remove();
+		if(positionMarker != null)
+			positionMarker.remove();
 	}
 
 	public void setCustomPositionUpdateListener(IPositionUpdateListener positionUpdateListener) {

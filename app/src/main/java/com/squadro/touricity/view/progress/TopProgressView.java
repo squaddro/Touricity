@@ -21,6 +21,8 @@ public class TopProgressView extends CardView implements IProgressEventListener,
 
 	TextView timePercentageText;
 	TextView distancePercentageText;
+	TextView titleText;
+	TextView nextPlaceTimeText;
 
 	TextView startTimeText;
 	TextView actualEndTimeText;
@@ -39,8 +41,11 @@ public class TopProgressView extends CardView implements IProgressEventListener,
 	public void onFinishInflate() {
 		super.onFinishInflate();
 		timePercentageText = findViewById(R.id.top_progress_percentage);
+		titleText = findViewById(R.id.top_progress_title);
+
 		expandImage = findViewById(R.id.top_progress_expand_image);
-		textAreas = findViewById(R.id.top_progress_text_areas);
+		nextPlaceTimeText = findViewById(R.id.top_progress_time_to_next_place);
+		textAreas = findViewById(R.id.top_progress_text_areas_2);
 		additionalTextAreas = findViewById(R.id.top_progress_additional_text_areas);
 
 		startTimeText = new TextView(getContext());
@@ -71,6 +76,13 @@ public class TopProgressView extends CardView implements IProgressEventListener,
 		timePercentageText.setText("%" + String.format("%.1f", progress.getProgressTimePercentage() * 100));
 
 		distancePercentageText.setText("Distance: %" + String.format("%.1f", progress.getProgressDistancePercentage() * 100));
+
+		titleText.setText(progress.getNextPlaceTitle());
+
+		double nextPlaceTime = progress.getTimeToNextPlace();
+		int nextPlaceMinutes = (int) nextPlaceTime;
+		int nextPlaceSeconds = (int)((nextPlaceTime - (double) nextPlaceMinutes) * 60);
+		nextPlaceTimeText.setText("Time to next place: " + String.format("%02d", nextPlaceMinutes) + ":" + String.format("%02d", nextPlaceSeconds));
 
 		startTimeText.setText("start: " + progress.getStartTime().toString());
 		actualEndTimeText.setText("actual: " + progress.getActualEndTime().toString());

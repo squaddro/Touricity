@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.XStream;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -53,15 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
 		boolean writeGranted = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 		boolean locationGranted =ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-		if(!writeGranted || !locationGranted){
-			String[] grants = null;
-			if(writeGranted)
-				grants = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
-			else if(locationGranted)
-				grants = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-			else
-				grants = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-			ActivityCompat.requestPermissions(this, grants,5);
+		boolean locationGrantedFine =ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+		if(!writeGranted || !locationGranted || !locationGrantedFine){
+			ArrayList<String> grants = new ArrayList<>();
+			if(!writeGranted)
+				grants.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+			if(!locationGranted)
+				grants.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+			if(!locationGrantedFine)
+				grants.add(Manifest.permission.ACCESS_FINE_LOCATION);
+
+			ActivityCompat.requestPermissions(this, grants.toArray(new String[0]),5);
 		}
 		;
 
