@@ -91,7 +91,8 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
                                 }
                                 if (!isCreateView.get() && progressBar.getProgress() == progressBar.getMax()) {
                                     progressBar.setVisibility(View.INVISIBLE);
-                                    MapFragmentTab1.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                    if(view instanceof RouteExploreView)
+                                        MapFragmentTab1.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                                 }
                             }
 
@@ -117,7 +118,8 @@ public class GetPlacesInfoAsync extends AsyncTask<Stop, Void, Void> {
                     }
                     if (!isCreateView.get() && progressBar.getProgress() == progressBar.getMax()) {
                         progressBar.setVisibility(View.INVISIBLE);
-                        MapFragmentTab1.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        if(view instanceof RouteExploreView)
+                            MapFragmentTab1.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }
                     if(!isCreateView.get())
                     progressBar.setProgress(progressBar.getProgress() + 1);
