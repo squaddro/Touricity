@@ -11,16 +11,22 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class ProgressLocationProvider extends Service implements LocationListener {
 
-	private final Context mContext;
+	private Context mContext;
 
 	boolean checkGPS = false;
 
@@ -45,9 +51,14 @@ public class ProgressLocationProvider extends Service implements LocationListene
 		initListener();
 	}
 
+	public ProgressLocationProvider() {
+	}
+
 	private Location initListener() {
 
 		try {
+			ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+			scheduledExecutorService.scheduleAtFixedRate(this::update, 5000, 1000, TimeUnit.MILLISECONDS);
 			locationManager = (LocationManager) mContext
 					.getSystemService(LOCATION_SERVICE);
 
@@ -100,6 +111,22 @@ public class ProgressLocationProvider extends Service implements LocationListene
 		}
 
 		return loc;
+	}
+
+	private void update() {
+		try {
+			if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+					&& ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+			}
+			loc = locationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			new Handler(Looper.getMainLooper()).post(() -> onLocationChanged(loc));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public double getLongitude() {
@@ -173,7 +200,7 @@ public class ProgressLocationProvider extends Service implements LocationListene
 
 	@Override
 	public void onLocationChanged(Location location) {
-		if(positionUpdateListener != null) {
+		if (positionUpdateListener != null) {
 			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 			positionUpdateListener.onPositionUpdated(latLng);
 		}
