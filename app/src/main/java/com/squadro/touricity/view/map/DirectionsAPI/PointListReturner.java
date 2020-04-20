@@ -44,9 +44,10 @@ public class PointListReturner implements IAsync, IAsync2{
 
         this.path.setVertices(latlonListToPathVertexList(data));
         this.path.setDuration(seconds / 60);
-        ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
-        ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setDuration(seconds / 60);
-
+        if(rcw.getRoute().getAbstractEntryList().size() > pathIndex){
+            ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setVertices(latlonListToPathVertexList(data));
+            ((Path)(rcw.getRoute().getAbstractEntryList().get(pathIndex))).setDuration(seconds / 60);
+        }
         PolylineDrawer pd = new PolylineDrawer(MapFragmentTab2.getMap(),"create",context);
         pd.drawRoute(rcw.getRoute());
     }

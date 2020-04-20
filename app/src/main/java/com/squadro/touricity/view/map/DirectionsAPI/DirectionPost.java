@@ -60,13 +60,13 @@ public class DirectionPost {
         }
 
         //Origin of the route
-        double originLat = (stopList.get(0)).getLocation().getLatitude() + 1;
-        double originLon = (stopList.get(0)).getLocation().getLongitude() + 1;
+        double originLat = (stopList.get(0)).getLocation().getLatitude();
+        double originLon = (stopList.get(0)).getLocation().getLongitude();
         String str_origin = "origin=" + originLat + "," + originLon;
 
         // Destination of route
-        double destLat = (stopList.get(stopList.size()-1)).getLocation().getLatitude() + 1;
-        double destLon = (stopList.get(stopList.size()-1)).getLocation().getLongitude() + 1;
+        double destLat = (stopList.get(stopList.size()-1)).getLocation().getLatitude();
+        double destLon = (stopList.get(stopList.size()-1)).getLocation().getLongitude();
 
         String str_dest = "destination=" + destLat + "," + destLon;
 
@@ -90,7 +90,7 @@ public class DirectionPost {
         String output = "json";
 
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyBrr2iE49aWzGwLhWPYW5ABBV6Ja-8zyvE";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyDxyMBvgQv-sgYemlNwyUhtjNn6OSsEFlo";
 
         return url;
     }
